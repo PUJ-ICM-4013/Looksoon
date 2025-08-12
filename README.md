@@ -22,7 +22,7 @@ Además, la aplicación incluye funciones como **chats**, **mensajes**, **notifi
 
 | Foto | Nombre | Mini biografía |
 |------|--------|----------------|
-| ![Foto Katheryn](URL_FOTO_KATHE) | **Katheryn Sofía Guasca** | Estudiante de Ingeniería de Sistemas en la Pontificia Universidad Javeriana (Colombia). Apasionada por la inteligencia artificial, el machine learning y el desarrollo de software móvil. Manejo de C++, Java, Python, R y SQL. |
+| ![Foto Katheryn](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/ing.jpg?raw=true) | **Katheryn Sofía Guasca** | Estudiante de Ingeniería de Sistemas en la Pontificia Universidad Javeriana (Colombia). Apasionada por la inteligencia artificial, el machine learning y el desarrollo de software móvil. Manejo de C++, Java, Python, R y SQL. |
 | ![Foto Santiago](URL_FOTO_SANTIAGO) | **Santiago Castro Garzón** | *(biografía breve)* |
 | ![Foto Juan Esteban](URL_FOTO_JUAN_ESTEBAN) | **Juan Esteban Díaz Toledo** | *(biografía breve)* |
 | ![Foto Andrés](URL_FOTO_ANDRES) | **Andrés Felipe Torres Monroy** | *(biografía breve)* |
