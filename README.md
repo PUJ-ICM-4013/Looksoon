@@ -14,6 +14,7 @@
 <p>Juan David Garrido</p>
 <p>Katheryne Sofía Guasca</p>
 
+# Falta la minibiografía y la imagen de cada uno
 
 
 ![Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white=)
