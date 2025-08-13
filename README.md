@@ -26,7 +26,7 @@ Además, la aplicación incluye funciones como **chats**, **mensajes**, **notifi
 | ![Foto Santiago](foto_perfil_github.jpeg) | **Santiago Castro Garzón** | *(biografía breve)* |
 | ![Foto Juan Esteban](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/juanes%20(2).jpg) | **Juan Esteban Díaz Toledo** | Estudiantes de Ingeniería de Sistemas en la Pontificia Universidad Javeriana de Bogotá. Interesado por profundizar y expandir conocimientos en ciber-seguridad, ingeniería de software e inteligencia artificial. "Despierto todas las mañanas y aunque no sepa lo que tengo que hacer, pongo un pie delante del otro y trato de tomar las mejores decisiones que puedo. Me equivoco muchas veces, pero de eso se trata ser un humano... Y esa es mi mayor fortaleza" |
 | ![Foto Andrés](URL_FOTO_ANDRES) | **Andrés Felipe Torres Monroy** | *(biografía breve)* |
-| ![Foto Juan David](URL_FOTO_JUAN_DAVID) | **Juan David Garrido** | *(biografía breve)* |
+| ![Foto Juan David](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/IMG_20241112_212030_989.webp) | **Juan David Garrido Ramos** | *(biografía breve)* |
 
 
 ---
