@@ -33,9 +33,9 @@ Además, la aplicación incluye funciones como **chats**, **mensajes**, **notifi
 
 ## 📂 Entregables
 
-- 📑 **Presentación de la propuesta** → [Ver archivo](URL_PRESENTACION)  
+- 📑 **Presentación de la propuesta** → [Ver archivo]([[URL_PRESENTACION](https://www.canva.com/design/DAGvNkdwLYE/x1Woo2c7gvDfT9hvAdyRug/edit)](https://www.canva.com/design/DAGvNkdwLYE/x1Woo2c7gvDfT9hvAdyRug/edit?utm_content=DAGvNkdwLYE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))  
 - 🎭 **Diagrama de casos de uso / Historias de usuario** → [Ver archivo](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/Diagrama%20de%20casos%20de%20uso.jpeg)  
-- 🏗️ **Diagrama de clases inicial** → [Ver archivo](URL_DIAGRAMA_CLASES)  
+- 🏗️ **Diagrama de clases inicial** → [Ver archivo]([URL_DIAGRAMA_CLASES](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/Diagrama%20de%20clases.png))  
 
 ---
 
