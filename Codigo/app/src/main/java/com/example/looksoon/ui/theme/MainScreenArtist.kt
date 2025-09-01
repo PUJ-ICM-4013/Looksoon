@@ -21,7 +21,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
@@ -32,6 +36,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -125,6 +131,7 @@ fun MainScreenArtist(modifier: Modifier = Modifier) {
                 )
             }
         }
+
     }
 }
 @Preview
@@ -410,4 +417,73 @@ fun MapPreview(){
     }
 }
 
+
+@Composable
+fun BottomNavBar(
+    selectedTab: String,
+    onTabSelected: (String) -> Unit
+) {
+    val items = listOf("Inicio", "Convocatorias", "Mensajes", "Perfil")
+    val icons = listOf(
+        Icons.Default.Home,
+        Icons.Default.DateRange, // necesitas importar íconos adecuados
+        Icons.Default.Email,
+        Icons.Default.AccountCircle
+    )
+
+    NavigationBar(
+        containerColor = Color.Black
+    ) {
+        items.forEachIndexed { index, item ->
+            val isSelected = item == selectedTab
+            NavigationBarItem(
+                selected = isSelected,
+                onClick = { onTabSelected(item) },
+                icon = {
+                    if (isSelected) {
+                        // Fondo con degradado
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))
+                                    )
+                                )
+                                .padding(8.dp)
+                        ) {
+                            Icon(
+                                icons[index],
+                                contentDescription = item,
+                                tint = Color.White
+                            )
+                        }
+                    } else {
+                        Icon(
+                            icons[index],
+                            contentDescription = item,
+                            tint = Color.LightGray
+                        )
+                    }
+                },
+                label = {
+                    Text(
+                        item,
+                        color = if (isSelected) Color(0xFFB84DFF) else Color.LightGray
+                    )
+                },
+                alwaysShowLabel = true
+            )
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun BottomNavBarPreview() {
+    LooksoonTheme {
+        BottomNavBar(selectedTab = "Inicio", onTabSelected = {})
+    }
+}
 

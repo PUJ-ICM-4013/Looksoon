@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.looksoon.ui.theme.BottomNavBar
 import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.MainScreenArtist
 
@@ -19,16 +24,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             LooksoonTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-                      MainScreenArtist(modifier = Modifier.padding(paddingValues))
+                var selectedTab by remember { mutableStateOf("Inicio") }
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomNavBar(
+                            selectedTab = selectedTab,
+                            onTabSelected = { selectedTab = it }
+                        )
+                    }
+                ) { paddingValues ->
+                    MainScreenArtist(
+                        modifier = Modifier.padding(paddingValues)
+                    )
                 }
-
-
-
             }
         }
+
     }
 }
 
