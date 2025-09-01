@@ -56,4 +56,23 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // ViewModel con Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+
+    // Ktor + JSON (para consumir la API)
+    implementation("io.ktor:ktor-client-android:2.3.12")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Coil para imágenes
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Coroutines (por si no están en libs.versions.toml)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
