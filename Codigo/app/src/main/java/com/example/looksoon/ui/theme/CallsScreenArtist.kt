@@ -59,7 +59,7 @@ import com.example.looksoon.R
 import okhttp3.internal.http2.Header
 
 @Composable
-fun CallsScreenArtist() {
+fun CallsScreenArtist( modifier: Modifier = Modifier) {
     LooksoonTheme {
         Column( modifier = Modifier.fillMaxSize()){
             HeaderArtist("Convocatorias",             modifier = Modifier

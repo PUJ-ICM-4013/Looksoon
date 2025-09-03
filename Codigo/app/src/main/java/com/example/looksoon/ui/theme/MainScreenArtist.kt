@@ -57,7 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MainScreenArtist(modifier: Modifier = Modifier) {
+fun MainScreenArtist(modifier: Modifier = Modifier,
+                     ) {
     Column(modifier = modifier.fillMaxSize()) {
         HeaderArtist(
             section = "Descubre Eventos",
@@ -423,6 +424,7 @@ fun MapPreview(){
 
 @Composable
 fun BottomNavBar(
+    buttonClick: () -> Unit = {},
     selectedTab: String,
     onTabSelected: (String) -> Unit
 ) {
