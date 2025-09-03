@@ -61,7 +61,7 @@ import okhttp3.internal.http2.Header
 @Composable
 fun CallsScreenArtist( modifier: Modifier = Modifier) {
     LooksoonTheme {
-        Column( modifier = Modifier.fillMaxSize()){
+        Column( modifier = modifier.fillMaxSize()){
             HeaderArtist("Convocatorias",             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
