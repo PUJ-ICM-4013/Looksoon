@@ -44,13 +44,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onLoginClick: () -> Unit = {},
-    onForgotPasswordClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    onLoginClick: () -> Unit = {
+        navController.navigate(Screen.Home.route) {
+            popUpTo(Screen.Login.route) { inclusive = true }
+        }
+    },
+
+            onForgotPasswordClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {}
 ) {
     var email by remember { mutableStateOf("") }
@@ -304,6 +314,6 @@ private fun Divider(
 @Composable
 fun LoginScreenPreview() {
     LooksoonTheme {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }

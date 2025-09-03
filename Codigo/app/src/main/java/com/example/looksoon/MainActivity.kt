@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.faunafinder.navigation.AppNavigation
 import com.example.looksoon.ui.theme.BottomNavBar
 import com.example.looksoon.ui.theme.CallsScreenArtist
 import com.example.looksoon.ui.theme.LooksoonTheme
@@ -23,27 +24,11 @@ import com.example.looksoon.ui.theme.MainScreenArtist
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             LooksoonTheme {
-                var selectedTab by remember { mutableStateOf("Inicio") }
-
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        BottomNavBar(
-                            selectedTab = selectedTab,
-                            onTabSelected = { selectedTab = it }
-                        )
-                    }
-                ) { paddingValues ->
-                    CallsScreenArtist(
-                        modifier = Modifier.padding(paddingValues)
-                    )
-                }
+                AppNavigation();
             }
         }
-
     }
 }
 

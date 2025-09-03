@@ -31,10 +31,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,79 +57,98 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
-import okhttp3.internal.http2.Header
 
 @Composable
-fun CallsScreenArtist( modifier: Modifier = Modifier) {
+fun CallsScreenArtist(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     LooksoonTheme {
-        Column( modifier = modifier.fillMaxSize()){
-            HeaderArtist("Convocatorias",             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(/*Color(0xFF2A003F)*/ colorScheme.primary, Color.Black) // púrpura a negro
-                    )
-                ));
-            SearchAndFilterBar();
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                GenreChip("Próximas");
-                GenreChip("Cerca de mí");
-                GenreChip("Cuerna");
-                GenreChip("Rock");
-                GenreChip("Pop");
-
-            }
-            Text("Para ti",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+        Scaffold(
+            bottomBar = {
+                BottomNavBar(
+                    selectedTab = Screen.Convocatorias.route,
+                    onTabSelected = { route ->
+                        navController.navigate(route) {
+                            launchSingleTop = true
+                            popUpTo(Screen.Home.route)
+                        }
+                    }
                 )
-            )
-            LazyColumn(){
-                item{
-                    EventCard();
-                }
-                item{
-                    EventCard();
-                }
-                item{
-                    EventCard();
-                }
-                item{
-                    EventCard();
-                }
-                item{
-                    EventCard();
-                }
-                item{
-                    EventCard();
-                }
-
             }
+        ) { padding ->
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                // Header
+                HeaderArtist(
+                    "Convocatorias",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    Color.Black
+                                )
+                            )
+                        )
+                )
 
+                // Search + filtros
+                SearchAndFilterBar()
+
+                // Chips
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    GenreChip("Próximas")
+                    GenreChip("Cerca de mí")
+                    GenreChip("Cuerna")
+                    GenreChip("Rock")
+                    GenreChip("Pop")
+                }
+
+                Text(
+                    "Para ti",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                )
+
+                // Lista de eventos
+                LazyColumn {
+                    items(6) {
+                        EventCard()
+                    }
+                }
+            }
         }
-
-
     }
 }
+
 
 @Preview
 @Composable
 fun CallsScreenArtistPreview() {
     LooksoonTheme {
-        CallsScreenArtist()
+        CallsScreenArtist(navController = rememberNavController())
     }
 }
 
