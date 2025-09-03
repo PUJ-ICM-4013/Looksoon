@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.sp
 fun MainScreenArtist(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         HeaderArtist(
+            section = "Descubre Eventos",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -144,10 +145,10 @@ fun MainScreenArtistPreview() {
 
 @Composable
 fun HeaderArtist(
+    section: String,
     modifier: Modifier = Modifier,
     onMenuClick: () -> Unit = {},
-                     onNotificationsClick: () -> Unit = {},
-
+                     onNotificationsClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -170,7 +171,7 @@ fun HeaderArtist(
 
             // Título centrado
             Text(
-                text = "Descubre Eventos",
+                text = section,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Color.White
             )
@@ -194,6 +195,7 @@ fun HeaderArtist(
 fun HeaderArtistPreview() {
     LooksoonTheme {
         HeaderArtist(
+            "Descubre Eventos",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -202,6 +204,7 @@ fun HeaderArtistPreview() {
                         colors = listOf(/*Color(0xFF2A003F)*/ colorScheme.primary, Color.Black) // púrpura a negro
                     )
                 )
+
         )
     }
 }
