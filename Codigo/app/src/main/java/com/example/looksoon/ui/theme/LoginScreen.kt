@@ -73,7 +73,7 @@ fun LoginScreen(
 
             // Logo and Welcome Text
             Image(
-                painter = painterResource(id = R.drawable.logo), // Replace with your logo
+                painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with your logo
                 contentDescription = "App Logo",
                 modifier = Modifier.size(120.dp)
             )
