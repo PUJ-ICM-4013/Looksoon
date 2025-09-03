@@ -61,7 +61,11 @@ fun LoginScreen(
     },
 
             onForgotPasswordClick: () -> Unit = {},
-    onSignUpClick: () -> Unit = {}
+    onSignUpClick: () -> Unit = {
+        navController.navigate(Screen.SignUp.route) {
+            popUpTo(Screen.SignUp.route) { inclusive = true }
+        }
+    }
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -83,7 +87,7 @@ fun LoginScreen(
 
             // Logo and Welcome Text
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with your logo
+                painter = painterResource(id = R.drawable.logo_looksoon), // Replace with your logo
                 contentDescription = "App Logo",
                 modifier = Modifier.size(120.dp)
             )
@@ -237,29 +241,42 @@ fun LoginScreen(
             
             Spacer(modifier = Modifier.weight(1f))
             
-            // Sign Up Prompt
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "¿No tienes una cuenta? ",
-                    color = TextSecondary,
-                    fontSize = 14.sp
-                )
-                TextButton(
-                    onClick = onSignUpClick,
-                    modifier = Modifier.padding(0.dp)
-                ) {
-                    Text(
-                        text = "Regístrate",
-                        color = PurplePrimary,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+            // Sign Up
+            AccountFlowRow(onLinkClick = onSignUpClick,
+                infoLeft = "¿No tienes una cuenta?",
+                infoRight = "Regístrate"
+            )
+
+
+        }
+    }
+}
+
+@Composable
+fun AccountFlowRow(onLinkClick: () -> Unit,
+              infoLeft: String,
+              infoRight: String
+              ){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = infoLeft,
+            color = TextSecondary,
+            fontSize = 14.sp
+        )
+        TextButton(
+            onClick = onLinkClick,
+            modifier = Modifier.padding(0.dp)
+        ) {
+            Text(
+                text = infoRight,
+                color = PurplePrimary,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
