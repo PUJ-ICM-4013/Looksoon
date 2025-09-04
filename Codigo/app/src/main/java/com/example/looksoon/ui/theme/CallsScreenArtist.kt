@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -88,16 +90,17 @@ fun CallsScreenArtist(
             ) {
                 // Header
                 HeaderArtist(
-                    "Convocatorias",
+                    section = "Convocatorias",
+                    iconLeft = Icons.Default.Menu,
+                    iconRight = Icons.Default.Notifications,
+                    contentDescriptionLeft = "Menú",
+                    contentDescriptionRight = "Notificaciones",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                         .background(
                             brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    Color.Black
-                                )
+                                colors = listOf(MaterialTheme.colorScheme.primary, Color.Black)
                             )
                         )
                 )

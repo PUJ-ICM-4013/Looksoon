@@ -23,9 +23,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
@@ -51,6 +53,10 @@ fun MainScreenArtist(
         Column(modifier = Modifier.padding(innerPadding)) {
             HeaderArtist(
                 section = "Descubre Eventos",
+                iconLeft = Icons.Default.Menu,
+                iconRight = Icons.Default.Notifications,
+                contentDescriptionLeft = "Menú",
+                contentDescriptionRight = "Notificaciones",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -61,7 +67,15 @@ fun MainScreenArtist(
                     )
             );
             Map()
-            FiltersRow()
+            FiltersRow(
+                buttons = listOf(
+                    { GenreChip("Rock", onClick = {}) },
+                    { GenreChip("Pop", onClick = {}) },
+                    { GenreChip("Jazz", onClick = {}) }
+                )
+            )
+
+
             LazyColumn(
                     modifier = Modifier
 
@@ -114,8 +128,12 @@ fun MainScreenArtistPreview() {
 fun HeaderArtist(
     section: String,
     modifier: Modifier = Modifier,
-    onMenuClick: () -> Unit = {},
-    onNotificationsClick: () -> Unit = {}
+    iconLeft: ImageVector,
+    contentDescriptionLeft: String,
+    contentDescriptionRight: String,
+    iconRight: ImageVector,
+    onIconLeftClick: () -> Unit = {},
+    onIconRightClick: () -> Unit = {}
 ) {
     Box(modifier = modifier) {
         Row(
@@ -125,16 +143,16 @@ fun HeaderArtist(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Default.Menu, contentDescription = "Menú", tint = Color.White)
+            IconButton(onClick = onIconLeftClick) {
+                Icon(iconLeft, contentDescription = contentDescriptionLeft, tint = Color.White)
             }
             Text(
                 text = section,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Color.White
             )
-            IconButton(onClick = onNotificationsClick) {
-                Icon(Icons.Default.Notifications, contentDescription = "Notificaciones", tint = Color.White)
+            IconButton(onClick = onIconRightClick) {
+                Icon(iconRight, contentDescription =contentDescriptionRight, tint = Color.White)
             }
         }
     }
@@ -173,9 +191,12 @@ fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, o
         Text(text = text, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
-
+//Enviar lista de botones por parámetro
 @Composable
-fun FiltersRow() {
+fun FiltersRow(
+    modifier: Modifier = Modifier,
+    buttons: List<@Composable () -> Unit>
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,12 +205,11 @@ fun FiltersRow() {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterChip("Distancia", icon = Icons.Default.LocationOn)
-        GenreChip("Rock")
-        GenreChip("Pop")
-        GenreChip("Jazz")
-        GenreChip("Reggaeton")
-        GenreChip("Indie")
-        GenreChip("Electrónica")
+        //Colocar el conjunto de funciones
+        buttons.forEach { button ->
+            button()
+        }
+
     }
 }
 
@@ -252,8 +272,8 @@ fun BottomNavBar(
     selectedTab: String,
     onTabSelected: (String) -> Unit
 ) {
-    val items = listOf("Inicio", "Convocatorias", "Mensajes", "Perfil")
-    val icons = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Email, Icons.Default.AccountCircle)
+    val items = listOf("Inicio", "Convocatorias", "Publicar", "Mensajes", "Perfil")
+    val icons = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Add,Icons.Default.Email, Icons.Default.AccountCircle)
 
     NavigationBar(containerColor = Color.Black) {
         items.forEachIndexed { index, item ->
@@ -284,5 +304,32 @@ fun BottomNavBar(
                 }
             )
         }
+    }
+}
+@Composable
+fun MinimalDialog(onDismissRequest: () -> Unit) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Text(
+                text = "This is a minimal dialog",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center),
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+@Preview
+@Composable
+fun MinimalDialogPreview() {
+    LooksoonTheme {
+        MinimalDialog(onDismissRequest = {})
     }
 }
