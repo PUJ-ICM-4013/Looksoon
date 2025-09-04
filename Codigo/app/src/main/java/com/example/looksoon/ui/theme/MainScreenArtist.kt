@@ -33,11 +33,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
 import com.example.faunafinder.navigation.Screen
 
+
+//Composable para pantalla completa de MainScreenArtist
 @Composable
 fun MainScreenArtist(
     navController: NavHostController
 ) {
+    //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
+        //Inidicar que se tendrá abajo el Nav
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Inicio",
@@ -49,8 +53,10 @@ fun MainScreenArtist(
                 }
             )
         }
+        //Usar padding necesario al contenido para que no se salga de la pantalla
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+            //Llamar Composable de Header Artist
             HeaderArtist(
                 section = "Descubre Eventos",
                 iconLeft = Icons.Default.Menu,
@@ -66,7 +72,9 @@ fun MainScreenArtist(
                         )
                     )
             );
+            //Llamar Composable de Map
             Map()
+            //Llamar Composable de FiltersRow(Conjunto de botones)
             FiltersRow(
                 buttons = listOf(
                     { GenreChip("Rock", onClick = {}) },
@@ -74,8 +82,7 @@ fun MainScreenArtist(
                     { GenreChip("Jazz", onClick = {}) }
                 )
             )
-
-
+            //LazyColumn para mostrar la lista de eventos(Falta hacerlo dinámico con datos)
             LazyColumn(
                     modifier = Modifier
 
@@ -115,7 +122,7 @@ fun MainScreenArtist(
 
     }
 }
-
+//Visualización de la pantalla
 @Preview
 @Composable
 fun MainScreenArtistPreview() {
@@ -124,6 +131,8 @@ fun MainScreenArtistPreview() {
     }
 }
 
+//Composable para el Header Artist
+//Se envía info por parametro para que sea reutilizable
 @Composable
 fun HeaderArtist(
     section: String,
@@ -143,14 +152,25 @@ fun HeaderArtist(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            //Icono izquierdo
             IconButton(onClick = onIconLeftClick) {
                 Icon(iconLeft, contentDescription = contentDescriptionLeft, tint = Color.White)
             }
+            //Sapcer para centrar(necesario tener dos, uno antes y otro despues del composable a centrar)
+            Spacer(modifier = Modifier.weight(1f))
+            //Texto del Header
             Text(
                 text = section,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Color.White
             )
+            //Spacer final de centrado de texto
+            Spacer(modifier = Modifier.weight(1f))
+            //Icono Gamification
+            IconButton(onClick = {}){
+                Icon(Icons.Default.Face, contentDescription = "Gamification", tint = Color.White)
+            }
+            //Icono derecho
             IconButton(onClick = onIconRightClick) {
                 Icon(iconRight, contentDescription =contentDescriptionRight, tint = Color.White)
             }
@@ -158,6 +178,7 @@ fun HeaderArtist(
     }
 }
 
+//Composable para el Boton de Genero
 @Composable
 fun GenreChip(text: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Box(
@@ -176,6 +197,7 @@ fun GenreChip(text: String, modifier: Modifier = Modifier, onClick: () -> Unit =
     }
 }
 
+//Boton para distancia
 @Composable
 fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Row(
@@ -192,6 +214,7 @@ fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, o
     }
 }
 //Enviar lista de botones por parámetro
+//Fila con todos los botones
 @Composable
 fun FiltersRow(
     modifier: Modifier = Modifier,
@@ -213,6 +236,7 @@ fun FiltersRow(
     }
 }
 
+//Tarjetas de evento
 @Composable
 fun EventCard(title: String, date: String, location: String, imagePainter: Painter, onSeeMoreClick: () -> Unit) {
     Card(
@@ -257,6 +281,8 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
     }
 }
 
+//Mapa
+
 @Composable
 fun Map() {
     Box(
@@ -267,13 +293,14 @@ fun Map() {
     )
 }
 
+//Nav de navegacion (falta hacerlo reutilizable)
 @Composable
 fun BottomNavBar(
     selectedTab: String,
     onTabSelected: (String) -> Unit
 ) {
-    val items = listOf("Inicio", "Convocatorias", "Publicar", "Mensajes", "Perfil")
-    val icons = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Add,Icons.Default.Email, Icons.Default.AccountCircle)
+    val items = listOf("Inicio", "Convocatorias", "Publicar", "Feed","Mensajes", "Perfil")
+    val icons = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Add, Icons.Default.List ,Icons.Default.Email, Icons.Default.AccountCircle)
 
     NavigationBar(containerColor = Color.Black) {
         items.forEachIndexed { index, item ->
@@ -306,6 +333,9 @@ fun BottomNavBar(
         }
     }
 }
+
+
+//Dialog genérico
 @Composable
 fun MinimalDialog(onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
