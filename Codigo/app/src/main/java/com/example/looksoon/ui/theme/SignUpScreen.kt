@@ -63,13 +63,13 @@ fun SignUpScreen(navController: NavHostController) {
 
                 )
                 //Boton de roles
-                ButtonRoles(modifier = Modifier.padding(vertical = 8.dp), navController = navController, rol = "Artista/Banda")
+                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Artista/Banda")
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.padding(vertical = 8.dp), navController = navController, rol = "Fan")
+                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Fan")
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.padding(vertical = 8.dp), navController = navController, rol = "Local/Establecimiento")
+                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Local/Establecimiento")
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.padding(vertical = 8.dp), navController = navController, rol = "Curador")
+                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Curador")
                 Spacer(modifier = Modifier.weight(1f))
                 //Sign in row
                 AccountFlowRow(onLinkClick = {
@@ -90,14 +90,14 @@ fun SignUpScreenPreview() {
 }
 
 @Composable
-fun ButtonRoles(modifier: Modifier = Modifier,
+fun ButtonRoles(modifier: Modifier = Modifier.fillMaxWidth(),
                 navController: NavHostController,
                 rol: String,
                 OnClick: () -> Unit = {navController.navigate(Screen.Login.route)}) {
     Button(
         onClick = { OnClick() },
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
+
             .height(48.dp)
         ,
         shape = RoundedCornerShape(8.dp),

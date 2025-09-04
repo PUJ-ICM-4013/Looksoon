@@ -79,7 +79,9 @@ fun MainScreenArtist(
                 buttons = listOf(
                     { GenreChip("Rock", onClick = {}) },
                     { GenreChip("Pop", onClick = {}) },
-                    { GenreChip("Jazz", onClick = {}) }
+                    { GenreChip("Jazz", onClick = {}) },
+                    { GenreChip("Alternativa", onClick = {}) },
+                    { GenreChip("Balada", onClick = {}) }
                 )
             )
             //LazyColumn para mostrar la lista de eventos(Falta hacerlo dinámico con datos)
