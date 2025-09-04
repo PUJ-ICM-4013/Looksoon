@@ -17,6 +17,10 @@ sealed class Screen(val route: String) {
     object Login : Screen("login")
 
     object SignUp : Screen("SignUp")
+
+    object Publicar : Screen("Publicar")
+
+    //Crear Screens
 }
 
 @Composable
@@ -30,5 +34,7 @@ fun AppNavigation() {
         composable(Screen.Perfil.route) { /* Pantalla de perfil */ }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
+        composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
+        //Colocar composable de cad screen
     }
 }
