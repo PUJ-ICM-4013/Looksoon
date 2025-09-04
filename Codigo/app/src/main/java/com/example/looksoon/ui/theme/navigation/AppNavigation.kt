@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.ui.theme.CallsScreenArtist
 import com.example.looksoon.ui.theme.LoginScreen
 import com.example.looksoon.ui.theme.MainScreenArtist
+import com.example.looksoon.ui.theme.MessagesScreen
 import com.example.looksoon.ui.theme.SignUpScreen
 
 sealed class Screen(val route: String) {
@@ -20,6 +21,7 @@ sealed class Screen(val route: String) {
 
     object Publicar : Screen("Publicar")
 
+
     //Crear Screens
 }
 
@@ -30,7 +32,7 @@ fun AppNavigation() {
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
-        composable(Screen.Mensajes.route) { /* Pantalla de mensajes */ }
+        composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { /* Pantalla de perfil */ }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
