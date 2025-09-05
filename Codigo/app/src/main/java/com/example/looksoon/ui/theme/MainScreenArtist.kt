@@ -41,7 +41,7 @@ fun MainScreenArtist(
 ) {
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
-        //Inidicar que se tendrá abajo el Nav
+        //Indicar que se tendrá abajo el Nav
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Inicio",
