@@ -98,7 +98,9 @@ fun MessagesScreen(
 
             Row(){
                 Spacer(modifier = Modifier.weight(1f))
-                GenreChip("Todos", onClick = {})
+                GenreChip("Todos", onClick = {
+
+                })
                 Spacer(modifier = Modifier.weight(1f))
                 GenreChip("No leídos", onClick = {})
                 Spacer(modifier = Modifier.weight(1f))
@@ -152,7 +154,7 @@ fun MessagesScreenPreview() {
 fun ChatCard(navController: NavHostController) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(8.dp).clickable {
-            navController.navigate("Inicio")
+            navController.navigate("Chat")
         },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
         shape = RoundedCornerShape(12.dp),

@@ -5,6 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.ui.theme.CallsScreenArtist
+import com.example.looksoon.ui.theme.ChatScreen
+import com.example.looksoon.ui.theme.FeedScreen
 import com.example.looksoon.ui.theme.LoginScreen
 import com.example.looksoon.ui.theme.MainScreenArtist
 import com.example.looksoon.ui.theme.MessagesScreen
@@ -21,6 +23,9 @@ sealed class Screen(val route: String) {
 
     object Publicar : Screen("Publicar")
 
+    object Chat : Screen("Chat")
+
+    object Feed : Screen("Feed")
 
     //Crear Screens
 }
@@ -37,6 +42,8 @@ fun AppNavigation() {
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
         composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
+        composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
         //Colocar composable de cad screen
+        composable(Screen.Feed.route) { FeedScreen(navController = navController) }
     }
 }
