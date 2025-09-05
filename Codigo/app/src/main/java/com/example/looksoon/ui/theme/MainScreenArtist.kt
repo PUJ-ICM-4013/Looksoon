@@ -287,12 +287,20 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
 
 @Composable
 fun Map() {
+    Image(
+        painter = painterResource(id = R.drawable.mapa),
+        contentDescription = "Mapa",
+        modifier = Modifier.fillMaxWidth().height(400.dp),
+    )
+    /*
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(400.dp)
             .background(Color(0xFF1C1C1C))
     )
+
+     */
 }
 
 //Nav de navegacion (falta hacerlo reutilizable)
