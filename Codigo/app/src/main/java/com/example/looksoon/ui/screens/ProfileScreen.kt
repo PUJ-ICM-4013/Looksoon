@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.*
 
@@ -224,7 +225,7 @@ fun ProfileScreen(
 
                 // -------- Botón editar ----------
                 Button(
-                    onClick = { /* Acción editar perfil */ },
+                    onClick = { navController.navigate(Screen.Editar.route) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -236,6 +237,7 @@ fun ProfileScreen(
                 ) {
                     Text("Editar perfil", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
