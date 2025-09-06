@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -114,7 +114,7 @@ fun FeedScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun FeedScreenPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         FeedScreen(navController = rememberNavController())
     }
 }

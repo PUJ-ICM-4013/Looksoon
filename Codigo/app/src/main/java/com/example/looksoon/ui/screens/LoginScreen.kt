@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -80,22 +80,22 @@ fun CustomOutlinedTextField(
                     Icon(
                         painter = painterResource(id = icon),
                         contentDescription = description,
-                        tint = TextSecondary
+                        tint = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary
                     )
                 }
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = PurplePrimary,
-            unfocusedBorderColor = Divider,
-            focusedTextColor = TextPrimary,
-            unfocusedTextColor = TextPrimary,
-            cursorColor = PurplePrimary,
-            focusedLabelColor = PurplePrimary,
-            unfocusedLabelColor = TextSecondary,
-            focusedContainerColor = Surface,
-            unfocusedContainerColor = Surface
+            focusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            unfocusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.Divider,
+            focusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+            unfocusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+            cursorColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            focusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            unfocusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+            focusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+            unfocusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface
         ),
         modifier = modifier.fillMaxWidth()
     )
@@ -116,7 +116,7 @@ fun PrimaryButton(
             .height(48.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PurplePrimary,
+            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
             contentColor = Color.White
         ),
         enabled = enabled
@@ -136,8 +136,8 @@ fun ImageWithText(
     imageSize: Int = 120,
     title: String,
     subtitle: String? = null,
-    titleColor: Color = TextPrimary,
-    subtitleColor: Color = TextSecondary
+    titleColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+    subtitleColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -171,8 +171,8 @@ fun ImageWithText(
 @Composable
 fun TextDivider(
     text: String,
-    textColor: Color = TextSecondary,
-    dividerColor: Color = Divider,
+    textColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+    dividerColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.Divider,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -251,7 +251,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
-                    color = PurplePrimary,
+                    color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
                     fontSize = 12.sp
                 )
             }
@@ -277,8 +277,8 @@ fun LoginScreen(
                 text = "Continuar con Google",
                 iconRes = R.drawable.ic_google,
                 onClick = { /* Handle Google login */ },
-                backgroundColor = Surface,
-                textColor = TextPrimary
+                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -287,8 +287,8 @@ fun LoginScreen(
                 text = "Continuar con Facebook",
                 iconRes = R.drawable.ic_facebook,
                 onClick = { /* Handle Facebook login */ },
-                backgroundColor = Surface,
-                textColor = TextPrimary
+                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -316,7 +316,7 @@ fun AccountFlowRow(
     ) {
         Text(
             text = infoLeft,
-            color = TextSecondary,
+            color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
             fontSize = 14.sp
         )
         TextButton(
@@ -325,7 +325,7 @@ fun AccountFlowRow(
         ) {
             Text(
                 text = infoRight,
-                color = PurplePrimary,
+                color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -368,7 +368,7 @@ fun SocialLoginButton(
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun LoginScreenPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         LoginScreen(navController = rememberNavController())
     }
 }
@@ -377,7 +377,7 @@ fun LoginScreenPreview() {
 @Preview
 @Composable
 fun CustomOutlinedTextFieldPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         Column(modifier = Modifier.padding(16.dp)) {
             CustomOutlinedTextField(
                 value = "",
@@ -399,7 +399,7 @@ fun CustomOutlinedTextFieldPreview() {
 @Preview
 @Composable
 fun PrimaryButtonPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         PrimaryButton(
             text = "Iniciar sesión",
             onClick = {},
@@ -411,7 +411,7 @@ fun PrimaryButtonPreview() {
 @Preview
 @Composable
 fun ImageWithTextPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         ImageWithText(
             imageRes = R.drawable.logo_looksoon,
             title = "¡Bienvenido!",

@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -128,7 +128,7 @@ fun MainScreenArtist(
 @Preview
 @Composable
 fun MainScreenArtistPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         MainScreenArtist(navController = rememberNavController())
     }
 }
@@ -369,7 +369,7 @@ fun MinimalDialog(onDismissRequest: () -> Unit) {
 @Preview
 @Composable
 fun MinimalDialogPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         MinimalDialog(onDismissRequest = {})
     }
 }

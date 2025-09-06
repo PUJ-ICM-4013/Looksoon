@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -30,16 +30,17 @@ import com.example.looksoon.R
 
 @Composable
 fun SignUpScreen(navController: NavHostController) {
-    LooksoonTheme {
-        Scaffold() {innerPadding ->
-            Column(Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
+        Scaffold() { innerPadding ->
+            Column(
+                Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
-            ){
+            ) {
 
                 Spacer(modifier = Modifier.weight(1f))
                 // Logo and Welcome Text
@@ -50,7 +51,7 @@ fun SignUpScreen(navController: NavHostController) {
                 )
                 Text(
                     text = "¡Registrate!",
-                    color = TextPrimary,
+                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -58,27 +59,45 @@ fun SignUpScreen(navController: NavHostController) {
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),
                     text = "Digita tu rol en la comunidad",
-                    color = TextSecondary,
+                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
                     fontSize = 14.sp
 
                 )
                 //Boton de roles
-                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Artista/Banda")
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    navController = navController,
+                    rol = "Artista/Banda"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Fan")
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    navController = navController,
+                    rol = "Fan"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Local/Establecimiento")
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    navController = navController,
+                    rol = "Local/Establecimiento"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonRoles(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), navController = navController, rol = "Curador")
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    navController = navController,
+                    rol = "Curador"
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 //Sign in row
-                AccountFlowRow(onLinkClick = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
+                AccountFlowRow(
+                    onLinkClick = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
                     infoLeft = "¿Ya tienes una cuenta?",
-                    infoRight = "Inicia sesión")
+                    infoRight = "Inicia sesión"
+                )
             }
         }
     }
@@ -102,7 +121,7 @@ fun ButtonRoles(modifier: Modifier = Modifier.fillMaxWidth(),
         ,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PurplePrimary,
+            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
             contentColor = Color.White
         )
     ) {

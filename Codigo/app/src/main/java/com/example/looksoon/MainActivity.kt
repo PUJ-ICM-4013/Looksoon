@@ -16,10 +16,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.faunafinder.navigation.AppNavigation
-import com.example.looksoon.ui.theme.BottomNavBar
-import com.example.looksoon.ui.theme.CallsScreenArtist
+import com.example.looksoon.ui.screens.BottomNavBar
+import com.example.looksoon.ui.screens.SignUpScreen
 import com.example.looksoon.ui.theme.LooksoonTheme
-import com.example.looksoon.ui.theme.MainScreenArtist
+import com.example.looksoon.ui.screens.MainScreenArtist
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

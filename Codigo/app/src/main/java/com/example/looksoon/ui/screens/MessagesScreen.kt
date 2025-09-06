@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -143,8 +143,8 @@ fun MessagesScreen(
 @Preview
 @Composable
 fun MessagesScreenPreview() {
-    LooksoonTheme {
-    MessagesScreen(navController = rememberNavController())
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
+        MessagesScreen(navController = rememberNavController())
     }
 }
 
@@ -222,7 +222,7 @@ fun ChatCard(navController: NavHostController) {
 @Preview
 @Composable
 fun ChatCardPreview() {
-    LooksoonTheme {
-    ChatCard(navController = rememberNavController())
-        }
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
+        ChatCard(navController = rememberNavController())
+    }
 }
