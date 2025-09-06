@@ -10,6 +10,7 @@ import com.example.looksoon.ui.screens.FeedScreen
 import com.example.looksoon.ui.screens.LoginScreen
 import com.example.looksoon.ui.screens.MainScreenArtist
 import com.example.looksoon.ui.screens.MessagesScreen
+import com.example.looksoon.ui.screens.ProfileScreen
 import com.example.looksoon.ui.screens.SignUpScreen
 
 sealed class Screen(val route: String) {
@@ -38,7 +39,7 @@ fun AppNavigation() {
         composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
-        composable(Screen.Perfil.route) { /* Pantalla de perfil */ }
+        composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
         composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
