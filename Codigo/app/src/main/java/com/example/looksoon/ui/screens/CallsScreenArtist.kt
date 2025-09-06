@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -69,7 +69,7 @@ fun CallsScreenArtist(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         Scaffold(
             bottomBar = {
                 BottomNavBar(
@@ -150,7 +150,7 @@ fun CallsScreenArtist(
 @Preview
 @Composable
 fun CallsScreenArtistPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         CallsScreenArtist(navController = rememberNavController())
     }
 }
@@ -250,7 +250,7 @@ fun SearchAndFilterBar() {
 @Preview
 @Composable
 fun SearchAndFilterBarPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         SearchAndFilterBar();
     }
 }
@@ -380,7 +380,7 @@ fun EventCard() {
 @Preview
 @Composable
 fun ECardPreview() {
-    LooksoonTheme {
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         EventCard()
     }
 }

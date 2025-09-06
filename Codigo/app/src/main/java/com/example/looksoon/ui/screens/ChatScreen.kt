@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.theme
+package com.example.looksoon.ui.screens
 
 import androidx.compose.ui.unit.dp
 
@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.ui.theme.LooksoonTheme
-import com.example.looksoon.ui.theme.BottomNavBar
-import com.example.looksoon.ui.theme.HeaderArtist
+import com.example.looksoon.ui.screens.BottomNavBar
+import com.example.looksoon.ui.screens.HeaderArtist
 
 
 data class Message(

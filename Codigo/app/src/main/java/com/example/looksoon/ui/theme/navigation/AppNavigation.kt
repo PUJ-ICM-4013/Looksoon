@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.looksoon.ui.theme.CallsScreenArtist
-import com.example.looksoon.ui.theme.ChatScreen
-import com.example.looksoon.ui.theme.FeedScreen
-import com.example.looksoon.ui.theme.LoginScreen
-import com.example.looksoon.ui.theme.MainScreenArtist
-import com.example.looksoon.ui.theme.MessagesScreen
-import com.example.looksoon.ui.theme.SignUpScreen
+import com.example.looksoon.ui.screens.CallsScreenArtist
+import com.example.looksoon.ui.screens.ChatScreen
+import com.example.looksoon.ui.screens.FeedScreen
+import com.example.looksoon.ui.screens.LoginScreen
+import com.example.looksoon.ui.screens.MainScreenArtist
+import com.example.looksoon.ui.screens.MessagesScreen
+import com.example.looksoon.ui.screens.SignUpScreen
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
