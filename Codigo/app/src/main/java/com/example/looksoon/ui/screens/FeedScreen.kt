@@ -214,8 +214,6 @@ fun PostCard() {
     }
 }
 
-//------ tarjetas de publicaciones------
-
 
 
 // ----------------- DATA CLASS PARA REUTILIZAR -----------------
