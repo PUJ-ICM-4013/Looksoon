@@ -544,14 +544,14 @@ fun FanRegistrationScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 📸 Foto de perfil opcional
+
             ProfileImagePicker(
                 onImageSelected = { /* manejar imagen */ }
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // ✏️ Datos principales
+
             TextDivider(text = "Información Personal", textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
@@ -559,19 +559,20 @@ fun FanRegistrationScreen(navController: NavHostController) {
                 onValueChange = {FanName = it },
                 label = "Nombre completo"
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
                 value = FanUsername,
                 onValueChange = { FanUsername = it },
                 label = "Nombre de usuario"
             )
-
+            Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanEmail,
                 onValueChange = {FanEmail = it },
                 label = "Correo electrónico"
             )
-
+            Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
                 value = FanPassword,
@@ -601,7 +602,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
                 onValueChange = { FanCountry = it },
                 label = "País"
             )
-
+            Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanCity,
                 onValueChange = {FanCity = it},
@@ -610,7 +611,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Fecha de nacimiento")
+            TextDivider(text = "Fecha de nacimiento",  textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
                 value = FanBirthday,
@@ -621,7 +622,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(32.dp))
 
             TextDivider(text = "Preferencias musicales",  textColor = MaterialTheme.colorScheme.secondary)
-
+            Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = "",
                 onValueChange = {},
@@ -630,8 +631,8 @@ fun FanRegistrationScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Sobre ti")
-
+            TextDivider(text = "Sobre ti", textColor = MaterialTheme.colorScheme.secondary)
+            Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanBio,
                 onValueChange = {FanBio = it},
@@ -649,6 +650,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
                         FanPassword.isNotEmpty() &&
                         FanConfirmPassword == FanPassword,
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(onClick = {navController.popBackStack()}) {
                 Text(
@@ -700,6 +702,165 @@ fun ProfileImagePicker(onImageSelected: (String) -> Unit) {
 fun FanRegistrationScreenPreview(){
     LooksoonTheme {
         FanRegistrationScreen(navController = rememberNavController())
+    }
+}
+
+
+
+//---------------- ESTABLECIMIENTO--------------------------------
+@Composable
+fun EstablishmentRegistrationScreen() {
+    var EstablishmentName by remember { mutableStateOf("") }
+    var EstablishmentUsername by remember { mutableStateOf("") }
+    var EstablishmentEmail by remember { mutableStateOf("") }
+    var EstablishmentPassword by remember { mutableStateOf("") }
+    var EstablishmentConfirmPassword by remember { mutableStateOf("") }
+    var EstablishmentCountry by remember { mutableStateOf("") }
+    var EstablishmentCity by remember { mutableStateOf("") }
+    var EstablishmentBirthday by remember { mutableStateOf("") }
+    var EstablishmentBio by remember { mutableStateOf("") }
+
+    Scaffold(containerColor =MaterialTheme.colorScheme.background){innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Registro de Establecimiento",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
+
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileImagePicker(
+                onImageSelected = { /* manejar logo */ }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            TextDivider(text = "Información básica", textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Nombre del establecimiento")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Nombre de usuario")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Correo electrónico")
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CustomOutlinedTextField(
+                value = EstablishmentPassword,
+                onValueChange = { EstablishmentPassword = it },
+                label = "Contraseña",
+                isPassword = true,
+
+                )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            CustomOutlinedTextField(
+                value = EstablishmentConfirmPassword,
+                onValueChange = { EstablishmentConfirmPassword = it },
+                label = "Confirmar contraseña",
+                isPassword = true,
+
+                )
+            Spacer(modifier = Modifier.height(32.dp))
+
+            TextDivider(text = "Información de contacto",  textColor = MaterialTheme.colorScheme.secondary)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Teléfono principal")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Teléfono secundario (opcional)")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Página web")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Instagram")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Facebook")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "TikTok")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "X (Twitter)")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            TextDivider(text = "Ubicación",  textColor = MaterialTheme.colorScheme.secondary)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "País")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Ciudad")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Dirección")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Código postal")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            TextDivider(text = "Detalles del establecimiento",  textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Tipo de establecimiento")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Capacidad de personas")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Año de fundación")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Descripción breve",
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Servicios ofrecidos",
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            TextDivider(text = "Configuración adicional",  textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Horario de apertura")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Horario de cierre")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Métodos de pago aceptados")
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            PrimaryButton(
+                text = "Registrarse",
+                onClick = { } ,
+                enabled = EstablishmentName.isNotEmpty() &&
+                        EstablishmentUsername.isNotEmpty() &&
+                        EstablishmentEmail.isNotEmpty() &&
+                        EstablishmentPassword.isNotEmpty() &&
+                        EstablishmentPassword == EstablishmentConfirmPassword,
+            )
+        }
+    }
+
+}
+
+@Preview
+@Composable
+fun EstablishmentRegistrationScreenPreview(){
+    LooksoonTheme {
+        EstablishmentRegistrationScreen()
     }
 }
 
