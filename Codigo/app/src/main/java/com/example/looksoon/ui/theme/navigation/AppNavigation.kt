@@ -8,6 +8,7 @@ import com.example.looksoon.ui.screens.ArtistSignUpScreen
 import com.example.looksoon.ui.screens.BandSignUpScreen
 import com.example.looksoon.ui.screens.CallsScreenArtist
 import com.example.looksoon.ui.screens.ChatScreen
+import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.FanRegistrationScreen
 import com.example.looksoon.ui.screens.FeedScreen
 import com.example.looksoon.ui.screens.LoginScreen
@@ -30,6 +31,8 @@ sealed class Screen(val route: String) {
     object Chat : Screen("Chat")
 
     object Feed : Screen("Feed")
+
+    object Editar : Screen("Editar")
 
     object SignUpInformationArtist : Screen("SignUpInformationArtist")
 
@@ -56,11 +59,20 @@ fun AppNavigation() {
         composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
         //Colocar composable de cad screen
+        composable(Screen.Editar.route) {
+            EditProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                onSaveClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
         composable(Screen.Feed.route) { FeedScreen(navController = navController) }
         composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(navController = navController,
             onSignUpClick = { },
             onBackClick = { navController.popBackStack() }
         ) }
+
         composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(navController = navController) }
         composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(navController = navController) }
         //composable(Screen.SignUpInformationLocal.route) { SignUpInformationLocal(navController = navController) }
