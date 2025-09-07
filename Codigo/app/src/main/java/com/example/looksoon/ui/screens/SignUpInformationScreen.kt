@@ -554,20 +554,20 @@ fun FanRegistrationScreen() {
             TextDivider(text = "Información Personal", textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanName,
+                onValueChange = {FanName = it },
                 label = "Nombre completo"
             )
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanUsername,
+                onValueChange = { FanUsername = it },
                 label = "Nombre de usuario"
             )
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanEmail,
+                onValueChange = {FanEmail = it },
                 label = "Correo electrónico"
             )
 
@@ -596,31 +596,29 @@ fun FanRegistrationScreen() {
             TextDivider(text = "Ubicación",  textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanCountry,
+                onValueChange = { FanCountry = it },
                 label = "País"
             )
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanCity,
+                onValueChange = {FanCity = it},
                 label = "Ciudad"
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 🎂 Fecha de nacimiento
             TextDivider(text = "Fecha de nacimiento")
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanBirthday,
+                onValueChange = { FanBirthday = it },
                 label = "DD/MM/AAAA"
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 🎵 Gustos musicales
             TextDivider(text = "Preferencias musicales",  textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
@@ -631,12 +629,11 @@ fun FanRegistrationScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 📝 Bio
             TextDivider(text = "Sobre ti")
 
             CustomOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = FanBio,
+                onValueChange = {FanBio = it},
                 label = "Biografía corta",
             )
 
