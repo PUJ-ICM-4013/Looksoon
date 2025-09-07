@@ -762,7 +762,7 @@ fun EstablishmentRegistrationScreen() {
 
                 )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
                 value = EstablishmentConfirmPassword,
@@ -861,6 +861,129 @@ fun EstablishmentRegistrationScreen() {
 fun EstablishmentRegistrationScreenPreview(){
     LooksoonTheme {
         EstablishmentRegistrationScreen()
+    }
+}
+
+
+//------------------ CURADOR ---------------------------
+@Composable
+fun CuratorRegistrationScreen(navController: NavHostController) {
+
+    var curatorName by remember { mutableStateOf("") }
+    var curatorUsername by remember { mutableStateOf("") }
+    var curatorEmail by remember { mutableStateOf("") }
+    var curatorPassword by remember { mutableStateOf("") }
+    var curatorConfirmPassword by remember { mutableStateOf("") }
+    var curatorCountry by remember { mutableStateOf("") }
+    var curatorCity by remember { mutableStateOf("") }
+    var curatorExperience by remember { mutableStateOf("") }
+    var curatorSpecialties by remember { mutableStateOf("") }
+    var curatorGenres by remember { mutableStateOf("") }
+    var curatorBio by remember { mutableStateOf("") }
+    var curatorPortfolio by remember { mutableStateOf("") }
+    var curatorLinkedIn by remember { mutableStateOf("") }
+    var curatorWebsite by remember { mutableStateOf("") }
+    var curatorInstagram by remember { mutableStateOf("") }
+    var curatorTiktok by remember { mutableStateOf("") }
+
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Registro de Curador Musical",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileImagePicker(onImageSelected = { /* manejar foto */ })
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            TextDivider(text = "Información Personal", textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = curatorName, onValueChange = { curatorName = it }, label = "Nombre completo")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorUsername, onValueChange = { curatorUsername = it }, label = "Nombre de usuario")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorEmail, onValueChange = { curatorEmail = it }, label = "Correo electrónico")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorPassword, onValueChange = { curatorPassword = it }, label = "Contraseña", isPassword = true)
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorConfirmPassword, onValueChange = { curatorConfirmPassword = it }, label = "Confirmar contraseña", isPassword = true)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+            TextDivider(text = "Ubicación", textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = curatorCountry, onValueChange = { curatorCountry = it }, label = "País")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorCity, onValueChange = { curatorCity = it }, label = "Ciudad")
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+            TextDivider(text = "Perfil Profesional", textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = curatorExperience, onValueChange = { curatorExperience = it }, label = "Años de experiencia")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorSpecialties, onValueChange = { curatorSpecialties = it }, label = "Especialidades (playlists, festivales...)")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorGenres, onValueChange = { curatorGenres = it }, label = "Géneros de especialización")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorBio, onValueChange = { curatorBio = it }, label = "Biografía profesional")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorPortfolio, onValueChange = { curatorPortfolio = it }, label = "Portafolio / enlaces de trabajos")
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+            TextDivider(text = "Redes Profesionales", textColor = MaterialTheme.colorScheme.secondary)
+
+            CustomOutlinedTextField(value = curatorLinkedIn, onValueChange = { curatorLinkedIn = it }, label = "LinkedIn")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorWebsite, onValueChange = { curatorWebsite = it }, label = "Página web / blog")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorInstagram, onValueChange = { curatorInstagram = it }, label = "Instagram")
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomOutlinedTextField(value = curatorTiktok, onValueChange = { curatorTiktok = it }, label = "TikTok")
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+            PrimaryButton(
+                text = "Registrarse",
+                onClick = { },
+                enabled = curatorName.isNotEmpty() &&
+                        curatorEmail.isNotEmpty() &&
+                        curatorPassword.isNotEmpty() &&
+                        curatorConfirmPassword == curatorPassword
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(onClick = { navController.popBackStack() }) {
+                Text(text = "Volver", color = PurplePrimary)
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CuratorRegistratorScreenPreview(){
+    LooksoonTheme {
+        CuratorRegistrationScreen(navController = rememberNavController())
     }
 }
 
