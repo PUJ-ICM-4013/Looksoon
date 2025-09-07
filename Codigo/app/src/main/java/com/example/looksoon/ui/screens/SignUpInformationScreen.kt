@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.PurplePrimary
@@ -38,7 +39,7 @@ fun ArtistSignUpScreen(
     navController: NavHostController,
     onSignUpClick: () -> Unit = { },
     onBackClick: () -> Unit = { navController.popBackStack() },
-    colors: ColorScheme = MaterialTheme.colorScheme // 👈 param con valor por defecto
+    colors: ColorScheme = MaterialTheme.colorScheme 
 ) {
     var artistName by remember { mutableStateOf("") }
     var realName by remember { mutableStateOf("") }
@@ -512,7 +513,7 @@ fun BandSignUpScreenPreview() {
 
 //Pantalla de registro para fan
 @Composable
-fun FanRegistrationScreen() {
+fun FanRegistrationScreen(navController: NavHostController) {
 
     var FanName by remember { mutableStateOf("") }
     var FanUsername by remember { mutableStateOf("") }
@@ -529,7 +530,7 @@ fun FanRegistrationScreen() {
     Scaffold (containerColor = MaterialTheme.colorScheme.background){ innerPadding ->
         Column(
             modifier = Modifier
-                .padding( horizontal = 16.dp)
+                .padding(horizontal = 16.dp)
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -639,14 +640,24 @@ fun FanRegistrationScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 🔘 Botón registrar
-            Button(
-                onClick = { /* registrar fan */ },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Registrarme")
+
+            PrimaryButton(
+                text = "Registrarse",
+                onClick = { } ,
+                enabled = FanName.isNotEmpty() &&
+                        FanEmail.isNotEmpty() &&
+                        FanPassword.isNotEmpty() &&
+                        FanConfirmPassword == FanPassword,
+            )
+
+            TextButton(onClick = {navController.popBackStack()}) {
+                Text(
+                    text = "Volver",
+                    color = PurplePrimary
+                )
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 
@@ -688,7 +699,7 @@ fun ProfileImagePicker(onImageSelected: (String) -> Unit) {
 @Composable
 fun FanRegistrationScreenPreview(){
     LooksoonTheme {
-        FanRegistrationScreen()
+        FanRegistrationScreen(navController = rememberNavController())
     }
 }
 

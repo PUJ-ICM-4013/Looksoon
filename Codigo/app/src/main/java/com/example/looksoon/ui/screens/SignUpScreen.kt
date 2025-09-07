@@ -67,13 +67,34 @@ fun SignUpScreen(navController: NavHostController) {
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     navController = navController,
-                    rol = "Artista/Banda"
+                    rol = "Artista",
+                    OnClick = {
+                        navController.navigate(Screen.SignUpInformationArtist.route) {
+                            popUpTo(Screen.SignUpInformationArtist.route) { inclusive = true }
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     navController = navController,
-                    rol = "Fan"
+                    rol = "Banda",
+                    OnClick = {
+                        navController.navigate(Screen.SignUpInformationBand.route) {
+                            popUpTo(Screen.SignUpInformationBand.route) { inclusive = true }
+                        }
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    navController = navController,
+                    rol = "Fan",
+                    OnClick = {
+                        navController.navigate(Screen.SignUpInformationFan.route) {
+                            popUpTo(Screen.SignUpInformationFan.route) { inclusive = true }
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
