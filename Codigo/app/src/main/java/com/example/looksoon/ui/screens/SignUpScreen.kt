@@ -100,13 +100,23 @@ fun SignUpScreen(navController: NavHostController) {
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     navController = navController,
-                    rol = "Local/Establecimiento"
+                    rol = "Local/Establecimiento",
+                    OnClick = {
+                        navController.navigate(Screen.SignUpInformationEstablishment.route) {
+                            popUpTo(Screen.SignUpInformationEstablishment.route) { inclusive = true }
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     navController = navController,
-                    rol = "Curador"
+                    rol = "Curador",
+                    OnClick = {
+                        navController.navigate(Screen.SignUpInformationCurator.route) {
+                            popUpTo(Screen.SignUpInformationCurator.route) { inclusive = true }
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 //Sign in row
