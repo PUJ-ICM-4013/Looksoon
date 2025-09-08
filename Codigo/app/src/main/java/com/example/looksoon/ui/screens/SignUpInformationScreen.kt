@@ -709,7 +709,7 @@ fun FanRegistrationScreenPreview(){
 
 //---------------- ESTABLECIMIENTO--------------------------------
 @Composable
-fun EstablishmentRegistrationScreen() {
+fun EstablishmentRegistrationScreen(navController: NavHostController) {
     var EstablishmentName by remember { mutableStateOf("") }
     var EstablishmentUsername by remember { mutableStateOf("") }
     var EstablishmentEmail by remember { mutableStateOf("") }
@@ -851,6 +851,12 @@ fun EstablishmentRegistrationScreen() {
                         EstablishmentPassword.isNotEmpty() &&
                         EstablishmentPassword == EstablishmentConfirmPassword,
             )
+
+            TextButton(onClick = { navController.popBackStack() }) {
+                Text(text = "Volver", color = PurplePrimary)
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 
@@ -860,7 +866,7 @@ fun EstablishmentRegistrationScreen() {
 @Composable
 fun EstablishmentRegistrationScreenPreview(){
     LooksoonTheme {
-        EstablishmentRegistrationScreen()
+        EstablishmentRegistrationScreen(navController = rememberNavController())
     }
 }
 
