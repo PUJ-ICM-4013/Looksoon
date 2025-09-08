@@ -42,6 +42,13 @@ sealed class Screen(val route: String) {
 
     object SignUpInformationLocal : Screen("SignUpInformationLocal")
 
+    object LocalActions : Screen("local_actions")
+    object ReserveArtist : Screen("reserve_artist")
+    object EventDetails : Screen("event_details")
+    object PublishEvent : Screen("publish_event")
+    object ManageApplications : Screen("manage_applications")
+    object ReservationDetail : Screen("reservation_detail")
+
     //Crear Screens
 }
 
@@ -58,6 +65,14 @@ fun AppNavigation() {
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
         composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
+
+        composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
+        composable(Screen.ReserveArtist.route) { ReserveArtistScreen(navController = navController) }
+        composable(Screen.EventDetails.route) { EventDetailsScreen(navController = navController) }
+        composable(Screen.PublishEvent.route) { PublishEventScreen(navController = navController) }
+        composable(Screen.ManageApplications.route) { ManageApplicationsScreen(navController = navController) }
+        composable(Screen.ReservationDetail.route) { ReservationDetailScreen(navController = navController) }
+
         //Colocar composable de cad screen
         composable(Screen.Editar.route) {
             EditProfileScreen(

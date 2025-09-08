@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.LooksoonTheme
 
@@ -62,7 +63,7 @@ val artists = listOf(
 
 // ---------------- PANTALLA PRINCIPAL ----------------
 @Composable
-fun ReserveArtistScreen() {
+fun ReserveArtistScreen(navController: NavController? = null) {
     Scaffold(
         bottomBar = {
             BottomBarReserve()
@@ -75,7 +76,7 @@ fun ReserveArtistScreen() {
         ) {
             HeReserve(
                 section = "Reservar Artista",
-                onBackClick = {}
+                onBackClick = { navController?.popBackStack() }
             )
             SearchBarReserve()
             FiltersRowReserve(
@@ -89,7 +90,7 @@ fun ReserveArtistScreen() {
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(artists) { artist ->
-                    ArtistCardReserve(artist = artist)
+                    ArtistCardReserve(artist = artist, navController = navController)
                 }
             }
         }
@@ -176,12 +177,14 @@ fun FiltersRowReserve(filters: List<String>) {
 
 // ---------------- TARJETA DE ARTISTA ----------------
 @Composable
-fun ArtistCardReserve(artist: Artist) {
+fun ArtistCardReserve(artist: Artist, navController: NavController? = null) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { },
+            .clickable {
+                navController?.navigate("event_details")
+            },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp)
@@ -232,7 +235,7 @@ fun ArtistCardReserve(artist: Artist) {
                                 listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))
                             )
                         )
-                        .clickable { }
+                        .clickable { navController?.navigate("event_details") }
                         .padding(horizontal = 20.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {

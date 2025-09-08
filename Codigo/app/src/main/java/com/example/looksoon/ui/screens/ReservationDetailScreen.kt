@@ -120,7 +120,7 @@ fun PaymentSummary() {
 
             Spacer(Modifier.height(8.dp))
 
-            ReservationInfoRow("Seña pagada", "$30.000")
+            ReservationInfoRow("Pagado", "$30.000")
             ReservationInfoRow("Saldo pendiente", "$90.000")
             ReservationInfoRow("Método", "Transferencia bancaria")
 
