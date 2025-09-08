@@ -11,12 +11,18 @@ import com.example.looksoon.ui.screens.ChatScreen
 import com.example.looksoon.ui.screens.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
+import com.example.looksoon.ui.screens.EventDetailsScreen
 import com.example.looksoon.ui.screens.FanRegistrationScreen
 import com.example.looksoon.ui.screens.FeedScreen
+import com.example.looksoon.ui.screens.LocalActionsScreen
 import com.example.looksoon.ui.screens.LoginScreen
 import com.example.looksoon.ui.screens.MainScreenArtist
+import com.example.looksoon.ui.screens.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.MessagesScreen
 import com.example.looksoon.ui.screens.ProfileScreen
+import com.example.looksoon.ui.screens.PublishEventScreen
+import com.example.looksoon.ui.screens.ReservationDetailScreen
+import com.example.looksoon.ui.screens.ReserveArtistScreen
 import com.example.looksoon.ui.screens.SignUpScreen
 
 sealed class Screen(val route: String) {
