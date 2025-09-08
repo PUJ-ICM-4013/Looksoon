@@ -25,12 +25,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.*
 
 // ---------------- PANTALLA ----------------
 @Composable
-fun EventDetailsScreen() {
+fun EventDetailsScreen(navController: NavHostController) {
     Scaffold(
         bottomBar = {
             BottomBarEventDetails(total = "$—")
@@ -267,6 +269,6 @@ fun BottomBarEventDetails(total: String) {
 @Composable
 fun EventDetailsScreenPreview() {
     LooksoonTheme {
-        EventDetailsScreen()
+        EventDetailsScreen(navController = rememberNavController())
     }
 }

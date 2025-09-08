@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.example.looksoon.ui.theme.*
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 data class Application(
     val name: String,
@@ -38,7 +40,7 @@ data class Application(
 )
 
 @Composable
-fun ApplicationsScreen() {
+fun ManageApplicationsScreen(navController: NavController) {
     val applications = listOf(
         Application(
             "Luna Trío", "Jazz contemporáneo", "$120k", "2 km",
@@ -278,6 +280,6 @@ fun HeaderReserve(title: String, onBack: () -> Unit) {
 @Composable
 fun ApplicationsScreenPreview() {
     LooksoonTheme {
-        ApplicationsScreen()
+        ManageApplicationsScreen(navController = rememberNavController())
     }
 }

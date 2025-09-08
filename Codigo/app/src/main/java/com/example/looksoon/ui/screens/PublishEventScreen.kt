@@ -19,10 +19,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.ui.theme.*
 
 @Composable
-fun PublishEventScreen() {
+fun PublishEventScreen(navController: NavController) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -302,7 +304,7 @@ fun textFieldColors() = OutlinedTextFieldDefaults.colors(
 @Composable
 fun PublishEventPreview() {
     LooksoonTheme {
-        PublishEventScreen()
+        PublishEventScreen(navController = rememberNavController())
     }
 }
 
