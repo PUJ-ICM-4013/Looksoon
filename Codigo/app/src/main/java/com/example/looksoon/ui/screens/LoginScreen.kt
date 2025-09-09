@@ -196,9 +196,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onLoginClick: () -> Unit = {
-        navController.navigate(Screen.Home.route) {
-            popUpTo(Screen.Login.route) { inclusive = true }
-        }
+
     },
     onForgotPasswordClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {
@@ -261,7 +259,30 @@ fun LoginScreen(
             // Login Button
             PrimaryButton(
                 text = "Iniciar sesión",
-                onClick = onLoginClick,
+                onClick = //onLoginClick,
+                    {        if(email == "artista"){
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    else if(email == "local"){
+                        navController.navigate(Screen.LocalActions.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    /*
+                    else if(email == "curador"){
+                        navController.navigate(Screen.Curator.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    */
+
+                    else if(email == "fan"){
+                        navController.navigate(Screen.Feed.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }},
                 enabled = email.isNotEmpty() && password.isNotEmpty()
             )
 
