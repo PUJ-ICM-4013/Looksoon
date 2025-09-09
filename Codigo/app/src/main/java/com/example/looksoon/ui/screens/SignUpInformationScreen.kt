@@ -968,7 +968,7 @@ fun CuratorRegistrationScreen(navController: NavHostController) {
 
             PrimaryButton(
                 text = "Registrarse",
-                onClick = { },
+                onClick = { navController.navigate("local_actions")},
                 enabled = curatorName.isNotEmpty() &&
                         curatorEmail.isNotEmpty() &&
                         curatorPassword.isNotEmpty() &&
