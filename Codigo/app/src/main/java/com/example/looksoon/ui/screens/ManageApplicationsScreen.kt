@@ -26,6 +26,8 @@ import com.example.looksoon.ui.theme.*
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 data class Application(
     val name: String,
@@ -75,7 +77,7 @@ fun ManageApplicationsScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(Background)
         ) {
-            HeaderReserve("Postulaciones") { /* Acción atrás */ }
+            HeaderReserve("Postulaciones") { navController.popBackStack() }
 
             Text(
                 "Gestiona las solicitudes de artistas para tu evento",
@@ -266,13 +268,21 @@ fun HeaderReserve(title: String, onBack: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            "< Atrás",
-            color = PurplePrimary,
-            modifier = Modifier.clickable { onBack() }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Atrás",
+            tint = PurplePrimary,
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onBack() }
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Text(title, color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(
+            title,
+            color = TextPrimary,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
     }
 }
 
