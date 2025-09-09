@@ -118,6 +118,7 @@ fun ChatScreen(
 
     Scaffold(
         topBar = {
+            /*
             HeaderArtist(
                 section = contactName,
                 iconLeft = Icons.Default.ArrowBack,
@@ -127,6 +128,8 @@ fun ChatScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onIconLeftClick = { navController.popBackStack() }
             )
+            
+             */
         },
         bottomBar = {
             Column {
