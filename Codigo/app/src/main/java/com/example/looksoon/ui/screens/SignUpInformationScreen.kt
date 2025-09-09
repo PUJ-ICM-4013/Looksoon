@@ -845,11 +845,12 @@ fun EstablishmentRegistrationScreen(navController: NavHostController) {
             PrimaryButton(
                 text = "Registrarse",
                 onClick = { } ,
-                enabled = EstablishmentName.isNotEmpty() &&
+                /*enabled = EstablishmentName.isNotEmpty() &&
                         EstablishmentUsername.isNotEmpty() &&
                         EstablishmentEmail.isNotEmpty() &&
                         EstablishmentPassword.isNotEmpty() &&
-                        EstablishmentPassword == EstablishmentConfirmPassword,
+                        EstablishmentPassword == EstablishmentConfirmPassword,*/
+                enabled = true,
             )
 
             TextButton(onClick = { navController.popBackStack() }) {
