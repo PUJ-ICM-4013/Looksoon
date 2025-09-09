@@ -42,7 +42,7 @@ fun PublishEventScreen(navController: NavController) {
             // Título
             HePublish(
                 section = "Publicar evento",
-                onBackClick = {}
+                onBackClick = {navController.popBackStack()}
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
