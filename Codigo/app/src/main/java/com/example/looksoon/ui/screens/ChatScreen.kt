@@ -48,7 +48,7 @@ fun MessageBubble(message: Message) {
         horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start
     ) {
         Surface(
-            color = bubbleColor,
+            color = MaterialTheme.colorScheme.secondary,
             shape = MaterialTheme.shapes.medium,
             shadowElevation = 2.dp
         ) {
@@ -117,20 +117,7 @@ fun ChatScreen(
     }
 
     Scaffold(
-        topBar = {
-            /*
-            HeaderArtist(
-                section = contactName,
-                iconLeft = Icons.Default.ArrowBack,
-                iconRight = Icons.Default.MoreVert,
-                contentDescriptionLeft = "Atrás",
-                contentDescriptionRight = "Opciones",
-                modifier = Modifier.fillMaxWidth(),
-                onIconLeftClick = { navController.popBackStack() }
-            )
-            
-             */
-        },
+
         bottomBar = {
             Column {
                 MessageInput { newMessage ->
@@ -147,16 +134,29 @@ fun ChatScreen(
             }
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize() // ocupa toda la pantalla
-                .padding(paddingValues), // respeta header y bottomBar
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            items(messages) { message ->
-                MessageBubble(message)
+        Column(modifier = Modifier.padding(paddingValues)){
+            HeaderArtist(
+                section = contactName,
+                iconLeft = Icons.Default.ArrowBack,
+                iconRight = Icons.Default.MoreVert,
+                contentDescriptionLeft = "Atrás",
+                contentDescriptionRight = "Opciones",
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp),
+                onIconLeftClick = { navController.popBackStack() }
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize() // ocupa toda la pantalla
+                   , // respeta header y bottomBar
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(messages) { message ->
+                    MessageBubble(message)
+                }
             }
         }
+
     }
 }
 
