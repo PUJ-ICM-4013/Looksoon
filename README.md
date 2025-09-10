@@ -6,17 +6,130 @@
 
 ## 📌 Descripción del Proyecto
 
-**Looksoon** es una aplicación móvil desarrollada en **Android Studio** con **Kotlin**.  
-La app permite la interacción entre **cuatro tipos de usuarios**:
+**Looksoon📱** es una aplicación móvil desarrollada en **Android Studio** con **Kotlin**.  
 
-- **Artista** → Publica obras para que sean vistas y comentadas.  
-- **Fan** → Puede reservar eventos para ver a los artistas.  
-- **Local** → Organiza eventos donde los artistas presentan sus obras.  
-- **Curador** → Emite opiniones y valoraciones sobre las obras.  
-
-Además, la aplicación incluye funciones como **chats**, **mensajes**, **notificaciones** y gestión de eventos.
+  El propósito es ofrecer una plataforma donde:
+- Los artistas puedan **mostrar sus obras** y **postularse a convocatorias**.
+- Los fans descubran artistas y puedan **reservar entradas a eventos**.
+- Los locales publiquen **convocatorias** y gestionen presentaciones.
+- Los curadores den **feedback especializado** a los artistas.
 
 ---
+
+## 🔑 Funcionalidades principales
+
+- Autenticación con roles diferenciados (Artista, Fan, Local, Curador).
+- Creación de perfiles personalizados.
+- Publicación de obras en un **feed interactivo**.
+- Mensajería y chat en tiempo real.
+- Notificaciones de eventos y nuevas publicaciones.
+- Sistema de convocatorias, postulaciones y reservas.
+
+  ---
+
+  # 👥 Roles y Acciones en Looksoon
+
+En **Looksoon** existen **cuatro tipos de usuarios**. Cada uno tiene acciones exclusivas:
+
+---
+
+## 🎨 Artista
+- Crear y editar perfil profesional.
+- Publicar obras (imágenes, videos, audios).
+- Buscar y postularse a convocatorias creadas por locales.
+- Interactuar con fans mediante comentarios y mensajes.
+- Recibir retroalimentación de curadores.
+
+---
+
+## 🎟 Fan
+- Explorar publicaciones de artistas.
+- Buscar y reservar entradas a eventos.
+- Seguir artistas favoritos.
+- Comentar y reaccionar en publicaciones.
+- Recibir notificaciones de nuevos eventos.
+
+---
+
+## 🏛 Local
+- Crear y gestionar eventos y convocatorias.
+- Revisar postulaciones de artistas.
+- Seleccionar artistas para presentaciones.
+- Gestionar reservas de fans.
+- Administrar detalles logísticos del evento.
+
+---
+
+## 🧑‍💼 Curador
+- Explorar obras de artistas emergentes.
+- Emitir calificaciones y comentarios especializados.
+- Recomendar artistas a locales.
+- Aportar valor académico/profesional dentro de la plataforma.
+
+---
+
+## 🔄 Acciones comunes
+- Registrarse e iniciar sesión.
+- Editar perfil.
+- Acceder al feed de publicaciones.
+- Enviar y recibir mensajes.
+- Recibir notificaciones push.
+- Ver historial de interacción.
+
+---
+
+# ⚙️ Flujo de funcionamiento — Looksoon
+
+La aplicación está organizada en **módulos funcionales**, que se integran según el rol del usuario.
+
+---
+
+## 🔐 Autenticación
+- Login / registro con validación de rol.
+- Recuperación de contraseña.
+- Manejo de sesión segura.
+
+---
+
+## 👤 Perfiles
+- Cada usuario crea un perfil con datos como:
+  - Foto.
+  - Nombre y rol.
+  - Bio.
+  - Información de contacto/redes.
+  - Estadísticas (ej. número de eventos o publicaciones).
+  Los datos van a variar, dependiendo del rol.
+
+---
+
+## 📰 Feed de publicaciones
+- Listado de obras recientes de artistas.
+- Likes y comentarios.
+- Compartir publicaciones.
+
+---
+
+## 🏗 Eventos y convocatorias
+- **Local** crea un evento con fecha, lugar y requisitos.
+  Aprueba/rechaza postulaciones.
+- **Artista** se postula enviando sus obras y perfil.
+- **Fan** reserva entradas al evento.
+- **Curador** puede dar feedback sobre artistas en eventos.
+
+---
+
+## 💬 Mensajería
+- Chats privados 1:1 entre usuarios.
+
+---
+
+## 🔔 Notificaciones
+- Nuevos eventos o convocatorias.
+- Postulación aceptada/rechazada.
+- Mensajes recibidos.
+- Actualizaciones de artistas seguidos.
+
+
 
 ## 👥 Integrantes
 
