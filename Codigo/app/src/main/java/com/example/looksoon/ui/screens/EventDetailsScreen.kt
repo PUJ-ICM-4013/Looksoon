@@ -41,9 +41,9 @@ fun EventDetailsScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+
                 .verticalScroll(rememberScrollState())
-                .background(Background) // 🔑 Fondo del tema
+                .background(Background)
         ) {
             pageHeader(
                 section = "Detalles del evento",
@@ -72,7 +72,7 @@ fun EventDetailsScreen(navController: NavHostController) {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.92f)
+                    .fillMaxWidth(1f)
                     .align(Alignment.CenterHorizontally),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -80,13 +80,16 @@ fun EventDetailsScreen(navController: NavHostController) {
                     label = "Fecha",
                     placeholder = "DD/MM/AAAA",
                     icon = Icons.Default.CalendarToday,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth(0.92f)
+
                 )
                 InputFieldEDS(
                     label = "Hora",
                     placeholder = "20:00",
                     icon = Icons.Default.AccessTime,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth(0.92f)
                 )
             }
 

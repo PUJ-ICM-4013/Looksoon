@@ -40,7 +40,7 @@ fun MessageBubble(message: Message) {
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()

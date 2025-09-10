@@ -198,7 +198,9 @@ fun LoginScreen(
     onLoginClick: () -> Unit = {
 
     },
-    onForgotPasswordClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {
+        navController.navigate(Screen.ForgotPassword.route)
+    },
     onSignUpClick: () -> Unit = {
         navController.navigate(Screen.SignUp.route) {
             popUpTo(Screen.SignUp.route) { inclusive = true }
