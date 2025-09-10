@@ -1,49 +1,104 @@
-package com.example.looksoon
+package com.example.faunafinder.navigation
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.faunafinder.navigation.AppNavigation
-import com.example.looksoon.ui.screens.BottomNavBar
-import com.example.looksoon.ui.screens.SignUpScreen
-import com.example.looksoon.ui.theme.LooksoonTheme
-import com.example.looksoon.ui.screens.MainScreenArtist
+import androidx.compose.runtime.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.looksoon.ui.screens.*
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LooksoonTheme {
-                AppNavigation();
-            }
-        }
+// ... (La sealed class Screen se mantiene exactamente igual que en la versión anterior)
+sealed class Screen(val route: String) {
+    object Home : Screen("Inicio")
+    object Convocatorias : Screen("Convocatorias")
+    object Mensajes : Screen("Mensajes")
+    object Perfil : Screen("Perfil")
+    object Login : Screen("login")
+    object SignUp : Screen("SignUp")
+    object Publicar : Screen("Publicar")
+    object Chat : Screen("Chat")
+    object Feed : Screen("Feed")
+    object Editar : Screen("Editar")
+    object SignUpInformationArtist : Screen("SignUpInformationArtist")
+    object SignUpInformationFan : Screen("SignUpInformationFan")
+    object SignUpInformationBand : Screen("SignUpInformationBand")
+    object SignUpInformationEstablishment : Screen("SignUpInformationEstablishment")
+    object SignUpInformationCurator : Screen("SignUpInformationCurator")
+    object LocalActions : Screen("local_actions")
+    object ReserveArtist : Screen("reserve_artist")
+    object EventDetails : Screen("event_details")
+    object PublishEvent : Screen("publish_event")
+    object ManageApplications : Screen("manage_applications")
+    object ReservationDetail : Screen("reservation_detail")
+    object ManagePosts : Screen("manage_posts")
+    object PostComments : Screen("post_comments/{postId}")
+    object UserProfile : Screen("user_profile/{userId}")
+}
+
+
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+
+    // --- CAMBIO 1: GUARDAMOS EL ROL DEL USUARIO AQUÍ ---
+    var userRole by remember { mutableStateOf("Fan") } // Por defecto es Fan
+
+    // Función que el LoginScreen usará para actualizar el rol
+    val onLoginSuccess: (String) -> Unit = { role ->
+        userRole = role
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
+        // ... (otras rutas como Home, Convocatorias, etc., no cambian)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LooksoonTheme {
-        Greeting("Android")
+        // --- CAMBIO 2: LE PASAMOS EL ROL AL PROFILESCREEN ---
+        composable(Screen.Perfil.route) {
+            ProfileScreen(
+                navController = navController,
+                isMyProfile = true,
+                userRole = userRole // Usamos la variable de estado
+            )
+        }
+
+        // --- CAMBIO 3: LE PASAMOS LA FUNCIÓN DE ACTUALIZAR AL LOGINSCREEN ---
+        composable(Screen.Login.route) {
+            LoginScreen(
+                navController = navController,
+                onLoginSuccess = onLoginSuccess // Le pasamos la función
+            )
+        }
+
+        // --- CAMBIO 4: DEFINIMOS EL ROL PARA PERFILES DE OTROS ---
+        composable(Screen.UserProfile.route) {
+            // Cuando vemos el perfil de otro, asumimos un rol (ej. "Artista")
+            // o lo obtendríamos de los datos de ese usuario.
+            ProfileScreen(
+                navController = navController,
+                isMyProfile = false,
+                userRole = "Artista" // Simulamos que el perfil visitado es de un Artista
+            )
+        }
+
+        // ... (El resto de las rutas no necesitan cambios)
+        composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
+        composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
+        composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
+        composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
+        composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
+        composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
+        composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
+        composable(Screen.ReserveArtist.route) { ReserveArtistScreen(navController = navController) }
+        composable(Screen.EventDetails.route) { EventDetailsScreen(navController = navController) }
+        composable(Screen.PublishEvent.route) { PublishEventScreen(navController = navController) }
+        composable(Screen.ManageApplications.route) { ManageApplicationsScreen(navController = navController) }
+        composable(Screen.ReservationDetail.route) { ReservationDetailScreen(navController = navController) }
+        composable(Screen.Editar.route) { EditProfileScreen(onBackClick = { navController.popBackStack() }, onSaveClick = { navController.popBackStack() }) }
+        composable(Screen.Feed.route) { FeedScreen(navController = navController) }
+        composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(navController = navController, onSignUpClick = { }, onBackClick = { navController.popBackStack() }) }
+        composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(navController = navController) }
+        composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(navController = navController) }
+        composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(navController = navController) }
+        composable(Screen.SignUpInformationCurator.route) { CuratorRegistrationScreen(navController = navController) }
+        composable(Screen.ManagePosts.route) { ManagePostsScreen(navController = navController) }
+        composable(Screen.PostComments.route) { PostCommentsScreen(navController = navController) }
     }
 }
