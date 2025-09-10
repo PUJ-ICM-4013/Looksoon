@@ -61,7 +61,7 @@ fun ReserveEventScreen(
 
             // Imagen del evento
             Image(
-                painter = painterResource(id = R.drawable.event1),
+                painter = painterResource(id = R.drawable.jazz),
                 contentDescription = "Festival de Música Urbana",
                 modifier = Modifier
                     .fillMaxWidth()

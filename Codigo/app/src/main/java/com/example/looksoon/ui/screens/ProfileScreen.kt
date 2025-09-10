@@ -39,7 +39,8 @@ import com.example.looksoon.ui.theme.*
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    selectedTab: String = "Perfil"
+    selectedTab: String = "Perfil",
+    bottomBar: @Composable () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -61,15 +62,7 @@ fun ProfileScreen(
             )
         },
         bottomBar = {
-            BottomNavBar(
-                selectedTab = selectedTab,
-                onTabSelected = { route ->
-                    navController.navigate(route) {
-                        launchSingleTop = true
-                        popUpTo(route) { inclusive = true }
-                    }
-                }
-            )
+            bottomBar()
         }
     ) { innerPadding ->
         Column(
@@ -265,9 +258,24 @@ fun ProfileInfoItem(label: String, value: String, icon: ImageVector) {
         }
     }
 }
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen(navController = rememberNavController())
+    val navController = rememberNavController()
+
+    ProfileScreen(
+        navController = navController,
+        selectedTab = "Perfil",
+        bottomBar = {
+            BottomNavBar(
+                selectedTab = "Perfil",
+                onTabSelected = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                        popUpTo(route) { inclusive = true }
+                    }
+                }
+            )
+        }
+    )
 }

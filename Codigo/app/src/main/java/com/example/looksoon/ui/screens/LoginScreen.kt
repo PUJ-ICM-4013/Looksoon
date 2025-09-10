@@ -281,7 +281,7 @@ fun LoginScreen(
                     */
 
                     else if(email == "fan"){
-                        navController.navigate(Screen.Feed.route) {
+                        navController.navigate(Screen.ExploreEventsFan.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }},
