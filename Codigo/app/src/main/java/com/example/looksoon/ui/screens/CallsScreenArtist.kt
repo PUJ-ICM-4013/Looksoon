@@ -138,7 +138,7 @@ fun CallsScreenArtist(
                 // Lista de eventos
                 LazyColumn {
                     items(6) {
-                        EventCard()
+                        EventCard(navController = navController)
                     }
                 }
             }
@@ -258,7 +258,7 @@ fun SearchAndFilterBarPreview() {
 
 // Tarjetas
 @Composable
-fun EventCard() {
+fun EventCard(navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -365,7 +365,9 @@ fun EventCard() {
                 }
 
                 OutlinedButton(
-                    onClick = { },
+                    onClick = {
+                        navController.navigate(Screen.EventDetailsArtist.route)
+                    },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = BorderStroke(1.dp, Color.Gray),
@@ -381,7 +383,7 @@ fun EventCard() {
 @Composable
 fun ECardPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-        EventCard()
+        EventCard(navController = rememberNavController())
     }
 }
 

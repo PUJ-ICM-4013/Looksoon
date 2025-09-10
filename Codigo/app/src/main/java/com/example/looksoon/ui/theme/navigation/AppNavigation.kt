@@ -11,9 +11,11 @@ import com.example.looksoon.ui.screens.ChatScreen
 import com.example.looksoon.ui.screens.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
+import com.example.looksoon.ui.screens.EventDetailsArtistScreen
 import com.example.looksoon.ui.screens.EventDetailsScreen
 import com.example.looksoon.ui.screens.FanRegistrationScreen
 import com.example.looksoon.ui.screens.FeedScreen
+import com.example.looksoon.ui.screens.ForgotPasswordScreen
 import com.example.looksoon.ui.screens.LocalActionsScreen
 import com.example.looksoon.ui.screens.LoginScreen
 import com.example.looksoon.ui.screens.MainScreenArtist
@@ -59,6 +61,11 @@ sealed class Screen(val route: String) {
     object ManageApplications : Screen("manage_applications")
     object ReservationDetail : Screen("reservation_detail")
 
+    object EventDetailsArtist : Screen("event_details_artist")
+
+
+    object ForgotPassword : Screen("forgot_password")
+
     //Crear Screens
 }
 
@@ -102,5 +109,8 @@ fun AppNavigation() {
         composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(navController = navController) }
         composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(navController = navController) }
         composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(navController = navController) }
+
+        composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
+        composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
     }
 }
