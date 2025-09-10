@@ -8,6 +8,7 @@ import com.example.looksoon.ui.screens.ArtistSignUpScreen
 import com.example.looksoon.ui.screens.BandSignUpScreen
 import com.example.looksoon.ui.screens.CallsScreenArtist
 import com.example.looksoon.ui.screens.ChatScreen
+import com.example.looksoon.ui.screens.CreatePostScreen
 import com.example.looksoon.ui.screens.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
@@ -80,7 +81,7 @@ fun AppNavigation() {
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
-        composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
+        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
