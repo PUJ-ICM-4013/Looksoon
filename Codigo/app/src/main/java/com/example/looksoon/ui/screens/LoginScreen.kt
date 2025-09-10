@@ -241,12 +241,12 @@ fun LoginScreen(
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         }
-                        else -> {
-                            // Por defecto, si no es ninguno de los anteriores
-                            onLoginSuccess("Artista")
-                            navController.navigate(Screen.Home.route) {
-                                popUpTo(Screen.Login.route) { inclusive = true }
-                            }
+                    }
+                    */
+
+                    else if(email == "fan"){
+                        navController.navigate(Screen.ExploreEventsFan.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }
                 },

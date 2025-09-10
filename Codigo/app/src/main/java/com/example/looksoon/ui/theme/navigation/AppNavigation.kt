@@ -14,6 +14,7 @@ import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
 import com.example.looksoon.ui.screens.EventDetailsArtistScreen
 import com.example.looksoon.ui.screens.EventDetailsScreen
+import com.example.looksoon.ui.screens.ExploreEventsScreen
 import com.example.looksoon.ui.screens.FanRegistrationScreen
 import com.example.looksoon.ui.screens.FeedScreen
 import com.example.looksoon.ui.screens.ForgotPasswordScreen
@@ -67,6 +68,8 @@ sealed class Screen(val route: String) {
 
     object ForgotPassword : Screen("forgot_password")
 
+    object ExploreEventsFan: Screen("explore_events_fan")
+
     //Crear Screens
 }
 
@@ -113,5 +116,7 @@ fun AppNavigation() {
 
         composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
         composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
+
+        composable(Screen.ExploreEventsFan.route) { ExploreEventsScreen(navController = navController) }
     }
 }

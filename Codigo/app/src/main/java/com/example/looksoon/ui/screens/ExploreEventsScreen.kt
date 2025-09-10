@@ -65,9 +65,9 @@ fun ExploreEventsScreen(navController: NavHostController) {
             )
         },
         bottomBar = {
-            // 👇 Usamos la misma FanBottomNavBar de InvitarContactos
+
             FanBottomNavBar(
-                selectedTab = "Inicio", // 👈 pestaña activa
+                selectedTab = "Inicio",
                 onTabSelected = { route ->
                     // TODO: Manejar navegación entre pantallas
                     navController.navigate(route) {

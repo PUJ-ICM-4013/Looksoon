@@ -35,8 +35,9 @@ import com.example.looksoon.ui.theme.*
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    isMyProfile: Boolean,
-    userRole: String
+    selectedTab: String = "Perfil",
+    bottomBar: @Composable () -> Unit = {}
+
 ) {
     var isFollowing by remember { mutableStateOf(false) }
 
@@ -61,17 +62,7 @@ fun ProfileScreen(
             )
         },
         bottomBar = {
-            if (isMyProfile) {
-                BottomNavBar(
-                    selectedTab = "Perfil",
-                    onTabSelected = { route ->
-                        navController.navigate(route) {
-                            launchSingleTop = true
-                            popUpTo(route) { inclusive = true }
-                        }
-                    }
-                )
-            }
+            bottomBar()
         }
     ) { innerPadding ->
         Column(
@@ -289,27 +280,24 @@ fun ProfileInfoItem(label: String, value: String, icon: ImageVector) {
         }
     }
 }
-
-@Preview(name = "Mi Perfil (Como Fan)", showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MyProfileFanPreview() {
-    LooksoonTheme {
-        ProfileScreen(navController = rememberNavController(), isMyProfile = true, userRole = "Fan")
-    }
-}
+fun ProfileScreenPreview() {
+    val navController = rememberNavController()
 
-@Preview(name = "Mi Perfil (Como Artista)", showBackground = true)
-@Composable
-fun MyProfileArtistPreview() {
-    LooksoonTheme {
-        ProfileScreen(navController = rememberNavController(), isMyProfile = true, userRole = "Artista")
-    }
-}
+    ProfileScreen(
+        navController = navController,
+        selectedTab = "Perfil",
+        bottomBar = {
+            BottomNavBar(
+                selectedTab = "Perfil",
+                onTabSelected = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                        popUpTo(route) { inclusive = true }
+                    }
+                }
+            )
+        }
+    )
 
-@Preview(name = "Perfil de Otro Usuario", showBackground = true)
-@Composable
-fun OtherUserProfileScreenPreview() {
-    LooksoonTheme {
-        ProfileScreen(navController = rememberNavController(), isMyProfile = false, userRole = "Artista")
-    }
-}
