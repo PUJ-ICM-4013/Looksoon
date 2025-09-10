@@ -37,7 +37,7 @@ import com.example.looksoon.R
 import com.example.looksoon.ui.theme.*
 
 @Composable
-fun ProfileScreen(
+fun ProfileFanScreen(
     navController: NavHostController,
     selectedTab: String = "Perfil",
     bottomBar: @Composable () -> Unit = {}
@@ -62,12 +62,14 @@ fun ProfileScreen(
             )
         },
         bottomBar = {
-            BottomNavBar(
-                selectedTab = "Perfil",
+            FanBottomNavBar(
+                selectedTab = "Inicio",
                 onTabSelected = { route ->
+                    // TODO: Manejar navegación entre pantallas
                     navController.navigate(route) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
                         launchSingleTop = true
-                        popUpTo(route) { inclusive = true }
+                        restoreState = true
                     }
                 }
             )
@@ -140,7 +142,7 @@ fun ProfileScreen(
                         ) {
                             listOf("Artista", "Curador", "Local", "Fan").forEachIndexed { i, tab ->
                                 Surface(
-                                    color = if (i == 0) PurplePrimary else Surface,
+                                    color = if (i == 3) PurplePrimary else Surface,
                                     shape = RoundedCornerShape(12.dp),
                                     modifier = Modifier
                                         .weight(1f)
@@ -148,8 +150,8 @@ fun ProfileScreen(
                                 ) {
                                     Text(
                                         text = tab,
-                                        color = if (i == 0) TextPrimary else TextSecondary,
-                                        fontWeight = if (i == 0) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (i == 3) TextPrimary else TextSecondary,
+                                        fontWeight = if (i == 3) FontWeight.Bold else FontWeight.Normal,
                                         fontSize = 12.sp,
                                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                                         textAlign = TextAlign.Center
@@ -246,29 +248,9 @@ fun ProfileScreen(
     }
 }
 
-@Composable
-fun ProfileInfoItem(label: String, value: String, icon: ImageVector) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 4.dp)
-    ) {
-        Icon(
-            icon,
-            contentDescription = label,
-            tint = PurplePrimary,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Column {
-            Text(label, color = TextSecondary, fontSize = 12.sp)
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(value, color = TextPrimary, fontSize = 14.sp)
-        }
-    }
-}
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ProfileScreenPreview() {
+fun ProfileScreenFanPreview() {
     val navController = rememberNavController()
 
     ProfileScreen(

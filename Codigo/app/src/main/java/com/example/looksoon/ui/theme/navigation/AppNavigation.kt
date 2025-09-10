@@ -9,11 +9,13 @@ import com.example.looksoon.ui.screens.BandSignUpScreen
 import com.example.looksoon.ui.screens.CallsScreenArtist
 import com.example.looksoon.ui.screens.ChatScreen
 import com.example.looksoon.ui.screens.CuratorRegistrationScreen
+import com.example.looksoon.ui.screens.CuratorScreen
 import com.example.looksoon.ui.screens.EditProfileScreen
 import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
 import com.example.looksoon.ui.screens.EventDetailsArtistScreen
 import com.example.looksoon.ui.screens.EventDetailsScreen
 import com.example.looksoon.ui.screens.ExploreEventsScreen
+import com.example.looksoon.ui.screens.FanInviteContactsScreen
 import com.example.looksoon.ui.screens.FanRegistrationScreen
 import com.example.looksoon.ui.screens.FeedScreen
 import com.example.looksoon.ui.screens.ForgotPasswordScreen
@@ -22,6 +24,7 @@ import com.example.looksoon.ui.screens.LoginScreen
 import com.example.looksoon.ui.screens.MainScreenArtist
 import com.example.looksoon.ui.screens.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.MessagesScreen
+import com.example.looksoon.ui.screens.ProfileFanScreen
 import com.example.looksoon.ui.screens.ProfileScreen
 import com.example.looksoon.ui.screens.PublishEventScreen
 import com.example.looksoon.ui.screens.ReservationDetailScreen
@@ -69,6 +72,16 @@ sealed class Screen(val route: String) {
 
     object ExploreEventsFan: Screen("explore_events_fan")
 
+    object ProfileFan : Screen("Perfil Fan")
+
+    object MainFan : Screen("Inicio Fan")
+
+    object Invite: Screen("Invitar")
+
+    object Search: Screen("Buscar")
+
+    object curator: Screen("mainCurator")
+
     //Crear Screens
 }
 
@@ -83,7 +96,7 @@ fun AppNavigation() {
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
-        composable(Screen.Publicar.route) { /* Pantalla de publicar */ }
+        composable(Screen.Publicar.route) { PublishEventScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
@@ -117,5 +130,12 @@ fun AppNavigation() {
         composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
 
         composable(Screen.ExploreEventsFan.route) { ExploreEventsScreen(navController = navController) }
+
+        composable(Screen.ProfileFan.route) { ProfileFanScreen(navController = navController) }
+        composable(Screen.MainFan.route) { ExploreEventsScreen(navController = navController) }
+
+        composable(Screen.Invite.route) { FanInviteContactsScreen(navController = navController) }
+
+        composable(Screen.curator.route) { CuratorScreen() }
     }
 }
