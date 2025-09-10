@@ -42,9 +42,9 @@ data class Event(
 @Composable
 fun ExploreEventsScreen(navController: NavHostController) {
     val events = listOf(
-        Event(1, "Festival de Música Urbana", "15 Sep 2025", "Bogotá, Colombia", R.drawable.event1),
-        Event(2, "Concierto de Rock Indie", "20 Sep 2025", "Medellín, Colombia", R.drawable.event2),
-        Event(3, "Electro Party", "25 Sep 2025", "Cali, Colombia", R.drawable.event3),
+        Event(1, "Festival de Música Urbana", "15 Sep 2025", "Bogotá, Colombia", R.drawable.jazz),
+        Event(2, "Concierto de Rock Indie", "20 Sep 2025", "Medellín, Colombia", R.drawable.jazz),
+        Event(3, "Electro Party", "25 Sep 2025", "Cali, Colombia", R.drawable.jazz),
     )
 
     Scaffold(
