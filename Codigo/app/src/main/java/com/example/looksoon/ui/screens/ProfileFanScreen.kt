@@ -256,16 +256,6 @@ fun ProfileScreenFanPreview() {
     ProfileScreen(
         navController = navController,
         selectedTab = "Perfil",
-        bottomBar = {
-            BottomNavBar(
-                selectedTab = "Perfil",
-                onTabSelected = { route ->
-                    navController.navigate(route) {
-                        launchSingleTop = true
-                        popUpTo(route) { inclusive = true }
-                    }
-                }
-            )
-        }
+
     )
 }

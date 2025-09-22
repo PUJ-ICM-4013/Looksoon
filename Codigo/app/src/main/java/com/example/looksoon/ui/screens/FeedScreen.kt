@@ -227,7 +227,7 @@ fun PostCard(post: PostData, navController: NavHostController) {
             // --- LÓGICA DE NAVEGACIÓN AL PERFIL ---
             Box(modifier = Modifier.clickable {
                 // Navega al perfil del usuario, pasando un ID de ejemplo (el nombre del usuario)
-                navController.navigate(Screen.UserProfile.route.replace("{userId}", post.userName))
+                //navController.navigate(Screen.UserProfile.route.replace("{userId}", post.userName))
             }) {
                 PostHeader(userName = post.userName, userImage = post.userImage, date = post.date)
             }
@@ -244,7 +244,7 @@ fun PostCard(post: PostData, navController: NavHostController) {
                 onLikeClick = { },
                 onCommentClick = {
                     // Navega a la pantalla de comentarios, pasando un ID de ejemplo
-                    navController.navigate(Screen.PostComments.route.replace("{postId}", "123"))
+                    //navController.navigate(Screen.PostComments.route.replace("{postId}", "123"))
                 },
                 onShareClick = { }
             )

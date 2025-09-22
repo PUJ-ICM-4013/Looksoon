@@ -2,11 +2,37 @@ package com.example.looksoon.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,7 +49,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
-import com.example.looksoon.ui.theme.*
 
 // Composable reutilizable para campos de texto
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,22 +80,22 @@ fun CustomOutlinedTextField(
                     Icon(
                         painter = painterResource(id = icon),
                         contentDescription = description,
-                        tint = TextSecondary
+                        tint = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary
                     )
                 }
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = PurplePrimary,
-            unfocusedBorderColor = Divider,
-            focusedTextColor = TextPrimary,
-            unfocusedTextColor = TextPrimary,
-            cursorColor = PurplePrimary,
-            focusedLabelColor = PurplePrimary,
-            unfocusedLabelColor = TextSecondary,
-            focusedContainerColor = Surface,
-            unfocusedContainerColor = Surface
+            focusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            unfocusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.Divider,
+            focusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+            unfocusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+            cursorColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            focusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            unfocusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+            focusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+            unfocusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface
         ),
         modifier = modifier.fillMaxWidth()
     )
@@ -90,7 +116,7 @@ fun PrimaryButton(
             .height(48.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PurplePrimary,
+            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
             contentColor = Color.White
         ),
         enabled = enabled
@@ -110,8 +136,8 @@ fun ImageWithText(
     imageSize: Int = 120,
     title: String,
     subtitle: String? = null,
-    titleColor: Color = TextPrimary,
-    subtitleColor: Color = TextSecondary
+    titleColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+    subtitleColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -145,8 +171,8 @@ fun ImageWithText(
 @Composable
 fun TextDivider(
     text: String,
-    textColor: Color = TextSecondary,
-    dividerColor: Color = Divider,
+    textColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+    dividerColor: Color = _root_ide_package_.com.example.looksoon.ui.theme.Divider,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -167,8 +193,19 @@ fun TextDivider(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    onLoginSuccess: (String) -> Unit
+    onLoginClick: () -> Unit = {
+
+    },
+    onForgotPasswordClick: () -> Unit = {
+        navController.navigate(Screen.ForgotPassword.route)
+    },
+    onSignUpClick: () -> Unit = {
+        navController.navigate(Screen.SignUp.route) {
+            popUpTo(Screen.SignUp.route) { inclusive = true }
+        }
+    }
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -180,6 +217,7 @@ fun LoginScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Logo and Welcome Text
             ImageWithText(
                 imageRes = R.drawable.logo_looksoon,
                 title = "¡Bienvenido de nuevo!",
@@ -188,15 +226,17 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Email Field
             CustomOutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = "Usuario ",
+                label = "Correo electrónico",
                 keyboardType = KeyboardType.Email
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Password Field
             CustomOutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -204,68 +244,64 @@ fun LoginScreen(
                 isPassword = true
             )
 
+            // Forgot Password
             TextButton(
-                onClick = { /* Acción olvidar contraseña */ },
+                onClick = onForgotPasswordClick,
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
-                    color = PurplePrimary,
+                    color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
                     fontSize = 12.sp
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Login Button
             PrimaryButton(
                 text = "Iniciar sesión",
-                onClick = {
-                    val role = email.lowercase().trim()
-
-                    when (role) {
-                        "artista" -> {
-                            onLoginSuccess("Artista")
-                            navController.navigate(Screen.Home.route) {
-                                popUpTo(Screen.Login.route) { inclusive = true }
-                            }
-                        }
-                        "local" -> {
-                            onLoginSuccess("Local")
-                            navController.navigate(Screen.LocalActions.route) {
-                                popUpTo(Screen.Login.route) { inclusive = true }
-                            }
-                        }
-
-                    }
-
-                    else if(email == "curador"){
-                        navController.navigate(Screen.curator.route) {
+                onClick = //onLoginClick,
+                    {        if(email == "artista"){
+                        navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }
-
+                    else if(email == "local"){
+                        navController.navigate(Screen.LocalActions.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    /*
+                    else if(email == "curador"){
+                        navController.navigate(Screen.Curator.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    */
 
                     else if(email == "fan"){
-                        navController.navigate(Screen.ExploreEventsFan.route) {
+                        navController.navigate(Screen.Feed.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    }
-                },
+                    }},
                 enabled = email.isNotEmpty() && password.isNotEmpty()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Divider with "o" in the middle
             TextDivider(text = "o")
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Social Login Buttons
             SocialLoginButton(
                 text = "Continuar con Google",
                 iconRes = R.drawable.ic_google,
                 onClick = { /* Handle Google login */ },
-                backgroundColor = Surface,
-                textColor = TextPrimary
+                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -274,14 +310,15 @@ fun LoginScreen(
                 text = "Continuar con Facebook",
                 iconRes = R.drawable.ic_facebook,
                 onClick = { /* Handle Facebook login */ },
-                backgroundColor = Surface,
-                textColor = TextPrimary
+                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
+                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Sign Up
             AccountFlowRow(
-                onLinkClick = { navController.navigate(Screen.SignUp.route) },
+                onLinkClick = onSignUpClick,
                 infoLeft = "¿No tienes una cuenta?",
                 infoRight = "Regístrate"
             )
@@ -302,7 +339,7 @@ fun AccountFlowRow(
     ) {
         Text(
             text = infoLeft,
-            color = TextSecondary,
+            color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
             fontSize = 14.sp
         )
         TextButton(
@@ -311,7 +348,7 @@ fun AccountFlowRow(
         ) {
             Text(
                 text = infoRight,
-                color = PurplePrimary,
+                color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -354,8 +391,8 @@ fun SocialLoginButton(
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun LoginScreenPreview() {
-    LooksoonTheme {
-        LoginScreen(navController = rememberNavController(), onLoginSuccess = {})
+    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
+        LoginScreen(navController = rememberNavController())
     }
 }
 
