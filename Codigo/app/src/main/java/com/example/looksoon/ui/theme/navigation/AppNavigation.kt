@@ -81,7 +81,7 @@ sealed class Screen(val route: String) {
 
     object Search: Screen("Buscar")
 
-    object curator: Screen("mainCurator")
+    object Curator: Screen("mainCurator")
 
     object CreatePost: Screen("create_post")
 
@@ -93,11 +93,42 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {
+        //Inicio de Sesion y Registro
+
+        //Para LoginScreen------------------------------------------------------------
+        composable(Screen.Login.route) { LoginScreen(onArtistClick = {
+            navController.navigate(Screen.Home.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+        }}, onEstablishmentClick = {
+            navController.navigate(Screen.LocalActions.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onFanClick = {
+            navController.navigate(Screen.Feed.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onCuratorClick = {
+            navController.navigate(Screen.Curator.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onForgotPasswordClick = {
+            navController.navigate(Screen.ForgotPassword.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onSignUpClick = {
+            navController.navigate(Screen.SignUp.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }) }
+
+        //Para SignUpScreen------------------------------------------------------------
+
+
         composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
-        composable(Screen.Login.route) { LoginScreen(navController = navController) }
+
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
         composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
@@ -139,7 +170,7 @@ fun AppNavigation() {
 
         composable(Screen.Invite.route) { FanInviteContactsScreen(navController = navController) }
 
-        composable(Screen.curator.route) { CuratorScreen() }
+        composable(Screen.Curator.route) { CuratorScreen() }
 
         composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController) }
     }
