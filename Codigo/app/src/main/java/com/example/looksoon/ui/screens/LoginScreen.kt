@@ -194,18 +194,14 @@ fun TextDivider(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     onLoginClick: () -> Unit = {
-
     },
-    onForgotPasswordClick: () -> Unit = {
-        navController.navigate(Screen.ForgotPassword.route)
-    },
-    onSignUpClick: () -> Unit = {
-        navController.navigate(Screen.SignUp.route) {
-            popUpTo(Screen.SignUp.route) { inclusive = true }
-        }
-    }
+    onForgotPasswordClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onArtistClick: () -> Unit,
+    onEstablishmentClick: () -> Unit,
+    onFanClick: () -> Unit,
+    onCuratorClick: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -263,27 +259,22 @@ fun LoginScreen(
                 text = "Iniciar sesión",
                 onClick = //onLoginClick,
                     {        if(email == "artista"){
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                        onArtistClick()
+
                         }
-                    }
+
                     else if(email == "local"){
-                        navController.navigate(Screen.LocalActions.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+                        onEstablishmentClick()
+
                     }
-                    /*
+
                     else if(email == "curador"){
-                        navController.navigate(Screen.Curator.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+                        onCuratorClick()
                     }
-                    */
+
 
                     else if(email == "fan"){
-                        navController.navigate(Screen.Feed.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+                        onFanClick()
                     }},
                 enabled = email.isNotEmpty() && password.isNotEmpty()
             )
@@ -392,7 +383,14 @@ fun SocialLoginButton(
 @Composable
 fun LoginScreenPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen(
+            onLoginClick = {},
+            onForgotPasswordClick = {},
+            onSignUpClick = {},
+            onArtistClick = {},
+            onEstablishmentClick = {},
+            onFanClick = {},
+            onCuratorClick = {},)
     }
 }
 
