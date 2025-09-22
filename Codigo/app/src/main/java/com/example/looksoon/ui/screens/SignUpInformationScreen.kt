@@ -31,14 +31,16 @@ import com.example.looksoon.ui.theme.PurplePrimary
 // Pantalla que recibirá los composable de la pantalla de registro como parámetro dependiendo la entidad
 @Composable
 fun SignUpInformationScreen(navController: NavHostController) {
-    ArtistSignUpScreen(navController = navController)
+    ArtistSignUpScreen(
+        onSignUpClick = {},
+        onBackClick = {},
+    )
 }
 
 @Composable
 fun ArtistSignUpScreen(
-    navController: NavHostController,
-    onSignUpClick: () -> Unit = { },
-    onBackClick: () -> Unit = { navController.popBackStack() },
+    onSignUpClick: () -> Unit,
+    onBackClick: () -> Unit,
     colors: ColorScheme = MaterialTheme.colorScheme 
 ) {
     var artistName by remember { mutableStateOf("") }
@@ -240,7 +242,8 @@ fun ArtistSignUpScreen(
 fun SignUpInformationArtistScreenPreview() {
     LooksoonTheme {
     ArtistSignUpScreen(
-        navController = rememberNavController(),
+        onSignUpClick = {},
+        onBackClick = {},
         colors = MaterialTheme.colorScheme
     )
     }
@@ -251,9 +254,8 @@ fun SignUpInformationArtistScreenPreview() {
 
 @Composable
 fun BandSignUpScreen(
-    navController: NavHostController,
-    onSignUpClick: () -> Unit = { },
-    onBackClick: () -> Unit = { navController.popBackStack() },
+    onSignUpClick: () -> Unit,
+    onBackClick: () -> Unit,
     colors: ColorScheme = MaterialTheme.colorScheme
 ) {
     var bandName by remember { mutableStateOf("") }
@@ -504,7 +506,8 @@ fun BandSignUpScreen(
 fun BandSignUpScreenPreview() {
     LooksoonTheme {
         BandSignUpScreen(
-            navController = rememberNavController(),
+            onSignUpClick = {},
+            onBackClick = {},
             colors = MaterialTheme.colorScheme
         )
     }
@@ -513,7 +516,9 @@ fun BandSignUpScreenPreview() {
 
 //Pantalla de registro para fan
 @Composable
-fun FanRegistrationScreen(navController: NavHostController) {
+fun FanRegistrationScreen(
+    onSignUpClick: () -> Unit,
+    onBackClick: () -> Unit,) {
 
     var FanName by remember { mutableStateOf("") }
     var FanUsername by remember { mutableStateOf("") }
@@ -644,7 +649,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
 
             PrimaryButton(
                 text = "Registrarse",
-                onClick = { } ,
+                onClick = onSignUpClick ,
                 enabled = FanName.isNotEmpty() &&
                         FanEmail.isNotEmpty() &&
                         FanPassword.isNotEmpty() &&
@@ -652,7 +657,7 @@ fun FanRegistrationScreen(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = {navController.popBackStack()}) {
+            TextButton(onClick = {onBackClick()}) {
                 Text(
                     text = "Volver",
                     color = PurplePrimary
@@ -701,7 +706,9 @@ fun ProfileImagePicker(onImageSelected: (String) -> Unit) {
 @Composable
 fun FanRegistrationScreenPreview(){
     LooksoonTheme {
-        FanRegistrationScreen(navController = rememberNavController())
+        FanRegistrationScreen(
+            onSignUpClick = {},
+            onBackClick = {},)
     }
 }
 
@@ -709,7 +716,10 @@ fun FanRegistrationScreenPreview(){
 
 //---------------- ESTABLECIMIENTO--------------------------------
 @Composable
-fun EstablishmentRegistrationScreen(navController: NavHostController) {
+fun EstablishmentRegistrationScreen(
+    onSignUpClick: () -> Unit,
+    onBackClick: () -> Unit,
+) {
     var EstablishmentName by remember { mutableStateOf("") }
     var EstablishmentUsername by remember { mutableStateOf("") }
     var EstablishmentEmail by remember { mutableStateOf("") }
@@ -844,7 +854,7 @@ fun EstablishmentRegistrationScreen(navController: NavHostController) {
 
             PrimaryButton(
                 text = "Registrarse",
-                onClick = { } ,
+                onClick = onSignUpClick,
                 /*enabled = EstablishmentName.isNotEmpty() &&
                         EstablishmentUsername.isNotEmpty() &&
                         EstablishmentEmail.isNotEmpty() &&
@@ -853,7 +863,7 @@ fun EstablishmentRegistrationScreen(navController: NavHostController) {
                 enabled = true,
             )
 
-            TextButton(onClick = { navController.popBackStack() }) {
+            TextButton(onClick = onBackClick) {
                 Text(text = "Volver", color = PurplePrimary)
             }
 
@@ -867,14 +877,16 @@ fun EstablishmentRegistrationScreen(navController: NavHostController) {
 @Composable
 fun EstablishmentRegistrationScreenPreview(){
     LooksoonTheme {
-        EstablishmentRegistrationScreen(navController = rememberNavController())
+        EstablishmentRegistrationScreen(
+            onSignUpClick = {},
+            onBackClick = {},)
     }
 }
 
 
 //------------------ CURADOR ---------------------------
 @Composable
-fun CuratorRegistrationScreen(navController: NavHostController) {
+fun CuratorRegistrationScreen(onSignUpClick: () -> Unit, onBackClick: () -> Unit) {
 
     var curatorName by remember { mutableStateOf("") }
     var curatorUsername by remember { mutableStateOf("") }
@@ -968,7 +980,7 @@ fun CuratorRegistrationScreen(navController: NavHostController) {
 
             PrimaryButton(
                 text = "Registrarse",
-                onClick = { navController.navigate("local_actions")},
+                onClick = onSignUpClick,
                 enabled = curatorName.isNotEmpty() &&
                         curatorEmail.isNotEmpty() &&
                         curatorPassword.isNotEmpty() &&
@@ -977,7 +989,7 @@ fun CuratorRegistrationScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = { navController.popBackStack() }) {
+            TextButton(onClick = onBackClick) {
                 Text(text = "Volver", color = PurplePrimary)
             }
 
@@ -990,7 +1002,10 @@ fun CuratorRegistrationScreen(navController: NavHostController) {
 @Composable
 fun CuratorRegistratorScreenPreview(){
     LooksoonTheme {
-        CuratorRegistrationScreen(navController = rememberNavController())
+        CuratorRegistrationScreen(
+            onSignUpClick = {},
+            onBackClick = {},
+        )
     }
 }
 
