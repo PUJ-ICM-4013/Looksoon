@@ -146,7 +146,11 @@ fun AppNavigation() {
             onLoginClick = {navController.navigate(Screen.Login.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }}) }
+
+
         //Para SignUpInformationScreen------------------------------------------------------------
+
+
         composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(
             onBackClick = {navController.popBackStack()},
             onSignUpClick = {navController.navigate(Screen.SignUp.route){
@@ -176,7 +180,23 @@ fun AppNavigation() {
             onBackClick = { navController.popBackStack() }
         ) }
 
-        composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
+
+        //Para pantallas de Artista
+
+        composable(Screen.Home.route) { MainScreenArtist(
+            onTabSelected = {
+                    route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(Screen.Home.route)
+                }
+            },
+            seeMoreClick = {
+
+            }
+
+
+        ) }
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
