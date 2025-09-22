@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.artist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

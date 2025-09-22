@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.curator
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
@@ -398,7 +399,7 @@ fun CircularInfoBox(value: String, label: String, color: Color, highlight: Boole
                 text = label,
                 color = labelColor,
                 fontSize = 12.sp,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }

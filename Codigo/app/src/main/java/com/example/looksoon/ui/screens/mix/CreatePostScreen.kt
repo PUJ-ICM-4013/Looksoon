@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -34,16 +34,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.artist.BottomNavBar
+import com.example.looksoon.ui.screens.ButtonRoles
+import com.example.looksoon.ui.screens.artist.HeaderArtist
 import com.example.looksoon.ui.theme.LooksoonTheme
+import com.example.looksoon.ui.theme.TextPrimary
 
 @Composable
 fun ReusableTextField(
@@ -71,7 +73,7 @@ fun ReusableDropdown(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
-    var expanded = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var expanded = remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded.value,
@@ -184,7 +186,7 @@ fun CreatePostScreen(navController: NavHostController) {
             )
             Text(
                 text = "¡Crear Publicacion/Obra!",
-                color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+                color = TextPrimary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
 import androidx.compose.ui.unit.dp
 
@@ -10,13 +10,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.ui.theme.LooksoonTheme
-import com.example.looksoon.ui.screens.BottomNavBar
-import com.example.looksoon.ui.screens.HeaderArtist
+import com.example.looksoon.ui.screens.artist.BottomNavBar
+import com.example.looksoon.ui.screens.artist.HeaderArtist
 
 
 data class Message(
@@ -75,7 +76,7 @@ fun MessageInput(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
             modifier = Modifier.weight(1f),

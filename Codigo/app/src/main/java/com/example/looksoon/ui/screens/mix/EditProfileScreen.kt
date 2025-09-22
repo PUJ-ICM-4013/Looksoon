@@ -1,5 +1,6 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -101,7 +102,7 @@ fun EditProfileScreen(
                     Box(
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        androidx.compose.foundation.Image(
+                        Image(
                             painter = painterResource(id = R.drawable.foto),
                             contentDescription = "Foto de perfil",
                             modifier = Modifier

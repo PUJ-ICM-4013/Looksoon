@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -24,10 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +40,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
-import okhttp3.internal.http2.Header
+import com.example.looksoon.ui.screens.ButtonRoles
+import com.example.looksoon.ui.screens.artist.BottomNavBar
+import com.example.looksoon.ui.screens.artist.GenreChip
+import com.example.looksoon.ui.screens.artist.HeaderArtist
+import com.example.looksoon.ui.screens.artist.SearchAndFilterBar
 
 
 @Composable
@@ -59,9 +59,11 @@ fun MessagesScreen(
         bottomBar = {
             Column{
                 ButtonRoles(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                     navController = navController,
-                    rol = "Crear nuevo chat",)
+                    rol = "Crear nuevo chat",
+                )
 
                 BottomNavBar(
                     selectedTab = "Mensajes",

@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.fan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +33,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.mix.ProfileInfoItem
+import com.example.looksoon.ui.screens.mix.ProfileScreen
+import com.example.looksoon.ui.screens.artist.HeaderArtist
 import com.example.looksoon.ui.theme.*
 
 @Composable
@@ -257,5 +259,5 @@ fun ProfileScreenFanPreview() {
         navController = navController,
         selectedTab = "Perfil",
 
-    )
+        )
 }

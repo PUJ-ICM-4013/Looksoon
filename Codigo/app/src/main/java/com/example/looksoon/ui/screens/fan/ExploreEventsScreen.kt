@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.fan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

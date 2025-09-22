@@ -1,7 +1,6 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.establishment.textFieldColors
 import com.example.looksoon.ui.theme.*
 
 // Data class para un comentario

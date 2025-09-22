@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.mix
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +34,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.artist.BottomNavBar
+import com.example.looksoon.ui.screens.artist.HeaderArtist
 import com.example.looksoon.ui.theme.*
 
 @Composable
