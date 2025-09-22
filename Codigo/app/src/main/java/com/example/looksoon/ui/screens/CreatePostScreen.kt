@@ -217,8 +217,8 @@ fun CreatePostScreen(navController: NavHostController) {
                 value = link,
                 onValueChange = { link = it },
                 label = "Enlace (Spotify, YouTube, etc.)",
-
                 )
+
 
             // TODO: agregar un ImagePicker composable
             // ReusableImagePicker()
@@ -360,3 +360,4 @@ fun FileUploaderPreview() {
         )
     }
 }
+
