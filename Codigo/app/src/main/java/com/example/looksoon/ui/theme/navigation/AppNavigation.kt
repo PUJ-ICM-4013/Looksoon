@@ -8,6 +8,7 @@ import com.example.looksoon.ui.screens.ArtistSignUpScreen
 import com.example.looksoon.ui.screens.BandSignUpScreen
 import com.example.looksoon.ui.screens.CallsScreenArtist
 import com.example.looksoon.ui.screens.ChatScreen
+import com.example.looksoon.ui.screens.CreatePostScreen
 import com.example.looksoon.ui.screens.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.CuratorScreen
 import com.example.looksoon.ui.screens.EditProfileScreen
@@ -82,6 +83,8 @@ sealed class Screen(val route: String) {
 
     object curator: Screen("mainCurator")
 
+    object CreatePost: Screen("create_post")
+
     //Crear Screens
 }
 
@@ -96,7 +99,7 @@ fun AppNavigation() {
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
         composable(Screen.Login.route) { LoginScreen(navController = navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
-        composable(Screen.Publicar.route) { PublishEventScreen(navController = navController) }
+        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
@@ -137,5 +140,7 @@ fun AppNavigation() {
         composable(Screen.Invite.route) { FanInviteContactsScreen(navController = navController) }
 
         composable(Screen.curator.route) { CuratorScreen() }
+
+        composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController) }
     }
 }
