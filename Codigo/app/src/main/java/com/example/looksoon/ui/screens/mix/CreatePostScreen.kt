@@ -229,7 +229,7 @@ fun CreatePostScreen(navController: NavHostController) {
 
             ButtonRoles(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                navController = navController,
+
                 rol = "Publicar",
                 OnClick = {
                     navController.navigate(Screen.Login.route) {

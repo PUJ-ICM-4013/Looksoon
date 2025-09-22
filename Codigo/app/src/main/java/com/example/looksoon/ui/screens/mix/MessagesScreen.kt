@@ -61,8 +61,9 @@ fun MessagesScreen(
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 14.dp),
-                    navController = navController,
+
                     rol = "Crear nuevo chat",
+                    OnClick = {}
                 )
 
                 BottomNavBar(
