@@ -146,7 +146,35 @@ fun AppNavigation() {
             onLoginClick = {navController.navigate(Screen.Login.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }}) }
-
+        //Para SignUpInformationScreen------------------------------------------------------------
+        composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }
+        ) }
+        composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }
+        ) }
+        composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }) }
+        composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }) }
+        composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(
+            onSignUpClick = { navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } },
+            onBackClick = { navController.popBackStack() }
+        ) }
 
         composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
@@ -174,15 +202,9 @@ fun AppNavigation() {
             )
         }
         composable(Screen.Feed.route) { FeedScreen(navController = navController) }
-        composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(navController = navController,
-            onSignUpClick = { },
-            onBackClick = { navController.popBackStack() }
-        ) }
 
-        composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(navController = navController) }
-        composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(navController = navController) }
-        composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(navController = navController) }
-        composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(navController = navController) }
+
+
 
         composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
         composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
