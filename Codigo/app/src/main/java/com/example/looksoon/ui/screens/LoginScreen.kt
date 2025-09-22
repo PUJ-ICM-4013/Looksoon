@@ -235,14 +235,15 @@ fun LoginScreen(
                                 popUpTo(Screen.Login.route) { inclusive = true }
                             }
                         }
-                        "fan" -> {
-                            onLoginSuccess("Fan")
-                            navController.navigate(Screen.Feed.route) {
-                                popUpTo(Screen.Login.route) { inclusive = true }
-                            }
+
+                    }
+
+                    else if(email == "curador"){
+                        navController.navigate(Screen.curator.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }
-                    */
+
 
                     else if(email == "fan"){
                         navController.navigate(Screen.ExploreEventsFan.route) {

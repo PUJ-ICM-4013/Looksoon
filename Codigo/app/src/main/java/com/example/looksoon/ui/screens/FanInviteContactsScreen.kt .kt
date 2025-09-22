@@ -163,7 +163,7 @@ fun FanBottomNavBar(
     selectedTab: String,
     onTabSelected: (String) -> Unit
 ) {
-    val items = listOf("Inicio", "Buscar", "Invitar", "Perfil")
+    val items = listOf("Inicio Fan", "Buscar", "Invitar", "Perfil Fan")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.Search,

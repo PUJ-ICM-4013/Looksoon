@@ -62,7 +62,15 @@ fun ProfileScreen(
             )
         },
         bottomBar = {
-            bottomBar()
+            BottomNavBar(
+                selectedTab = "Perfil",
+                onTabSelected = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                        popUpTo(route) { inclusive = true }
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(

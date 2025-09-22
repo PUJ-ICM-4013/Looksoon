@@ -67,7 +67,7 @@ fun ExploreEventsScreen(navController: NavHostController) {
         bottomBar = {
 
             FanBottomNavBar(
-                selectedTab = "Inicio",
+                selectedTab = "Inicio Fan",
                 onTabSelected = { route ->
                     // TODO: Manejar navegación entre pantallas
                     navController.navigate(route) {
