@@ -37,7 +37,9 @@ import com.example.faunafinder.navigation.Screen
 //Composable para pantalla completa de MainScreenArtist
 @Composable
 fun MainScreenArtist(
-    navController: NavHostController
+    onTabSelected: (String) -> Unit,
+    seeMoreClick: () -> Unit,
+
 ) {
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
@@ -45,11 +47,8 @@ fun MainScreenArtist(
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Inicio",
-                onTabSelected = { route ->
-                    navController.navigate(route) {
-                        launchSingleTop = true
-                        popUpTo(Screen.Home.route)
-                    }
+                onTabSelected = {
+                    onTabSelected(it)
                 }
             )
         }
@@ -77,11 +76,11 @@ fun MainScreenArtist(
             //Llamar Composable de FiltersRow(Conjunto de botones)
             FiltersRow(
                 buttons = listOf(
-                    { GenreChip("Rock", onClick = {}) },
-                    { GenreChip("Pop", onClick = {}) },
-                    { GenreChip("Jazz", onClick = {}) },
-                    { GenreChip("Alternativa", onClick = {}) },
-                    { GenreChip("Balada", onClick = {}) }
+                    { GenreChip("Rock", onClick = { /*Filtrar por Rock*/}) },
+                    { GenreChip("Pop", onClick = { }) },
+                    { GenreChip("Jazz", onClick = {  }) },
+                    { GenreChip("Alternativa", onClick = {  }) },
+                    { GenreChip("Balada", onClick = {  }) }
                 )
             )
             //LazyColumn para mostrar la lista de eventos(Falta hacerlo dinámico con datos)
@@ -97,7 +96,7 @@ fun MainScreenArtist(
                         date = "2022-01-01",
                         location = "New York",
                         imagePainter = painterResource(id = R.drawable.jazz),
-                        onSeeMoreClick = {}
+                        onSeeMoreClick = { seeMoreClick() }
                     )
                 }
                 item {
@@ -106,7 +105,7 @@ fun MainScreenArtist(
                         date = "2022-01-02",
                         location = "Los Angeles",
                         imagePainter = painterResource(id = R.drawable.jazz),
-                        onSeeMoreClick = {}
+                        onSeeMoreClick = { seeMoreClick() }
                     )
                 }
                 item {
@@ -115,7 +114,7 @@ fun MainScreenArtist(
                         date = "2022-01-02",
                         location = "Los Angeles",
                         imagePainter = painterResource(id = R.drawable.jazz),
-                        onSeeMoreClick = {}
+                        onSeeMoreClick = { seeMoreClick() }
                     )
                 }
             }
@@ -129,7 +128,7 @@ fun MainScreenArtist(
 @Composable
 fun MainScreenArtistPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-        MainScreenArtist(navController = rememberNavController())
+        MainScreenArtist(onTabSelected = {}, seeMoreClick = {})
     }
 }
 
