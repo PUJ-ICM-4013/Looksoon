@@ -122,6 +122,30 @@ fun AppNavigation() {
         }) }
 
         //Para SignUpScreen------------------------------------------------------------
+        composable(Screen.SignUp.route) { SignUpScreen(onArtistClick = {
+            navController.navigate(Screen.SignUpInformationArtist.route) {
+                popUpTo(Screen.SignUpInformationArtist.route) { inclusive = true }
+            }
+        }, onBandClick = {
+            navController.navigate(Screen.SignUpInformationBand.route) {
+                popUpTo(Screen.SignUpInformationBand.route) { inclusive = true }
+            }
+        }, onFanClick = {
+            navController.navigate(Screen.SignUpInformationFan.route) {
+                popUpTo(Screen.SignUpInformationFan.route) { inclusive = true }
+            }
+        }, onEstablishmentClick = {
+            navController.navigate(Screen.SignUpInformationEstablishment.route) {
+                popUpTo(Screen.SignUpInformationEstablishment.route) { inclusive = true }
+            }
+        }, onCuratorClick = {
+            navController.navigate(Screen.SignUpInformationCurator.route) {
+                popUpTo(Screen.SignUpInformationCurator.route) { inclusive = true }
+            }
+        },
+            onLoginClick = {navController.navigate(Screen.Login.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }}) }
 
 
         composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
@@ -129,7 +153,7 @@ fun AppNavigation() {
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
 
-        composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
+
         composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
