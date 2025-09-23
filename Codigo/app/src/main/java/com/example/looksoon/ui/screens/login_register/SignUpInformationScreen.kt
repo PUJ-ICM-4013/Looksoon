@@ -1,12 +1,10 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
@@ -21,10 +19,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.login_register.login.CustomOutlinedTextField
+import com.example.looksoon.ui.screens.login_register.login.ImageWithText
+import com.example.looksoon.ui.screens.login_register.login.PrimaryButton
+import com.example.looksoon.ui.screens.login_register.login.TextDivider
 import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.PurplePrimary
 
@@ -84,7 +84,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { artistName = it },
                 label = "Nombre artístico",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -94,7 +94,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { realName = it },
                 label = "Nombre real (opcional)",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -104,7 +104,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { city = it },
                 label = "Ciudad base",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -114,7 +114,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { genre = it },
                 label = "Género musical principal",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -124,7 +124,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { subgenres = it },
                 label = "Subgéneros (separados por coma)",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -134,7 +134,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { bio = it },
                 label = "Biografía breve",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -149,7 +149,7 @@ fun ArtistSignUpScreen(
                 label = "Correo electrónico",
                 keyboardType = KeyboardType.Email,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -160,7 +160,7 @@ fun ArtistSignUpScreen(
                 label = "Contraseña",
                 isPassword = true,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -171,7 +171,7 @@ fun ArtistSignUpScreen(
                 label = "Confirmar contraseña",
                 isPassword = true,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -185,7 +185,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { instagram = it },
                 label = "Instagram",
 
-            )
+                )
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
@@ -193,7 +193,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { youtube = it },
                 label = "YouTube",
 
-            )
+                )
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
@@ -201,7 +201,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { spotify = it },
                 label = "Spotify / Apple Music",
 
-            )
+                )
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(
@@ -209,7 +209,7 @@ fun ArtistSignUpScreen(
                 onValueChange = { tiktok = it },
                 label = "TikTok",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -302,7 +302,7 @@ fun BandSignUpScreen(
                 onValueChange = { bandName = it },
                 label = "Nombre de la banda",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -312,7 +312,7 @@ fun BandSignUpScreen(
                 onValueChange = { city = it },
                 label = "Ciudad base",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -323,7 +323,7 @@ fun BandSignUpScreen(
                 label = "Año de formación",
                 keyboardType = KeyboardType.Number,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -333,7 +333,7 @@ fun BandSignUpScreen(
                 onValueChange = { genre = it },
                 label = "Género musical principal",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -343,7 +343,7 @@ fun BandSignUpScreen(
                 onValueChange = { subgenres = it },
                 label = "Subgéneros (separados por coma)",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -353,7 +353,7 @@ fun BandSignUpScreen(
                 onValueChange = { bio = it },
                 label = "Biografía breve",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -367,7 +367,7 @@ fun BandSignUpScreen(
                 label = "Número de integrantes",
                 keyboardType = KeyboardType.Number,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -380,7 +380,7 @@ fun BandSignUpScreen(
                 onValueChange = { manager = it },
                 label = "Manager / Representante",
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -390,7 +390,7 @@ fun BandSignUpScreen(
                 label = "Teléfono de contacto",
                 keyboardType = KeyboardType.Phone,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -400,7 +400,7 @@ fun BandSignUpScreen(
                 label = "Correo de contacto",
                 keyboardType = KeyboardType.Email,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -414,7 +414,7 @@ fun BandSignUpScreen(
                 label = "Correo electrónico",
                 keyboardType = KeyboardType.Email,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -424,7 +424,7 @@ fun BandSignUpScreen(
                 label = "Contraseña",
                 isPassword = true,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -434,7 +434,7 @@ fun BandSignUpScreen(
                 label = "Confirmar contraseña",
                 isPassword = true,
 
-            )
+                )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -557,11 +557,14 @@ fun FanRegistrationScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
 
-            TextDivider(text = "Información Personal", textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Información Personal",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
             CustomOutlinedTextField(
                 value = FanName,
-                onValueChange = {FanName = it },
+                onValueChange = { FanName = it },
                 label = "Nombre completo"
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -574,7 +577,7 @@ fun FanRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanEmail,
-                onValueChange = {FanEmail = it },
+                onValueChange = { FanEmail = it },
                 label = "Correo electrónico"
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -600,7 +603,7 @@ fun FanRegistrationScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Ubicación",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(text = "Ubicación", textColor = MaterialTheme.colorScheme.secondary)
 
             CustomOutlinedTextField(
                 value = FanCountry,
@@ -610,13 +613,16 @@ fun FanRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanCity,
-                onValueChange = {FanCity = it},
+                onValueChange = { FanCity = it },
                 label = "Ciudad"
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Fecha de nacimiento",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Fecha de nacimiento",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
             CustomOutlinedTextField(
                 value = FanBirthday,
@@ -626,7 +632,10 @@ fun FanRegistrationScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Preferencias musicales",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Preferencias musicales",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = "",
@@ -640,7 +649,7 @@ fun FanRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(
                 value = FanBio,
-                onValueChange = {FanBio = it},
+                onValueChange = { FanBio = it },
                 label = "Biografía corta",
             )
 
@@ -649,7 +658,7 @@ fun FanRegistrationScreen(
 
             PrimaryButton(
                 text = "Registrarse",
-                onClick = onSignUpClick ,
+                onClick = onSignUpClick,
                 enabled = FanName.isNotEmpty() &&
                         FanEmail.isNotEmpty() &&
                         FanPassword.isNotEmpty() &&
@@ -755,9 +764,16 @@ fun EstablishmentRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            TextDivider(text = "Información básica", textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Información básica",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
-            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Nombre del establecimiento")
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Nombre del establecimiento"
+            )
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Nombre de usuario")
             Spacer(modifier = Modifier.height(16.dp))
@@ -783,13 +799,20 @@ fun EstablishmentRegistrationScreen(
                 )
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Información de contacto",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Información de contacto",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Teléfono principal")
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Teléfono secundario (opcional)")
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Teléfono secundario (opcional)"
+            )
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Página web")
             Spacer(modifier = Modifier.height(16.dp))
@@ -804,7 +827,7 @@ fun EstablishmentRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            TextDivider(text = "Ubicación",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(text = "Ubicación", textColor = MaterialTheme.colorScheme.secondary)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -819,9 +842,16 @@ fun EstablishmentRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            TextDivider(text = "Detalles del establecimiento",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Detalles del establecimiento",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
-            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Tipo de establecimiento")
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Tipo de establecimiento"
+            )
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Capacidad de personas")
             Spacer(modifier = Modifier.height(16.dp))
@@ -842,13 +872,20 @@ fun EstablishmentRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            TextDivider(text = "Configuración adicional",  textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Configuración adicional",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Horario de apertura")
             Spacer(modifier = Modifier.height(16.dp))
             CustomOutlinedTextField(value = "", onValueChange = {}, label = "Horario de cierre")
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = "", onValueChange = {}, label = "Métodos de pago aceptados")
+            CustomOutlinedTextField(
+                value = "",
+                onValueChange = {},
+                label = "Métodos de pago aceptados"
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -926,54 +963,129 @@ fun CuratorRegistrationScreen(onSignUpClick: () -> Unit, onBackClick: () -> Unit
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextDivider(text = "Información Personal", textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Información Personal",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
-            CustomOutlinedTextField(value = curatorName, onValueChange = { curatorName = it }, label = "Nombre completo")
+            CustomOutlinedTextField(
+                value = curatorName,
+                onValueChange = { curatorName = it },
+                label = "Nombre completo"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorUsername, onValueChange = { curatorUsername = it }, label = "Nombre de usuario")
+            CustomOutlinedTextField(
+                value = curatorUsername,
+                onValueChange = { curatorUsername = it },
+                label = "Nombre de usuario"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorEmail, onValueChange = { curatorEmail = it }, label = "Correo electrónico")
+            CustomOutlinedTextField(
+                value = curatorEmail,
+                onValueChange = { curatorEmail = it },
+                label = "Correo electrónico"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorPassword, onValueChange = { curatorPassword = it }, label = "Contraseña", isPassword = true)
+            CustomOutlinedTextField(
+                value = curatorPassword,
+                onValueChange = { curatorPassword = it },
+                label = "Contraseña",
+                isPassword = true
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorConfirmPassword, onValueChange = { curatorConfirmPassword = it }, label = "Confirmar contraseña", isPassword = true)
+            CustomOutlinedTextField(
+                value = curatorConfirmPassword,
+                onValueChange = { curatorConfirmPassword = it },
+                label = "Confirmar contraseña",
+                isPassword = true
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
 
             TextDivider(text = "Ubicación", textColor = MaterialTheme.colorScheme.secondary)
 
-            CustomOutlinedTextField(value = curatorCountry, onValueChange = { curatorCountry = it }, label = "País")
+            CustomOutlinedTextField(
+                value = curatorCountry,
+                onValueChange = { curatorCountry = it },
+                label = "País"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorCity, onValueChange = { curatorCity = it }, label = "Ciudad")
+            CustomOutlinedTextField(
+                value = curatorCity,
+                onValueChange = { curatorCity = it },
+                label = "Ciudad"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
 
-            TextDivider(text = "Perfil Profesional", textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Perfil Profesional",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
-            CustomOutlinedTextField(value = curatorExperience, onValueChange = { curatorExperience = it }, label = "Años de experiencia")
+            CustomOutlinedTextField(
+                value = curatorExperience,
+                onValueChange = { curatorExperience = it },
+                label = "Años de experiencia"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorSpecialties, onValueChange = { curatorSpecialties = it }, label = "Especialidades (playlists, festivales...)")
+            CustomOutlinedTextField(
+                value = curatorSpecialties,
+                onValueChange = { curatorSpecialties = it },
+                label = "Especialidades (playlists, festivales...)"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorGenres, onValueChange = { curatorGenres = it }, label = "Géneros de especialización")
+            CustomOutlinedTextField(
+                value = curatorGenres,
+                onValueChange = { curatorGenres = it },
+                label = "Géneros de especialización"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorBio, onValueChange = { curatorBio = it }, label = "Biografía profesional")
+            CustomOutlinedTextField(
+                value = curatorBio,
+                onValueChange = { curatorBio = it },
+                label = "Biografía profesional"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorPortfolio, onValueChange = { curatorPortfolio = it }, label = "Portafolio / enlaces de trabajos")
+            CustomOutlinedTextField(
+                value = curatorPortfolio,
+                onValueChange = { curatorPortfolio = it },
+                label = "Portafolio / enlaces de trabajos"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
 
-            TextDivider(text = "Redes Profesionales", textColor = MaterialTheme.colorScheme.secondary)
+            TextDivider(
+                text = "Redes Profesionales",
+                textColor = MaterialTheme.colorScheme.secondary
+            )
 
-            CustomOutlinedTextField(value = curatorLinkedIn, onValueChange = { curatorLinkedIn = it }, label = "LinkedIn")
+            CustomOutlinedTextField(
+                value = curatorLinkedIn,
+                onValueChange = { curatorLinkedIn = it },
+                label = "LinkedIn"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorWebsite, onValueChange = { curatorWebsite = it }, label = "Página web / blog")
+            CustomOutlinedTextField(
+                value = curatorWebsite,
+                onValueChange = { curatorWebsite = it },
+                label = "Página web / blog"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorInstagram, onValueChange = { curatorInstagram = it }, label = "Instagram")
+            CustomOutlinedTextField(
+                value = curatorInstagram,
+                onValueChange = { curatorInstagram = it },
+                label = "Instagram"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomOutlinedTextField(value = curatorTiktok, onValueChange = { curatorTiktok = it }, label = "TikTok")
+            CustomOutlinedTextField(
+                value = curatorTiktok,
+                onValueChange = { curatorTiktok = it },
+                label = "TikTok"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
