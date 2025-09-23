@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -19,7 +19,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.login_register.login.AccountFlowRow
 import com.example.looksoon.ui.theme.LooksoonTheme
+import com.example.looksoon.ui.theme.PurplePrimary
+import com.example.looksoon.ui.theme.TextPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +49,7 @@ fun ForgotPasswordScreen(navController: NavController) {
 
             Text(
                 text = "¿Olvidaste tu contraseña?",
-                color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+                color = TextPrimary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -83,7 +86,7 @@ fun ForgotPasswordScreen(navController: NavController) {
                 ,
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+                    containerColor = PurplePrimary,
                     contentColor = Color.White
                 )
             ) {

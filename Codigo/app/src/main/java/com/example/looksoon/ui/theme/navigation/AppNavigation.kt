@@ -1,27 +1,28 @@
 package com.example.faunafinder.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.looksoon.ui.screens.ArtistSignUpScreen
-import com.example.looksoon.ui.screens.BandSignUpScreen
+import com.example.looksoon.ui.screens.login_register.ArtistSignUpScreen
+import com.example.looksoon.ui.screens.login_register.BandSignUpScreen
 import com.example.looksoon.ui.screens.artist.CallsScreenArtist
 import com.example.looksoon.ui.screens.mix.ChatScreen
 import com.example.looksoon.ui.screens.mix.CreatePostScreen
-import com.example.looksoon.ui.screens.CuratorRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.curator.CuratorScreen
 import com.example.looksoon.ui.screens.mix.EditProfileScreen
-import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.EstablishmentRegistrationScreen
 import com.example.looksoon.ui.screens.mix.EventDetailsArtistScreen
 import com.example.looksoon.ui.screens.establishment.EventDetailsScreen
 import com.example.looksoon.ui.screens.fan.ExploreEventsScreen
 import com.example.looksoon.ui.screens.fan.FanInviteContactsScreen
-import com.example.looksoon.ui.screens.FanRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.FanRegistrationScreen
 import com.example.looksoon.ui.screens.mix.FeedScreen
-import com.example.looksoon.ui.screens.ForgotPasswordScreen
+import com.example.looksoon.ui.screens.login_register.ForgotPasswordScreen
 import com.example.looksoon.ui.screens.establishment.LocalActionsScreen
-import com.example.looksoon.ui.screens.LoginScreen
+import com.example.looksoon.ui.screens.login_register.login.LoginScreen
 import com.example.looksoon.ui.screens.artist.MainScreenArtist
 import com.example.looksoon.ui.screens.establishment.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.mix.MessagesScreen
@@ -30,7 +31,8 @@ import com.example.looksoon.ui.screens.mix.ProfileScreen
 import com.example.looksoon.ui.screens.establishment.PublishEventScreen
 import com.example.looksoon.ui.screens.ReservationDetailScreen
 import com.example.looksoon.ui.screens.establishment.ReserveArtistScreen
-import com.example.looksoon.ui.screens.SignUpScreen
+import com.example.looksoon.ui.screens.login_register.SignUpScreen
+import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
@@ -96,7 +98,11 @@ fun AppNavigation() {
         //Inicio de Sesion y Registro
 
         //Para LoginScreen------------------------------------------------------------
-        composable(Screen.Login.route) { LoginScreen(onArtistClick = {
+
+        composable(Screen.Login.route) {
+            val loginViewModel = viewModel<LoginViewModel>()
+
+            LoginScreen(onArtistClick = {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
         }}, onEstablishmentClick = {
@@ -119,7 +125,9 @@ fun AppNavigation() {
             navController.navigate(Screen.SignUp.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
-        }) }
+        },
+                viewModel = loginViewModel
+            ) }
 
         //Para SignUpScreen------------------------------------------------------------
         composable(Screen.SignUp.route) { SignUpScreen(onArtistClick = {

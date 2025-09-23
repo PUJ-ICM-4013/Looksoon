@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,10 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.login_register.login.AccountFlowRow
+import com.example.looksoon.ui.theme.PurplePrimary
+import com.example.looksoon.ui.theme.TextPrimary
+import com.example.looksoon.ui.theme.TextSecondary
 
 @Composable
 fun SignUpScreen(
@@ -57,7 +58,7 @@ fun SignUpScreen(
                 )
                 Text(
                     text = "¡Registrate!",
-                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+                    color = TextPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -65,7 +66,7 @@ fun SignUpScreen(
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),
                     text = "Digita tu rol en la comunidad",
-                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+                    color = TextSecondary,
                     fontSize = 14.sp
 
                 )
@@ -145,7 +146,7 @@ fun ButtonRoles(modifier: Modifier = Modifier.fillMaxWidth(),
         ,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            containerColor = PurplePrimary,
             contentColor = Color.White
         )
     ) {

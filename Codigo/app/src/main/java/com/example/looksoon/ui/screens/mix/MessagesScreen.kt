@@ -40,7 +40,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
-import com.example.looksoon.ui.screens.ButtonRoles
+import com.example.looksoon.ui.screens.login_register.ButtonRoles
 import com.example.looksoon.ui.screens.artist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.GenreChip
 import com.example.looksoon.ui.screens.artist.HeaderArtist
