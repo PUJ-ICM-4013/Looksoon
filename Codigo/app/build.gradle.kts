@@ -79,6 +79,14 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+
+    // google
+    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.maps.android:maps-compose:6.4.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
