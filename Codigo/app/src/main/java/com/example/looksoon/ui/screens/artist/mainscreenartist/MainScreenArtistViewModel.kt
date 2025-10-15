@@ -1,5 +1,6 @@
 package com.example.looksoon.ui.screens.artist.mainscreenartist
 
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -101,6 +102,7 @@ class MainScreenArtistViewModel : ViewModel() {
         }
     }
 
-    // Puedes añadir aquí la lógica del sensor de luz si la necesitas.
+    // añadir aquí la lógica del sensor de luz 
     // fun setDarkTheme(isDark: Boolean) { ... }
+
 }

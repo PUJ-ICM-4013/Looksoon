@@ -1,13 +1,10 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,11 +21,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.theme.Divider
+import com.example.looksoon.ui.theme.PurplePrimary
+import com.example.looksoon.ui.theme.Surface
+import com.example.looksoon.ui.theme.TextPrimary
+import com.example.looksoon.ui.theme.TextSecondary
 
 // Composable reutilizable para campos de texto
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,22 +77,22 @@ fun CustomOutlinedTextField(
                     Icon(
                         painter = painterResource(id = icon),
                         contentDescription = description,
-                        tint = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary
+                        tint = TextSecondary
                     )
                 }
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
-            unfocusedBorderColor = _root_ide_package_.com.example.looksoon.ui.theme.Divider,
-            focusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
-            unfocusedTextColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
-            cursorColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
-            focusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
-            unfocusedLabelColor = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
-            focusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
-            unfocusedContainerColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface
+            focusedBorderColor = PurplePrimary,
+            unfocusedBorderColor = Divider,
+            focusedTextColor = TextPrimary,
+            unfocusedTextColor = TextPrimary,
+            cursorColor = PurplePrimary,
+            focusedLabelColor = PurplePrimary,
+            unfocusedLabelColor = TextSecondary,
+            focusedContainerColor = Surface,
+            unfocusedContainerColor = Surface
         ),
         modifier = modifier.fillMaxWidth()
     )
@@ -116,7 +113,7 @@ fun PrimaryButton(
             .height(48.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            containerColor = PurplePrimary,
             contentColor = Color.White
         ),
         enabled = enabled
@@ -194,21 +191,18 @@ fun TextDivider(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     onLoginClick: () -> Unit = {
-
     },
-    onForgotPasswordClick: () -> Unit = {
-        navController.navigate(Screen.ForgotPassword.route)
-    },
-    onSignUpClick: () -> Unit = {
-        navController.navigate(Screen.SignUp.route) {
-            popUpTo(Screen.SignUp.route) { inclusive = true }
-        }
-    }
+    onForgotPasswordClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onArtistClick: () -> Unit,
+    onEstablishmentClick: () -> Unit,
+    onFanClick: () -> Unit,
+    onCuratorClick: () -> Unit,
+    viewModel: LoginViewModel = LoginViewModel()
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+
 
     Scaffold { innerPadding ->
         Column(
@@ -228,8 +222,8 @@ fun LoginScreen(
 
             // Email Field
             CustomOutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = state.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 label = "Correo electrónico",
                 keyboardType = KeyboardType.Email
             )
@@ -238,8 +232,8 @@ fun LoginScreen(
 
             // Password Field
             CustomOutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = state.password,
+                onValueChange = { viewModel.updatePassword(it) },
                 label = "Contraseña",
                 isPassword = true
             )
@@ -251,7 +245,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
-                    color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+                    color = PurplePrimary,
                     fontSize = 12.sp
                 )
             }
@@ -262,30 +256,17 @@ fun LoginScreen(
             PrimaryButton(
                 text = "Iniciar sesión",
                 onClick = //onLoginClick,
-                    {        if(email == "artista"){
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }
-                    else if(email == "local"){
-                        navController.navigate(Screen.LocalActions.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }
-                    /*
-                    else if(email == "curador"){
-                        navController.navigate(Screen.Curator.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }
-                    */
-
-                    else if(email == "fan"){
-                        navController.navigate(Screen.Feed.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }},
-                enabled = email.isNotEmpty() && password.isNotEmpty()
+                    {
+                        viewModel.checkLogin(
+                            state.email,
+                            state.password,
+                            onArtistClick,
+                            onEstablishmentClick,
+                            onFanClick,
+                            onCuratorClick
+                        )
+                    },
+                enabled = state.email.isNotEmpty() && state.password.isNotEmpty()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -300,8 +281,8 @@ fun LoginScreen(
                 text = "Continuar con Google",
                 iconRes = R.drawable.ic_google,
                 onClick = { /* Handle Google login */ },
-                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
-                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
+                backgroundColor = Surface,
+                textColor = TextPrimary
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -310,8 +291,8 @@ fun LoginScreen(
                 text = "Continuar con Facebook",
                 iconRes = R.drawable.ic_facebook,
                 onClick = { /* Handle Facebook login */ },
-                backgroundColor = _root_ide_package_.com.example.looksoon.ui.theme.Surface,
-                textColor = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary
+                backgroundColor = Surface,
+                textColor = TextPrimary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -339,7 +320,7 @@ fun AccountFlowRow(
     ) {
         Text(
             text = infoLeft,
-            color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+            color = TextSecondary,
             fontSize = 14.sp
         )
         TextButton(
@@ -348,7 +329,7 @@ fun AccountFlowRow(
         ) {
             Text(
                 text = infoRight,
-                color = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+                color = PurplePrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -392,7 +373,16 @@ fun SocialLoginButton(
 @Composable
 fun LoginScreenPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen(
+            onLoginClick = {},
+            onForgotPasswordClick = {},
+            onSignUpClick = {},
+            onArtistClick = {},
+            onEstablishmentClick = {},
+            onFanClick = {},
+            onCuratorClick = {},
+            //viewModel = LoginViewModel()
+            )
     }
 }
 

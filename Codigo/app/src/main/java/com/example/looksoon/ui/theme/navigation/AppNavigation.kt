@@ -1,27 +1,30 @@
 package com.example.faunafinder.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.looksoon.ui.screens.ArtistSignUpScreen
-import com.example.looksoon.ui.screens.BandSignUpScreen
+import com.example.looksoon.ui.screens.login_register.ArtistSignUpScreen
+import com.example.looksoon.ui.screens.login_register.BandSignUpScreen
 import com.example.looksoon.ui.screens.artist.CallsScreenArtist
 import com.example.looksoon.ui.screens.mix.ChatScreen
 import com.example.looksoon.ui.screens.mix.CreatePostScreen
-import com.example.looksoon.ui.screens.CuratorRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.CuratorRegistrationScreen
 import com.example.looksoon.ui.screens.curator.CuratorScreen
 import com.example.looksoon.ui.screens.mix.EditProfileScreen
-import com.example.looksoon.ui.screens.EstablishmentRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.EstablishmentRegistrationScreen
 import com.example.looksoon.ui.screens.mix.EventDetailsArtistScreen
 import com.example.looksoon.ui.screens.establishment.EventDetailsScreen
 import com.example.looksoon.ui.screens.fan.ExploreEventsScreen
 import com.example.looksoon.ui.screens.fan.FanInviteContactsScreen
-import com.example.looksoon.ui.screens.FanRegistrationScreen
+import com.example.looksoon.ui.screens.login_register.FanRegistrationScreen
 import com.example.looksoon.ui.screens.mix.FeedScreen
-import com.example.looksoon.ui.screens.ForgotPasswordScreen
+import com.example.looksoon.ui.screens.login_register.forgot_password.ForgotPasswordScreen
 import com.example.looksoon.ui.screens.establishment.LocalActionsScreen
+
 import com.example.looksoon.ui.screens.LoginScreen
+
 import com.example.looksoon.ui.screens.artist.mainscreenartist.MainScreenArtist
 import com.example.looksoon.ui.screens.establishment.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.mix.MessagesScreen
@@ -29,8 +32,11 @@ import com.example.looksoon.ui.screens.fan.ProfileFanScreen
 import com.example.looksoon.ui.screens.mix.ProfileScreen
 import com.example.looksoon.ui.screens.establishment.PublishEventScreen
 import com.example.looksoon.ui.screens.ReservationDetailScreen
+import com.example.looksoon.ui.screens.artist.mainscreenartist.MainScreenArtistViewModel
 import com.example.looksoon.ui.screens.establishment.ReserveArtistScreen
-import com.example.looksoon.ui.screens.SignUpScreen
+import com.example.looksoon.ui.screens.login_register.SignUpScreen
+import com.example.looksoon.ui.screens.login_register.forgot_password.ForgotPasswordViewModel
+import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
@@ -81,7 +87,7 @@ sealed class Screen(val route: String) {
 
     object Search: Screen("Buscar")
 
-    object curator: Screen("mainCurator")
+    object Curator: Screen("mainCurator")
 
     object CreatePost: Screen("create_post")
 
@@ -93,12 +99,141 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {
-        composable(Screen.Home.route) { MainScreenArtist(navController = navController) }
+        //Inicio de Sesion y Registro
+
+        //Para LoginScreen------------------------------------------------------------
+
+        composable(Screen.Login.route) {
+            val loginViewModel = viewModel<LoginViewModel>()
+
+            LoginScreen(onArtistClick = {
+            navController.navigate(Screen.Home.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+        }}, onEstablishmentClick = {
+            navController.navigate(Screen.LocalActions.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onFanClick = {
+            navController.navigate(Screen.Feed.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onCuratorClick = {
+            navController.navigate(Screen.Curator.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onForgotPasswordClick = {
+            navController.navigate(Screen.ForgotPassword.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }, onSignUpClick = {
+            navController.navigate(Screen.SignUp.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        },
+                viewModel = loginViewModel
+            ) }
+
+        //Para SignUpScreen------------------------------------------------------------
+        composable(Screen.SignUp.route) { SignUpScreen(onArtistClick = {
+            navController.navigate(Screen.SignUpInformationArtist.route) {
+                popUpTo(Screen.SignUpInformationArtist.route) { inclusive = true }
+            }
+        }, onBandClick = {
+            navController.navigate(Screen.SignUpInformationBand.route) {
+                popUpTo(Screen.SignUpInformationBand.route) { inclusive = true }
+            }
+        }, onFanClick = {
+            navController.navigate(Screen.SignUpInformationFan.route) {
+                popUpTo(Screen.SignUpInformationFan.route) { inclusive = true }
+            }
+        }, onEstablishmentClick = {
+            navController.navigate(Screen.SignUpInformationEstablishment.route) {
+                popUpTo(Screen.SignUpInformationEstablishment.route) { inclusive = true }
+            }
+        }, onCuratorClick = {
+            navController.navigate(Screen.SignUpInformationCurator.route) {
+                popUpTo(Screen.SignUpInformationCurator.route) { inclusive = true }
+            }
+        },
+            onLoginClick = {navController.navigate(Screen.Login.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }}) }
+
+
+        //Para SignUpInformationScreen------------------------------------------------------------
+
+
+        composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }
+        ) }
+        composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }
+        ) }
+        composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }) }
+        composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(
+            onBackClick = {navController.popBackStack()},
+            onSignUpClick = {navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } }) }
+        composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(
+            onSignUpClick = { navController.navigate(Screen.SignUp.route){
+                popUpTo(Screen.SignUp.route) { inclusive = true }
+            } },
+            onBackClick = { navController.popBackStack() }
+        ) }
+
+
+        //Para pantallas de Artista
+
+        composable(Screen.Home.route) {
+            val mainScreenArtistViewModel = viewModel<MainScreenArtistViewModel>()
+            MainScreenArtist(
+            onTabSelected = {
+                    route ->
+                navController.navigate(route) {
+                    launchSingleTop = true
+                    popUpTo(Screen.Home.route)
+                }
+            },
+            seeMoreClick = {
+
+            },
+                viewModel = mainScreenArtistViewModel
+
+
+        ) }
+
+
+        // Para forgot password
+        composable(Screen.ForgotPassword.route) {
+            val viewModel = viewModel<ForgotPasswordViewModel>()
+            ForgotPasswordScreen(
+            onLinkClick = {
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                }
+            },
+            onButtonClick = {
+
+            },
+                viewModel = viewModel
+        ) }
+
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
-        composable(Screen.Login.route) { LoginScreen(navController = navController) }
-        composable(Screen.SignUp.route) { SignUpScreen(navController = navController) }
+
+
         composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
@@ -119,18 +254,11 @@ fun AppNavigation() {
             )
         }
         composable(Screen.Feed.route) { FeedScreen(navController = navController) }
-        composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(navController = navController,
-            onSignUpClick = { },
-            onBackClick = { navController.popBackStack() }
-        ) }
 
-        composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(navController = navController) }
-        composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(navController = navController) }
-        composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(navController = navController) }
-        composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(navController = navController) }
+
+
 
         composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
-        composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
 
         composable(Screen.ExploreEventsFan.route) { ExploreEventsScreen(navController = navController) }
 
@@ -139,7 +267,7 @@ fun AppNavigation() {
 
         composable(Screen.Invite.route) { FanInviteContactsScreen(navController = navController) }
 
-        composable(Screen.curator.route) { CuratorScreen() }
+        composable(Screen.Curator.route) { CuratorScreen() }
 
         composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController) }
     }

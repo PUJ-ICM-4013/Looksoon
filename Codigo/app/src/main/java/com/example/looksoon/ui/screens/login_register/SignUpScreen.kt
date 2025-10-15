@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +23,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.login_register.login.AccountFlowRow
+import com.example.looksoon.ui.theme.PurplePrimary
+import com.example.looksoon.ui.theme.TextPrimary
+import com.example.looksoon.ui.theme.TextSecondary
 
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpScreen(
+                 onArtistClick: () -> Unit,
+                 onBandClick: () -> Unit,
+                 onFanClick: () -> Unit,
+                 onEstablishmentClick: () -> Unit,
+                 onCuratorClick: () -> Unit,
+                 onLoginClick: () -> Unit) {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         Scaffold() { innerPadding ->
             Column(
@@ -51,7 +58,7 @@ fun SignUpScreen(navController: NavHostController) {
                 )
                 Text(
                     text = "¡Registrate!",
-                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+                    color = TextPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -59,72 +66,59 @@ fun SignUpScreen(navController: NavHostController) {
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),
                     text = "Digita tu rol en la comunidad",
-                    color = _root_ide_package_.com.example.looksoon.ui.theme.TextSecondary,
+                    color = TextSecondary,
                     fontSize = 14.sp
 
                 )
                 //Boton de roles
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    navController = navController,
                     rol = "Artista",
                     OnClick = {
-                        navController.navigate(Screen.SignUpInformationArtist.route) {
-                            popUpTo(Screen.SignUpInformationArtist.route) { inclusive = true }
-                        }
+                        onArtistClick()
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    navController = navController,
+
                     rol = "Banda",
                     OnClick = {
-                        navController.navigate(Screen.SignUpInformationBand.route) {
-                            popUpTo(Screen.SignUpInformationBand.route) { inclusive = true }
-                        }
+                        onBandClick()
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    navController = navController,
+
                     rol = "Fan",
                     OnClick = {
-                        navController.navigate(Screen.SignUpInformationFan.route) {
-                            popUpTo(Screen.SignUpInformationFan.route) { inclusive = true }
-                        }
+                        onFanClick()
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    navController = navController,
+
                     rol = "Local/Establecimiento",
                     OnClick = {
-                        navController.navigate(Screen.SignUpInformationEstablishment.route) {
-                            popUpTo(Screen.SignUpInformationEstablishment.route) { inclusive = true }
-                        }
+                        onEstablishmentClick()
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    navController = navController,
+
                     rol = "Curador",
                     OnClick = {
-                        navController.navigate(Screen.SignUpInformationCurator.route) {
-                            popUpTo(Screen.SignUpInformationCurator.route) { inclusive = true }
-                        }
+                        onCuratorClick()
                     }
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 //Sign in row
                 AccountFlowRow(
                     onLinkClick = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+                        onLoginClick()
                     },
                     infoLeft = "¿Ya tienes una cuenta?",
                     infoRight = "Inicia sesión"
@@ -136,14 +130,14 @@ fun SignUpScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen(navController = rememberNavController())
+    SignUpScreen(onArtistClick = {}, onBandClick = {}, onFanClick = {}, onEstablishmentClick = {}, onCuratorClick = {}, onLoginClick = {})
 }
 
 @Composable
 fun ButtonRoles(modifier: Modifier = Modifier.fillMaxWidth(),
-                navController: NavHostController,
+
                 rol: String,
-                OnClick: () -> Unit = {navController.navigate(Screen.Login.route)}) {
+                OnClick: () -> Unit) {
     Button(
         onClick = { OnClick() },
         modifier = modifier
@@ -152,7 +146,7 @@ fun ButtonRoles(modifier: Modifier = Modifier.fillMaxWidth(),
         ,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+            containerColor = PurplePrimary,
             contentColor = Color.White
         )
     ) {

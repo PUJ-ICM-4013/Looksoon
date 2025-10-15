@@ -1,7 +1,9 @@
 package com.example.looksoon.ui.screens.artist.mainscreenartist
 
+
 import android.Manifest
 import android.annotation.SuppressLint
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,7 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+
 import androidx.compose.ui.platform.LocalContext
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
@@ -54,22 +60,27 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
 
+
 //Composable para pantalla completa de MainScreenArtist
 @Composable
 fun MainScreenArtist(
+
     navController: NavHostController
 ) {
+
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
         //Indicar que se tendrá abajo el Nav
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Inicio",
+
                 onTabSelected = { route ->
                     navController.navigate(route) {
                         launchSingleTop = true
                         popUpTo(Screen.Home.route)
                     }
+
                 }
             )
         }
@@ -93,6 +104,7 @@ fun MainScreenArtist(
                     )
             );
             //Llamar Composable de Map
+
             InteractiveMap()
             //Llamar Composable de FiltersRow(Conjunto de botones)
             FiltersRow(
@@ -102,6 +114,7 @@ fun MainScreenArtist(
                     { GenreChip("Jazz", onClick = {}) },
                     { GenreChip("Alternativa", onClick = {}) },
                     { GenreChip("Balada", onClick = {}) }
+
                 )
             )
             //LazyColumn para mostrar la lista de eventos(Falta hacerlo dinámico con datos)
@@ -117,7 +130,9 @@ fun MainScreenArtist(
                         date = "2022-01-01",
                         location = "New York",
                         imagePainter = painterResource(id = R.drawable.jazz),
+
                         onSeeMoreClick = {}
+
                     )
                 }
                 item {
@@ -126,7 +141,9 @@ fun MainScreenArtist(
                         date = "2022-01-02",
                         location = "Los Angeles",
                         imagePainter = painterResource(id = R.drawable.jazz),
+
                         onSeeMoreClick = {}
+
                     )
                 }
                 item {
@@ -135,7 +152,9 @@ fun MainScreenArtist(
                         date = "2022-01-02",
                         location = "Los Angeles",
                         imagePainter = painterResource(id = R.drawable.jazz),
+
                         onSeeMoreClick = {}
+
                     )
                 }
             }
@@ -149,7 +168,9 @@ fun MainScreenArtist(
 @Composable
 fun MainScreenArtistPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
+
         MainScreenArtist(navController = rememberNavController())
+
     }
 }
 
@@ -305,6 +326,7 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
 
 //Mapa
 
+
 // Borra tu Composable 'Map()' anterior y usa este
 // Composable para el mapa interactivo con la lógica de 400.dp
 @OptIn(ExperimentalPermissionsApi::class)
@@ -412,6 +434,7 @@ fun InteractiveMap(
 }
 
 // Puedes borrar el Composable Map() original que solo tenía el Image.
+
 
 //Nav de navegacion (falta hacerlo reutilizable)
 @Composable

@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens
+package com.example.looksoon.ui.screens.login_register.forgot_password
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -19,12 +19,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
+import com.example.looksoon.ui.screens.login_register.login.AccountFlowRow
 import com.example.looksoon.ui.theme.LooksoonTheme
+import com.example.looksoon.ui.theme.PurplePrimary
+import com.example.looksoon.ui.theme.TextPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordScreen(navController: NavController) {
-    var email by remember { mutableStateOf("") }
+fun ForgotPasswordScreen(
+    onLinkClick: () -> Unit,
+    onButtonClick: () -> Unit,
+    viewModel: ForgotPasswordViewModel
+) {
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
 
@@ -46,7 +53,7 @@ fun ForgotPasswordScreen(navController: NavController) {
 
             Text(
                 text = "¿Olvidaste tu contraseña?",
-                color = _root_ide_package_.com.example.looksoon.ui.theme.TextPrimary,
+                color = TextPrimary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -62,8 +69,8 @@ fun ForgotPasswordScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = state.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 label = { Text("Correo electrónico") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -76,14 +83,14 @@ fun ForgotPasswordScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {  },
+                onClick = { onButtonClick() },
                 modifier = Modifier
 
                     .height(48.dp)
                 ,
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = _root_ide_package_.com.example.looksoon.ui.theme.PurplePrimary,
+                    containerColor = PurplePrimary,
                     contentColor = Color.White
                 )
             ) {
@@ -97,9 +104,7 @@ fun ForgotPasswordScreen(navController: NavController) {
             //Sign in row
             AccountFlowRow(
                 onLinkClick = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
+                    onLinkClick()
                 },
                 infoLeft = "¿Ya tienes una cuenta?",
                 infoRight = "Inicia sesión"
@@ -111,6 +116,10 @@ fun ForgotPasswordScreen(navController: NavController) {
 @Composable
 fun ForgotPasswordScreenPreview() {
     LooksoonTheme {
-        ForgotPasswordScreen(navController = rememberNavController())
+        val viewModel = remember { ForgotPasswordViewModel() }
+        ForgotPasswordScreen(onLinkClick = {},
+            onButtonClick = {},
+            viewModel = viewModel
+        )
     }
 }

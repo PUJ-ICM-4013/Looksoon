@@ -42,7 +42,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
+
 import com.example.looksoon.ui.screens.ButtonRoles
+
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.TextPrimary
@@ -229,7 +231,7 @@ fun CreatePostScreen(navController: NavHostController) {
 
             ButtonRoles(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                navController = navController,
+
                 rol = "Publicar",
                 OnClick = {
                     navController.navigate(Screen.Login.route) {
