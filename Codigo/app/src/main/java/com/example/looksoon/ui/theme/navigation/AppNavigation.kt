@@ -20,18 +20,20 @@ import com.example.looksoon.ui.screens.fan.ExploreEventsScreen
 import com.example.looksoon.ui.screens.fan.FanInviteContactsScreen
 import com.example.looksoon.ui.screens.login_register.FanRegistrationScreen
 import com.example.looksoon.ui.screens.mix.FeedScreen
-import com.example.looksoon.ui.screens.login_register.ForgotPasswordScreen
+import com.example.looksoon.ui.screens.login_register.forgot_password.ForgotPasswordScreen
 import com.example.looksoon.ui.screens.establishment.LocalActionsScreen
 import com.example.looksoon.ui.screens.login_register.login.LoginScreen
-import com.example.looksoon.ui.screens.artist.MainScreenArtist
+import com.example.looksoon.ui.screens.artist.mainscreenartist.MainScreenArtist
 import com.example.looksoon.ui.screens.establishment.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.mix.MessagesScreen
 import com.example.looksoon.ui.screens.fan.ProfileFanScreen
 import com.example.looksoon.ui.screens.mix.ProfileScreen
 import com.example.looksoon.ui.screens.establishment.PublishEventScreen
 import com.example.looksoon.ui.screens.ReservationDetailScreen
+import com.example.looksoon.ui.screens.artist.mainscreenartist.MainScreenArtistViewModel
 import com.example.looksoon.ui.screens.establishment.ReserveArtistScreen
 import com.example.looksoon.ui.screens.login_register.SignUpScreen
+import com.example.looksoon.ui.screens.login_register.forgot_password.ForgotPasswordViewModel
 import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
 
 sealed class Screen(val route: String) {
@@ -191,7 +193,9 @@ fun AppNavigation() {
 
         //Para pantallas de Artista
 
-        composable(Screen.Home.route) { MainScreenArtist(
+        composable(Screen.Home.route) {
+            val mainScreenArtistViewModel = viewModel<MainScreenArtistViewModel>()
+            MainScreenArtist(
             onTabSelected = {
                     route ->
                 navController.navigate(route) {
@@ -201,10 +205,28 @@ fun AppNavigation() {
             },
             seeMoreClick = {
 
-            }
+            },
+                viewModel = mainScreenArtistViewModel
 
 
         ) }
+
+
+        // Para forgot password
+        composable(Screen.ForgotPassword.route) {
+            val viewModel = viewModel<ForgotPasswordViewModel>()
+            ForgotPasswordScreen(
+            onLinkClick = {
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                }
+            },
+            onButtonClick = {
+
+            },
+                viewModel = viewModel
+        ) }
+
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
@@ -235,7 +257,6 @@ fun AppNavigation() {
 
 
         composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
-        composable(Screen.ForgotPassword.route) { ForgotPasswordScreen(navController = navController) }
 
         composable(Screen.ExploreEventsFan.route) { ExploreEventsScreen(navController = navController) }
 

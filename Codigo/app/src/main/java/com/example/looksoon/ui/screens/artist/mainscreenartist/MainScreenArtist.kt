@@ -1,4 +1,4 @@
-package com.example.looksoon.ui.screens.artist
+package com.example.looksoon.ui.screens.artist.mainscreenartist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,10 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
-import com.example.faunafinder.navigation.Screen
 
 
 //Composable para pantalla completa de MainScreenArtist
@@ -39,8 +38,12 @@ import com.example.faunafinder.navigation.Screen
 fun MainScreenArtist(
     onTabSelected: (String) -> Unit,
     seeMoreClick: () -> Unit,
-
+    viewModel: MainScreenArtistViewModel = MainScreenArtistViewModel()
 ) {
+
+    val state by viewModel.state.collectAsState()
+
+
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
         //Indicar que se tendrá abajo el Nav
