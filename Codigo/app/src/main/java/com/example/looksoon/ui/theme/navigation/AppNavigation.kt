@@ -22,7 +22,7 @@ import com.example.looksoon.ui.screens.mix.FeedScreen
 import com.example.looksoon.ui.screens.ForgotPasswordScreen
 import com.example.looksoon.ui.screens.establishment.LocalActionsScreen
 import com.example.looksoon.ui.screens.LoginScreen
-import com.example.looksoon.ui.screens.artist.MainScreenArtist
+import com.example.looksoon.ui.screens.artist.mainscreenartist.MainScreenArtist
 import com.example.looksoon.ui.screens.establishment.ManageApplicationsScreen
 import com.example.looksoon.ui.screens.mix.MessagesScreen
 import com.example.looksoon.ui.screens.fan.ProfileFanScreen

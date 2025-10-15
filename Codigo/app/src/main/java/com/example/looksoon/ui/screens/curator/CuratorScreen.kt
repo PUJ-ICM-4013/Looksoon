@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.looksoon.ui.screens.artist.HeaderArtist
+import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.screens.fan.HorizontalDivider
 import com.example.looksoon.ui.theme.*
 

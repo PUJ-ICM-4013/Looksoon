@@ -35,7 +35,7 @@ import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.mix.ProfileInfoItem
 import com.example.looksoon.ui.screens.mix.ProfileScreen
-import com.example.looksoon.ui.screens.artist.HeaderArtist
+import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.theme.*
 
 @Composable

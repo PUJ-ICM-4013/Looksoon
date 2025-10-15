@@ -1,5 +1,7 @@
-package com.example.looksoon.ui.screens.artist
+package com.example.looksoon.ui.screens.artist.mainscreenartist
 
+import android.Manifest
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +15,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +39,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
 import com.example.faunafinder.navigation.Screen
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 
 //Composable para pantalla completa de MainScreenArtist
@@ -73,7 +93,7 @@ fun MainScreenArtist(
                     )
             );
             //Llamar Composable de Map
-            Map()
+            InteractiveMap()
             //Llamar Composable de FiltersRow(Conjunto de botones)
             FiltersRow(
                 buttons = listOf(
@@ -285,23 +305,113 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
 
 //Mapa
 
+// Borra tu Composable 'Map()' anterior y usa este
+// Composable para el mapa interactivo con la lógica de 400.dp
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
-fun Map() {
-    Image(
-        painter = painterResource(id = R.drawable.mapa),
-        contentDescription = "Mapa",
-        modifier = Modifier.fillMaxWidth().height(400.dp),
-    )
-    /*
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(400.dp)
-            .background(Color(0xFF1C1C1C))
-    )
+fun InteractiveMap(
+    viewModel: MainScreenArtistViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
+    val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
-     */
+    // 1. Inicializar el cliente de ubicación
+    DisposableEffect(Unit) {
+        viewModel.setupLocationClient(context)
+        onDispose {
+            viewModel.stopLocationUpdates()
+        }
+    }
+
+    // 2. Iniciar las actualizaciones de ubicación si el permiso está garantizado
+    LaunchedEffect(locationPermission.status.isGranted) {
+        if (locationPermission.status.isGranted) {
+            viewModel.startLocationUpdates(true, context)
+        } else {
+            // Solicitar el permiso (si aún no se ha solicitado o fue negado anteriormente)
+            locationPermission.launchPermissionRequest()
+        }
+    }
+
+    // 3. Posición inicial de la cámara (por ejemplo, una ubicación central si no hay ubicación de usuario)
+    val initialPos = LatLng(4.6486259, -74.2478962) // Ejemplo: Bogotá
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(state.userLocation ?: initialPos, 12f)
+    }
+
+    // 4. Mover la cámara cuando cambia la ubicación del usuario y 'followUser' es true
+    LaunchedEffect(state.userLocation, state.followUser) {
+        if (state.followUser && state.userLocation != null) {
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.userLocation!!, 16f))
+        }
+    }
+
+    // 5. El Composable del Mapa
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(400.dp) // <--- Altura de 400.dp solicitada
+    ) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(
+                isMyLocationEnabled = locationPermission.status.isGranted, // Muestra el punto azul nativo
+                mapType = if (state.isDarkTheme) MapType.HYBRID else MapType.NORMAL // Lógica de modo oscuro si la implementas
+            ),
+            uiSettings = MapUiSettings(zoomControlsEnabled = true)
+        ) {
+            // Marcador de ubicación actual (Opcional, ya que 'isMyLocationEnabled' hace el punto azul)
+            /*
+            state.userLocation?.let {
+                Marker(
+                    state = rememberMarkerState(position = it),
+                    title = "Tu ubicación actual"
+                )
+            }
+            */
+
+            // Dibujar marcadores de búsqueda
+            state.markers.forEach { (pos, title) ->
+                Marker(
+                    state = rememberMarkerState(position = pos),
+                    title = title
+                )
+            }
+        }
+
+        // Puedes añadir un botón para buscar, alternar 'followUser' y la luz, etc.,
+        // como en el código de referencia, superpuesto sobre el mapa.
+
+        // Botón para centrar en el usuario y activar/desactivar seguimiento
+        Button(
+            onClick = { viewModel.toggleFollowUser(!state.followUser) },
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = if (state.followUser) Color(0xFFB84DFF) else Color.Gray)
+        ) {
+            Icon(Icons.Default.LocationOn, contentDescription = "Seguir Ubicación")
+        }
+
+        // Muestra un mensaje si el permiso no está concedido
+        if (state.errorMessage != null) {
+            Text(
+                text = state.errorMessage!!,
+                color = Color.Red,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+        }
+    }
 }
+
+// Puedes borrar el Composable Map() original que solo tenía el Image.
 
 //Nav de navegacion (falta hacerlo reutilizable)
 @Composable
