@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -64,8 +65,9 @@ import com.google.maps.android.compose.rememberMarkerState
 //Composable para pantalla completa de MainScreenArtist
 @Composable
 fun MainScreenArtist(
-
-    navController: NavHostController
+    onTabSelected: (String) -> Unit,
+    seeMoreClick: () -> Unit,
+    viewModel: MainScreenArtistViewModel
 ) {
 
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
@@ -75,11 +77,8 @@ fun MainScreenArtist(
             BottomNavBar(
                 selectedTab = "Inicio",
 
-                onTabSelected = { route ->
-                    navController.navigate(route) {
-                        launchSingleTop = true
-                        popUpTo(Screen.Home.route)
-                    }
+                onTabSelected = {
+                    onTabSelected(it)
 
                 }
             )
@@ -169,7 +168,12 @@ fun MainScreenArtist(
 fun MainScreenArtistPreview() {
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
 
-        MainScreenArtist(navController = rememberNavController())
+
+        MainScreenArtist(
+            onTabSelected = {},
+            seeMoreClick = {},
+            viewModel = viewModel()
+        )
 
     }
 }
