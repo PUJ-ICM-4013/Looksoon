@@ -151,9 +151,19 @@ fun CreatePostScreen(navController: NavHostController) {
             )
         },
 
-        topBar = {
+
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             HeaderArtist(
-                section = "Descubre Eventos",
+                section = "Creación de Contenido",
                 iconLeft = Icons.Default.Menu,
                 iconRight = Icons.Default.Notifications,
                 contentDescriptionLeft = "Menú",
@@ -168,80 +178,75 @@ fun CreatePostScreen(navController: NavHostController) {
                     )
             );
 
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            // Logo and Welcome Text
-            Image(
-                painter = painterResource(id = R.drawable.logo_looksoon), // Replace with your logo
-                contentDescription = "App Logo",
-                modifier = Modifier.size(120.dp)
-            )
-            Text(
-                text = "¡Crear Publicacion/Obra!",
-                color = TextPrimary,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-            FileUploader(
-                progress = 0.62f,
-                remainingTime = "2:15",
-                onSelectAudio = {},
-                onSelectVideo = {},
-                onSelectPhoto = {}
-            )
-            // Campos de entrada
-            ReusableTextField(value = title, onValueChange = { title = it }, label = "Título")
-            ReusableTextField(value = description, onValueChange = { description = it }, label = "Descripción", singleLine = false)
+            Column(modifier = Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally){
 
-            ReusableDropdown(
-                label = "Categoría",
-                options = types,
-                selectedOption = type,
-                onOptionSelected = { type = it }
-            )
+                Spacer(modifier = Modifier.weight(1f))
+                // Logo and Welcome Text
+                Image(
+                    painter = painterResource(id = R.drawable.logo_looksoon), // Replace with your logo
+                    contentDescription = "App Logo",
+                    modifier = Modifier.size(120.dp)
+                )
+                Text(
+                    text = "¡Crear Publicacion/Obra!",
+                    color = TextPrimary,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                FileUploader(
+                    progress = 0.62f,
+                    remainingTime = "2:15",
+                    onSelectAudio = {},
+                    onSelectVideo = {},
+                    onSelectPhoto = {}
+                )
+                // Campos de entrada
+                ReusableTextField(value = title, onValueChange = { title = it }, label = "Título")
+                ReusableTextField(value = description, onValueChange = { description = it }, label = "Descripción", singleLine = false)
 
-            ReusableDropdown(
-                label = "Género musical",
-                options = genres,
-                selectedOption = genre,
-                onOptionSelected = { genre = it }
-            )
+                ReusableDropdown(
+                    label = "Categoría",
+                    options = types,
+                    selectedOption = type,
+                    onOptionSelected = { type = it }
+                )
 
-            ReusableTextField(
-                value = link,
-                onValueChange = { link = it },
-                label = "Enlace (Spotify, YouTube, etc.)",
+                ReusableDropdown(
+                    label = "Género musical",
+                    options = genres,
+                    selectedOption = genre,
+                    onOptionSelected = { genre = it }
+                )
+
+                ReusableTextField(
+                    value = link,
+                    onValueChange = { link = it },
+                    label = "Enlace (Spotify, YouTube, etc.)",
                 )
 
 
-            // TODO: agregar un ImagePicker composable
-            // ReusableImagePicker()
+                // TODO: agregar un ImagePicker composable
+                // ReusableImagePicker()
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            ButtonRoles(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                ButtonRoles(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
 
-                rol = "Publicar",
-                OnClick = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                    rol = "Publicar",
+                    OnClick = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
-                }
-            )
+                )
 
-            TextButton(onClick = { navController.popBackStack() }) {
-                Text("Cancelar")
+                TextButton(onClick = { navController.popBackStack() }) {
+                    Text("Cancelar")
+                }
+
             }
         }
     }

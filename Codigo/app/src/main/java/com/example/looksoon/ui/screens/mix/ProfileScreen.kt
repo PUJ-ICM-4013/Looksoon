@@ -44,24 +44,8 @@ fun ProfileScreen(
     selectedTab: String = "Perfil"
 ) {
     Scaffold(
-        topBar = {
-            HeaderArtist(
-                section = "Perfil",
-                iconLeft = Icons.Default.Menu,
-                iconRight = Icons.Default.Notifications,
-                contentDescriptionLeft = "Menú",
-                contentDescriptionRight = "Notificaciones",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.5.dp)
-                    .height(56.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(MaterialTheme.colorScheme.primary, Color.Black)
-                        )
-                    )
-            )
-        },
+
+
         bottomBar = {
             BottomNavBar(
                 selectedTab = selectedTab,
@@ -76,11 +60,26 @@ fun ProfileScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .padding(innerPadding) // ✅ Igual que MainScreenArtist
                 .fillMaxSize()
-                .background(Background)
+                .background(Background) // fondo principal negro o tu color del tema
                 .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
         ) {
+            HeaderArtist(
+                section = "Perfil",
+                iconLeft = Icons.Default.Menu,
+                iconRight = Icons.Default.Notifications,
+                contentDescriptionLeft = "Menú",
+                contentDescriptionRight = "Notificaciones",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(MaterialTheme.colorScheme.primary, Color.Black)
+                        )
+                    )
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

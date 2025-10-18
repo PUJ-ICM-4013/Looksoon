@@ -371,7 +371,7 @@ fun InteractiveMap(
     // 4. Mover la cámara cuando cambia la ubicación del usuario y 'followUser' es true
     LaunchedEffect(state.userLocation, state.followUser) {
         if (state.followUser && state.userLocation != null) {
-            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.userLocation!!, 16f))
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.userLocation!!, 14f))
         }
     }
 
@@ -379,7 +379,7 @@ fun InteractiveMap(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(400.dp) // <--- Altura de 400.dp solicitada
+            .height(400.dp) // <--- Altura de 400.dp
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -390,15 +390,7 @@ fun InteractiveMap(
             ),
             uiSettings = MapUiSettings(zoomControlsEnabled = true)
         ) {
-            // Marcador de ubicación actual (Opcional, ya que 'isMyLocationEnabled' hace el punto azul)
-            /*
-            state.userLocation?.let {
-                Marker(
-                    state = rememberMarkerState(position = it),
-                    title = "Tu ubicación actual"
-                )
-            }
-            */
+
 
             // Dibujar marcadores de búsqueda
             state.markers.forEach { (pos, title) ->
@@ -409,7 +401,6 @@ fun InteractiveMap(
             }
         }
 
-        // Puedes añadir un botón para buscar, alternar 'followUser' y la luz, etc.,
         // como en el código de referencia, superpuesto sobre el mapa.
 
         // Botón para centrar en el usuario y activar/desactivar seguimiento
@@ -436,8 +427,6 @@ fun InteractiveMap(
         }
     }
 }
-
-// Puedes borrar el Composable Map() original que solo tenía el Image.
 
 
 //Nav de navegacion (falta hacerlo reutilizable)

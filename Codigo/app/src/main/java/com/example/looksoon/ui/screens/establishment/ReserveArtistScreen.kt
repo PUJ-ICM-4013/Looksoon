@@ -65,28 +65,36 @@ val artists = listOf(
 @Composable
 fun ReserveArtistScreen(navController: NavController? = null) {
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
         bottomBar = {
             BottomBarReserve()
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                // 👇 Igual que MainScreenArtist: respetar padding del Scaffold
                 .padding(innerPadding)
                 .fillMaxSize()
+                .background(Color.Black)
         ) {
             HeReserve(
                 section = "Reservar Artista",
                 onBackClick = { navController?.popBackStack() }
             )
+
             SearchBarReserve()
+
             FiltersRowReserve(
                 filters = listOf("Pop", "Rock", "DJ", "Acústico", "Indie")
             )
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
+                // 👇 esto evita que el contenido choque con la barra inferior
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(artists) { artist ->
@@ -192,7 +200,7 @@ fun ArtistCardReserve(artist: Artist, navController: NavController? = null) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.jazz), // Ejemplo de imagen
+                    painter = painterResource(id = R.drawable.jazz),
                     contentDescription = artist.name,
                     modifier = Modifier
                         .size(72.dp)
@@ -249,26 +257,30 @@ fun ArtistCardReserve(artist: Artist, navController: NavController? = null) {
 // ---------------- BOTTOM BAR ----------------
 @Composable
 fun BottomBarReserve() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Black)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Black
     ) {
-        Text("Elige un artista para continuar", color = Color.Gray)
-        Box(
+        Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(
-                    Brush.horizontalGradient(listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8)))
-                )
-                .clickable { }
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-            contentAlignment = Alignment.Center
+                .navigationBarsPadding() // respeta el padding del sistema
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Continuar", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Elige un artista para continuar", color = Color.Gray)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        Brush.horizontalGradient(listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8)))
+                    )
+                    .clickable { }
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Continuar", color = Color.White, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
