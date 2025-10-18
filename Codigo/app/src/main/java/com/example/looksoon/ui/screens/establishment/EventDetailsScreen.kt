@@ -12,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +30,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.*
 
-// ---------------- PANTALLA ----------------
 @Composable
 fun EventDetailsScreen(navController: NavHostController) {
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             BottomBarEventDetails(total = "$—")
         }
@@ -41,13 +41,13 @@ fun EventDetailsScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(Background)
         ) {
             pageHeader(
                 section = "Detalles del evento",
-                onBackClick = {}
+                onBackClick = { navController.popBackStack() }
             )
 
             Text(
@@ -72,24 +72,21 @@ fun EventDetailsScreen(navController: NavHostController) {
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .align(Alignment.CenterHorizontally),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 InputFieldEDS(
                     label = "Fecha",
                     placeholder = "DD/MM/AAAA",
                     icon = Icons.Default.CalendarToday,
-                    modifier = Modifier
-                        .fillMaxWidth(0.92f)
-
+                    modifier = Modifier.weight(0.92f)
                 )
                 InputFieldEDS(
                     label = "Hora",
                     placeholder = "20:00",
                     icon = Icons.Default.AccessTime,
-                    modifier = Modifier
-                        .fillMaxWidth(0.92f)
+                    modifier = Modifier.weight(1f)
                 )
             }
 
@@ -122,7 +119,9 @@ fun EventDetailsScreen(navController: NavHostController) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            Spacer(Modifier.height(16.dp))
+            // Espacio adicional para evitar que el último campo
+            // quede detrás de la barra inferior
+            Spacer(Modifier.height(80.dp))
         }
     }
 }
@@ -176,21 +175,13 @@ fun InputFieldEDS(
             onValueChange = {},
             leadingIcon = { Icon(icon, contentDescription = null, tint = PurplePrimary) },
             label = {
-                Text(
-                    label,
-                    color = TextSecondary,
-                    fontSize = 12.sp // 🔑 Label más pequeño
-                )
+                Text(label, color = TextSecondary, fontSize = 12.sp)
             },
             placeholder = {
-                Text(
-                    placeholder,
-                    color = TextDisabled,
-                    fontSize = 12.sp // 🔑 Placeholder más pequeño
-                )
+                Text(placeholder, color = TextDisabled, fontSize = 12.sp)
             },
             singleLine = singleLine,
-            modifier = modifier.height(height), // ⬅️ ya no forzamos el ancho aquí
+            modifier = modifier.height(height),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = PurplePrimary,
                 unfocusedBorderColor = Divider,
@@ -243,26 +234,30 @@ fun ArtistSummaryCard() {
 // ---------------- BOTTOM BAR ----------------
 @Composable
 fun BottomBarEventDetails(total: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Background)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Background
     ) {
-        Text("Total: $total", color = TextSecondary)
-        Box(
+        Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(
-                    Brush.horizontalGradient(listOf(PurpleSecondary, PurplePrimary))
-                )
-                .clickable { }
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-            contentAlignment = Alignment.Center
+                .navigationBarsPadding() // evita que se superponga con los botones del sistema
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Enviar solicitud", color = TextPrimary, fontWeight = FontWeight.Bold)
+            Text("Total: $total", color = TextSecondary)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        Brush.horizontalGradient(listOf(PurpleSecondary, PurplePrimary))
+                    )
+                    .clickable { }
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Enviar solicitud", color = TextPrimary, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
