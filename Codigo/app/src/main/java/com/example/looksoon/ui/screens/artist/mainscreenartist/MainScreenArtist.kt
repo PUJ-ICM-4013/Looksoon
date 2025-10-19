@@ -22,6 +22,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +49,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
 import com.example.faunafinder.navigation.Screen
+import com.example.looksoon.utils.getSmartToolsForRole
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -67,7 +71,9 @@ import com.google.maps.android.compose.rememberMarkerState
 fun MainScreenArtist(
     onTabSelected: (String) -> Unit,
     seeMoreClick: () -> Unit,
-    viewModel: MainScreenArtistViewModel
+    viewModel: MainScreenArtistViewModel,
+    role: String = "Artista",
+    onSmartToolSelected: (String) -> Unit,
 ) {
 
     //Scaffold para pantalla completa y que no pueda extenderse de los límites
@@ -100,7 +106,9 @@ fun MainScreenArtist(
                         brush = Brush.verticalGradient(
                             colors = listOf(MaterialTheme.colorScheme.primary, Color.Black)
                         )
-                    )
+                    ),
+                role = role,
+                onSmartToolSelected = onSmartToolSelected
             );
             //Llamar Composable de Map
 
@@ -172,7 +180,9 @@ fun MainScreenArtistPreview() {
         MainScreenArtist(
             onTabSelected = {},
             seeMoreClick = {},
-            viewModel = viewModel()
+            viewModel = viewModel(),
+            role = "Artista",
+            onSmartToolSelected = {}
         )
 
     }
@@ -188,42 +198,81 @@ fun HeaderArtist(
     contentDescriptionLeft: String,
     contentDescriptionRight: String,
     iconRight: ImageVector,
-    onIconLeftClick: () -> Unit = {},
-    onIconRightClick: () -> Unit = {}
+    role: String = "Artista",
+    onSmartToolSelected: (String) -> Unit = {},
+    onIconRightClick: () -> Unit = {} // notificaciones
 ) {
-    Box(modifier = modifier) {
+    var expanded by remember { mutableStateOf(false) }
+    val smartTools = getSmartToolsForRole(role)
+
+    Box(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            //Icono izquierdo
-            IconButton(onClick = onIconLeftClick) {
-                Icon(iconLeft, contentDescription = contentDescriptionLeft, tint = Color.White)
+            // Icono izquierdo (menú dinámico)
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(
+                    imageVector = iconLeft,
+                    contentDescription = contentDescriptionLeft,
+                    tint = Color.White
+                )
             }
-            //Sapcer para centrar(necesario tener dos, uno antes y otro despues del composable a centrar)
-            Spacer(modifier = Modifier.weight(1f))
-            //Texto del Header
+
             Text(
                 text = section,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = Color.White
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
             )
-            //Spacer final de centrado de texto
-            Spacer(modifier = Modifier.weight(1f))
-            //Icono Gamification
-            IconButton(onClick = {}){
-                Icon(Icons.Default.Face, contentDescription = "Gamification", tint = Color.White)
-            }
-            //Icono derecho
+
             IconButton(onClick = onIconRightClick) {
-                Icon(iconRight, contentDescription =contentDescriptionRight, tint = Color.White)
+                Icon(
+                    imageVector = iconRight,
+                    contentDescription = contentDescriptionRight,
+                    tint = Color.White
+                )
+            }
+        }
+
+        // Menú desplegable con herramientas inteligentes
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(Color(0xFF1C1C1C))
+                .padding(vertical = 4.dp)
+        ) {
+            smartTools.forEach { tool ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = tool.name,
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = tool.icon,
+                            contentDescription = tool.name,
+                            tint = Color(0xFFB84DFF)
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onSmartToolSelected(tool.route)
+                    }
+                )
             }
         }
     }
 }
+
 
 //Composable para el Boton de Genero
 @Composable

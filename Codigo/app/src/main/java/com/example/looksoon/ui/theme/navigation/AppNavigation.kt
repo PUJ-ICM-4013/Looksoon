@@ -35,6 +35,10 @@ import com.example.looksoon.ui.screens.login_register.SignUpScreen
 import com.example.looksoon.ui.screens.login_register.forgot_password.ForgotPasswordViewModel
 import com.example.looksoon.ui.screens.login_register.login.LoginScreen
 import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
+import com.example.looksoon.ui.screens.smarttools.PerformanceAnalyzerScreen
+import com.example.looksoon.ui.screens.smarttools.SmartStoryCreatorScreen
+import com.example.looksoon.ui.screens.smarttools.tourtracker.TourTrackerIntelligenceScreen
+
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
@@ -88,6 +92,13 @@ sealed class Screen(val route: String) {
     object Curator: Screen("mainCurator")
 
     object CreatePost: Screen("create_post")
+
+    object TourTrackerIntelligence : Screen("tour_tracker_intelligence")
+
+    object SmartStoryCreator : Screen("smart_story_creator")
+
+    object PerformanceAnalyzer : Screen("performance_analyzer")
+
 
     //Crear Screens
 }
@@ -192,24 +203,70 @@ fun AppNavigation() {
 
 
         //Para pantallas de Artista
+        // Pantallas inteligentes del artista
+        composable(Screen.TourTrackerIntelligence.route) {
+            TourTrackerIntelligenceScreen(
+                onBack = { navController.popBackStack() },
+                onSmartToolSelected = { tool ->
+                    when (tool) {
+                        "tour_tracker" -> navController.navigate(Screen.TourTrackerIntelligence.route)
+                        "story_creator" -> navController.navigate(Screen.SmartStoryCreator.route)
+                        "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
+                    }
+                }
+            )
+        }
+
+        composable(Screen.SmartStoryCreator.route) {
+            SmartStoryCreatorScreen(
+                onBack = { navController.popBackStack() },
+                onSmartToolSelected = { tool ->
+                    when (tool) {
+                        "tour_tracker" -> navController.navigate(Screen.TourTrackerIntelligence.route)
+                        "story_creator" -> navController.navigate(Screen.SmartStoryCreator.route)
+                        "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
+                    }
+                }
+            )
+        }
+
+        composable(Screen.PerformanceAnalyzer.route) {
+            PerformanceAnalyzerScreen(
+                onBack = { navController.popBackStack() },
+                onSmartToolSelected = { tool ->
+                    when (tool) {
+                        "tour_tracker" -> navController.navigate(Screen.TourTrackerIntelligence.route)
+                        "story_creator" -> navController.navigate(Screen.SmartStoryCreator.route)
+                        "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
+                    }
+                }
+            )
+        }
+
 
         composable(Screen.Home.route) {
             val mainScreenArtistViewModel = viewModel<MainScreenArtistViewModel>()
             MainScreenArtist(
-            onTabSelected = {
-                    route ->
-                navController.navigate(route) {
-                    launchSingleTop = true
-                    popUpTo(Screen.Home.route)
+                onTabSelected = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                        popUpTo(Screen.Home.route)
+                    }
+                },
+                seeMoreClick = {},
+                viewModel = mainScreenArtistViewModel,
+                role = "Artista",
+                onSmartToolSelected = { tool ->
+                    when (tool) {
+                        "tour_tracker" -> navController.navigate(Screen.TourTrackerIntelligence.route)
+                        "story_creator" -> navController.navigate(Screen.SmartStoryCreator.route)
+                        "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
+                    }
                 }
-            },
-            seeMoreClick = {
-
-            },
-                viewModel = mainScreenArtistViewModel
+            )
+        }
 
 
-        ) }
 
 
         // Para forgot password
