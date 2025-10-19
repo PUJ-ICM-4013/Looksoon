@@ -62,11 +62,12 @@ fun CuratorScreen(
             item {
                 HeaderArtist(
                     section = "Curador",
+                    role = "Curador",
                     iconLeft = Icons.Default.ArrowBack,
                     iconRight = Icons.Default.Search,
                     contentDescriptionLeft = "Volver",
                     contentDescriptionRight = "Buscar",
-                    onIconLeftClick = onBackClick,
+                    onSmartToolSelected = {/*TODO: implementar */},
                     onIconRightClick = { /* acción buscar */ },
                     modifier = Modifier
                         .fillMaxWidth()

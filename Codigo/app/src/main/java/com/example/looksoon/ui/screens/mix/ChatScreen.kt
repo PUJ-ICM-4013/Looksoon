@@ -106,6 +106,7 @@ fun MessageInput(
 fun ChatScreen(
     navController: NavHostController,
     contactName: String,
+    role: String = "Artista"
 ) {
     var messages by remember {
         mutableStateOf(
@@ -144,7 +145,7 @@ fun ChatScreen(
                 contentDescriptionRight = "Opciones",
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp),
-                onIconLeftClick = { navController.popBackStack() }
+                role = role
             )
             LazyColumn(
                 modifier = Modifier
