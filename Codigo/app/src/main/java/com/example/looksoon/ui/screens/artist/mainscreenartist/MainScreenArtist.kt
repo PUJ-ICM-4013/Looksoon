@@ -1,9 +1,7 @@
 package com.example.looksoon.ui.screens.artist.mainscreenartist
 
-
 import android.Manifest
 import android.annotation.SuppressLint
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,14 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,22 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
-
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.looksoon.R
-import com.example.faunafinder.navigation.Screen
 import com.example.looksoon.utils.getSmartToolsForRole
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -56,17 +39,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapType
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
+import com.google.maps.android.compose.*
 
-
-
-//Composable para pantalla completa de MainScreenArtist
 @Composable
 fun MainScreenArtist(
     onTabSelected: (String) -> Unit,
@@ -75,24 +49,15 @@ fun MainScreenArtist(
     role: String = "Artista",
     onSmartToolSelected: (String) -> Unit,
 ) {
-
-    //Scaffold para pantalla completa y que no pueda extenderse de los límites
     Scaffold(
-        //Indicar que se tendrá abajo el Nav
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Inicio",
-
-                onTabSelected = {
-                    onTabSelected(it)
-
-                }
+                onTabSelected = onTabSelected
             )
         }
-        //Usar padding necesario al contenido para que no se salga de la pantalla
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            //Llamar Composable de Header Artist
             HeaderArtist(
                 section = "Descubre Eventos",
                 iconLeft = Icons.Default.Menu,
@@ -109,11 +74,8 @@ fun MainScreenArtist(
                     ),
                 role = role,
                 onSmartToolSelected = onSmartToolSelected
-            );
-            //Llamar Composable de Map
-
-            InteractiveMap()
-            //Llamar Composable de FiltersRow(Conjunto de botones)
+            )
+            InteractiveMap(viewModel = viewModel)
             FiltersRow(
                 buttons = listOf(
                     { GenreChip("Rock", onClick = {}) },
@@ -121,75 +83,136 @@ fun MainScreenArtist(
                     { GenreChip("Jazz", onClick = {}) },
                     { GenreChip("Alternativa", onClick = {}) },
                     { GenreChip("Balada", onClick = {}) }
-
                 )
             )
-            //LazyColumn para mostrar la lista de eventos(Falta hacerlo dinámico con datos)
             LazyColumn(
-                    modifier = Modifier
-
-                        .fillMaxSize()
-                    ) {
-
+                modifier = Modifier.fillMaxSize()
+            ) {
                 item {
                     EventCard(
                         title = "Concierto de Jazz",
                         date = "2022-01-01",
                         location = "New York",
                         imagePainter = painterResource(id = R.drawable.jazz),
-
                         onSeeMoreClick = {}
-
-                    )
-                }
-                item {
-                    EventCard(
-                        title = "Concierto de Rock",
-                        date = "2022-01-02",
-                        location = "Los Angeles",
-                        imagePainter = painterResource(id = R.drawable.jazz),
-
-                        onSeeMoreClick = {}
-
-                    )
-                }
-                item {
-                    EventCard(
-                        title = "Concierto de Rock",
-                        date = "2022-01-02",
-                        location = "Los Angeles",
-                        imagePainter = painterResource(id = R.drawable.jazz),
-
-                        onSeeMoreClick = {}
-
                     )
                 }
             }
-
         }
-
     }
 }
-//Visualización de la pantalla
+
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
+@Composable
+fun InteractiveMap(
+    viewModel: MainScreenArtistViewModel,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
+    val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+
+    DisposableEffect(Unit) {
+        viewModel.setupLocationClient(context)
+        onDispose { viewModel.stopLocationUpdates() }
+    }
+    LaunchedEffect(locationPermission.status.isGranted) {
+        if (locationPermission.status.isGranted) {
+            viewModel.startLocationUpdates(true, context)
+        } else {
+            locationPermission.launchPermissionRequest()
+        }
+    }
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(state.userLocation ?: LatLng(4.648, -74.247), 12f)
+    }
+    val userLocation = state.userLocation
+    LaunchedEffect(userLocation, state.followUser) {
+        if (state.followUser && userLocation != null) {
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+        }
+    }
+
+    Box(
+        modifier = modifier.fillMaxWidth().height(400.dp)
+    ) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(isMyLocationEnabled = locationPermission.status.isGranted),
+            uiSettings = MapUiSettings(zoomControlsEnabled = true),
+            onMapLongClick = { latLng -> viewModel.calculateRoute(latLng) }
+        ) {
+            // Dibuja la ruta si existe
+            if (state.routePoints.isNotEmpty()) {
+                Polyline(
+                    points = state.routePoints,
+                    color = Color(0xFFB84DFF),
+                    width = 15f
+                )
+            }
+        }
+
+        // Botones y Snackbar
+        Button(
+            onClick = { viewModel.toggleFollowUser(!state.followUser) },
+            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = if (state.followUser) Color(0xFFB84DFF) else Color.Gray)
+        ) {
+            Icon(Icons.Default.LocationOn, contentDescription = "Seguir Ubicación")
+        }
+
+        if (state.routePoints.isNotEmpty()) {
+            Button(
+                onClick = { viewModel.clearRoute() },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Limpiar Ruta")
+            }
+        }
+
+        val errorMessage = state.errorMessage
+        if (errorMessage != null) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter).padding(16.dp),
+                action = { TextButton(onClick = { viewModel.clearErrorMessage() }) { Text("OK") } }
+            ) {
+                Text(text = errorMessage)
+            }
+        }
+    }
+}
+
+// --- PREVIEW CORREGIDA Y CLASE FALSA ---
+
 @Preview
 @Composable
 fun MainScreenArtistPreview() {
-    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-
-
+    com.example.looksoon.ui.theme.LooksoonTheme {
         MainScreenArtist(
             onTabSelected = {},
             seeMoreClick = {},
-            viewModel = viewModel(),
+            // Usamos la clase falsa para que la Preview no falle
+            viewModel = FakeMainScreenArtistViewModel(),
             role = "Artista",
             onSmartToolSelected = {}
         )
-
     }
 }
 
-//Composable para el Header Artist
-//Se envía info por parametro para que sea reutilizable
+/**
+ * Implementación FALSA del ViewModel que solo se usa para que las
+ * @Previews de Jetpack Compose puedan funcionar sin crashear.
+ * No contiene lógica real.
+ */
+class FakeMainScreenArtistViewModel : MainScreenArtistViewModel() {
+    // No necesita contenido, solo heredar del ViewModel real.
+}
+
+// --- OTROS COMPOSABLES (SIN CAMBIOS) ---
+
 @Composable
 fun HeaderArtist(
     section: String,
@@ -200,7 +223,7 @@ fun HeaderArtist(
     iconRight: ImageVector,
     role: String = "Artista",
     onSmartToolSelected: (String) -> Unit = {},
-    onIconRightClick: () -> Unit = {} // notificaciones
+    onIconRightClick: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     val smartTools = getSmartToolsForRole(role)
@@ -213,7 +236,6 @@ fun HeaderArtist(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Icono izquierdo (menú dinámico)
             IconButton(onClick = { expanded = !expanded }) {
                 Icon(
                     imageVector = iconLeft,
@@ -221,7 +243,6 @@ fun HeaderArtist(
                     tint = Color.White
                 )
             }
-
             Text(
                 text = section,
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -229,7 +250,6 @@ fun HeaderArtist(
                     fontWeight = FontWeight.Bold
                 )
             )
-
             IconButton(onClick = onIconRightClick) {
                 Icon(
                     imageVector = iconRight,
@@ -238,8 +258,6 @@ fun HeaderArtist(
                 )
             }
         }
-
-        // Menú desplegable con herramientas inteligentes
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -273,8 +291,6 @@ fun HeaderArtist(
     }
 }
 
-
-//Composable para el Boton de Genero
 @Composable
 fun GenreChip(text: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Box(
@@ -293,7 +309,6 @@ fun GenreChip(text: String, modifier: Modifier = Modifier, onClick: () -> Unit =
     }
 }
 
-//Boton para distancia
 @Composable
 fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Row(
@@ -309,13 +324,12 @@ fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, o
         Text(text = text, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
-//Enviar lista de botones por parámetro
-//Fila con todos los botones
+
 @Composable
 fun FiltersRow(
     modifier: Modifier = Modifier,
     buttons: List<@Composable () -> Unit>
-    ) {
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -324,15 +338,12 @@ fun FiltersRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterChip("Distancia", icon = Icons.Default.LocationOn)
-        //Colocar el conjunto de funciones
         buttons.forEach { button ->
             button()
         }
-
     }
 }
 
-//Tarjetas de evento
 @Composable
 fun EventCard(title: String, date: String, location: String, imagePainter: Painter, onSeeMoreClick: () -> Unit) {
     Card(
@@ -377,108 +388,6 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
     }
 }
 
-//Mapa
-
-
-// Borra tu Composable 'Map()' anterior y usa este
-// Composable para el mapa interactivo con la lógica de 400.dp
-@OptIn(ExperimentalPermissionsApi::class)
-@SuppressLint("MissingPermission")
-@Composable
-fun InteractiveMap(
-    viewModel: MainScreenArtistViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    val state by viewModel.state.collectAsState()
-    val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-
-    // 1. Inicializar el cliente de ubicación
-    DisposableEffect(Unit) {
-        viewModel.setupLocationClient(context)
-        onDispose {
-            viewModel.stopLocationUpdates()
-        }
-    }
-
-    // 2. Iniciar las actualizaciones de ubicación si el permiso está garantizado
-    LaunchedEffect(locationPermission.status.isGranted) {
-        if (locationPermission.status.isGranted) {
-            viewModel.startLocationUpdates(true, context)
-        } else {
-            // Solicitar el permiso (si aún no se ha solicitado o fue negado anteriormente)
-            locationPermission.launchPermissionRequest()
-        }
-    }
-
-    // 3. Posición inicial de la cámara (por ejemplo, una ubicación central si no hay ubicación de usuario)
-    val initialPos = LatLng(4.6486259, -74.2478962) // Ejemplo: Bogotá
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(state.userLocation ?: initialPos, 12f)
-    }
-
-    // 4. Mover la cámara cuando cambia la ubicación del usuario y 'followUser' es true
-    LaunchedEffect(state.userLocation, state.followUser) {
-        if (state.followUser && state.userLocation != null) {
-            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.userLocation!!, 14f))
-        }
-    }
-
-    // 5. El Composable del Mapa
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(400.dp) // <--- Altura de 400.dp
-    ) {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = MapProperties(
-                isMyLocationEnabled = locationPermission.status.isGranted, // Muestra el punto azul nativo
-                mapType = if (state.isDarkTheme) MapType.HYBRID else MapType.NORMAL // Lógica de modo oscuro si la implementas
-            ),
-            uiSettings = MapUiSettings(zoomControlsEnabled = true)
-        ) {
-
-
-            // Dibujar marcadores de búsqueda
-            state.markers.forEach { (pos, title) ->
-                Marker(
-                    state = rememberMarkerState(position = pos),
-                    title = title
-                )
-            }
-        }
-
-        // como en el código de referencia, superpuesto sobre el mapa.
-
-        // Botón para centrar en el usuario y activar/desactivar seguimiento
-        Button(
-            onClick = { viewModel.toggleFollowUser(!state.followUser) },
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = if (state.followUser) Color(0xFFB84DFF) else Color.Gray)
-        ) {
-            Icon(Icons.Default.LocationOn, contentDescription = "Seguir Ubicación")
-        }
-
-        // Muestra un mensaje si el permiso no está concedido
-        if (state.errorMessage != null) {
-            Text(
-                text = state.errorMessage!!,
-                color = Color.Red,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .background(Color.White)
-                    .padding(8.dp)
-            )
-        }
-    }
-}
-
-
-//Nav de navegacion (falta hacerlo reutilizable)
 @Composable
 fun BottomNavBar(
     selectedTab: String,
@@ -516,35 +425,5 @@ fun BottomNavBar(
                 }
             )
         }
-    }
-}
-
-
-//Dialog genérico
-@Composable
-fun MinimalDialog(onDismissRequest: () -> Unit) {
-    Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text(
-                text = "This is a minimal dialog",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center),
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}
-@Preview
-@Composable
-fun MinimalDialogPreview() {
-    _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
-        MinimalDialog(onDismissRequest = {})
     }
 }
