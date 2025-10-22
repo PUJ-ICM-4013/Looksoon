@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "489349491933",
+    "project_id": "looksoon-c6f48",
+    "storage_bucket": "looksoon-c6f48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489349491933:android:cefcda5b32b92b9ce5bf34",
+        "android_client_info": {
+          "package_name": "com.example.looksoon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZyhIuVMQPZvo-klClXQieC0KKMve2mBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
