@@ -156,3 +156,84 @@ La aplicación está organizada en **módulos funcionales**, que se integran seg
 
 ![Android Studio](https://img.shields.io/badge/Android_Studio-3DDC84?style=for-the-badge&logo=android-studio&logoColor=white)  
 ![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?style=for-the-badge&logo=kotlin&logoColor=white)
+
+---
+
+## SEGUNDA ENTREGA
+
+---
+
+# 📱 Uso de Sensores y Hardware en Looksoon
+
+En **Looksoon**, los sensores del dispositivo se integran para ofrecer experiencias inteligentes y funciones avanzadas de monitoreo y localización en tiempo real.
+
+---
+
+## 🎚️ Monitoreo de Desempeño y Entorno del Artista
+
+| Sensor | Función | Ejemplo de Uso |
+|--------|----------|----------------|
+| **Acelerómetro** | Mide el movimiento del artista. | Detecta intensidad de movimiento o energía escénica. |
+| **Magnetómetro** | Calcula la orientación del dispositivo. | Ajusta la visualización del escenario según posición. |
+| **GPS** | Obtiene ubicación en tiempo real. | Muestra el lugar exacto del evento o la ruta del artista. |
+| **Sensor de Luz** | Registra la intensidad lumínica. | Adapta el modo visual o reporta condiciones del entorno. |
+
+> Los resultados se muestran en **barras de progreso dinámicas** y **paneles de entorno**, generando una vista de rendimiento interactiva.
+
+---
+
+## 🗺️ Localización y Mapas
+
+El sistema de mapas utiliza **Google Maps API** para mostrar marcadores asociados a cada usuario (artista, local o evento).  
+Desde el menú principal, los usuarios pueden:
+
+- Visualizar su ubicación en tiempo real.  
+- Crear rutas hacia un evento o local.  
+- Seguir trayectorias entre dos puntos del mapa.  
+
+> Esta funcionalidad mejora la experiencia de exploración y navegación dentro de la aplicación.
+
+---
+
+## 🚗 Rutas entre Dos Puntos
+
+Una de las características destacadas de Looksoon es la **generación dinámica de rutas** entre el usuario y diferentes marcadores dentro del mapa.  
+Esto permite:
+
+- Calcular **distancias y trayectorias**.  
+- Facilitar la **movilidad de los artistas** hacia los locales.  
+- Mostrar **indicaciones visuales en tiempo real**.
+
+---
+
+## ⚙️ Acceso a Hardware
+
+La aplicación solicita permisos esenciales para operar correctamente, garantizando control y transparencia al usuario:
+
+| Componente | Permiso | Propósito |
+|-------------|----------|-----------|
+| **Ubicación (GPS)** | `ACCESS_FINE_LOCATION` | Localizar artistas y eventos en el mapa. |
+| **Cámara / Galería** | `CAMERA`, `READ_EXTERNAL_STORAGE` | Capturar o seleccionar imágenes de perfil o publicaciones. |
+| **Almacenamiento Interno** | `WRITE_EXTERNAL_STORAGE` | Guardar configuraciones y contenido temporal. |
+
+> Los permisos se solicitan mediante los diálogos nativos de Android, reforzando la seguridad y la experiencia del usuario.
+
+---
+
+## 🔒 Autenticación Segura
+
+El sistema de inicio de sesión se implementa con **Firebase Authentication**, ofreciendo:
+
+- Registro y login con roles diferenciados.  
+- Recuperación de contraseñas mediante correo electrónico.  
+- Manejo de sesiones seguras con validación automática.
+
+---
+
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com/?lines=Sensores;Firebase;Google%20Maps;Autenticación;Permisos%20de%20Hardware;Monitoreo%20en%20tiempo%20real&center=true&width=650&height=45">
+</p>
+
+---
+
+
