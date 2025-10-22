@@ -165,13 +165,10 @@ La aplicación está organizada en **módulos funcionales**, que se integran seg
   <img src="https://readme-typing-svg.herokuapp.com/?lines=Sensores;Firebase;Google%20Maps;Autenticación;Permisos%20de%20Hardware;Monitoreo%20en%20tiempo%20real&center=true&width=650&height=45">
 </p>
 
----
 
 # 📱 Uso de Sensores y Hardware en Looksoon
 
 En **Looksoon**, los sensores del dispositivo se integran para ofrecer experiencias inteligentes y funciones avanzadas de monitoreo y localización en tiempo real.
-
----
 
 ## 🎚️ Monitoreo de Desempeño y Entorno del Artista
 
