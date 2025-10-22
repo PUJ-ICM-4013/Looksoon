@@ -161,6 +161,10 @@ La aplicación está organizada en **módulos funcionales**, que se integran seg
 
 ## SEGUNDA ENTREGA
 
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com/?lines=Sensores;Firebase;Google%20Maps;Autenticación;Permisos%20de%20Hardware;Monitoreo%20en%20tiempo%20real&center=true&width=650&height=45">
+</p>
+
 ---
 
 # 📱 Uso de Sensores y Hardware en Looksoon
@@ -228,12 +232,5 @@ El sistema de inicio de sesión se implementa con **Firebase Authentication**, o
 - Recuperación de contraseñas mediante correo electrónico.  
 - Manejo de sesiones seguras con validación automática.
 
----
-
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?lines=Sensores;Firebase;Google%20Maps;Autenticación;Permisos%20de%20Hardware;Monitoreo%20en%20tiempo%20real&center=true&width=650&height=45">
-</p>
-
----
 
 
