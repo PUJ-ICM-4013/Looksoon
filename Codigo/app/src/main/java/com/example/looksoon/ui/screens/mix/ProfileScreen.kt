@@ -37,15 +37,17 @@ import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.theme.*
+import coil.compose.rememberAsyncImagePainter
+import com.example.looksoon.ui.viewmodels.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
+    profileViewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     selectedTab: String = "Perfil"
-) {
+)
+{
     Scaffold(
-
-
         bottomBar = {
             BottomNavBar(
                 selectedTab = selectedTab,
@@ -98,7 +100,11 @@ fun ProfileScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
-                                painter = painterResource(id = R.drawable.foto),
+                                painter = if (profileViewModel.profileImageUri.value != null) {
+                                    rememberAsyncImagePainter(profileViewModel.profileImageUri.value)
+                                } else {
+                                    painterResource(id = R.drawable.foto)
+                                },
                                 contentDescription = "Foto de perfil",
                                 modifier = Modifier
                                     .size(80.dp)
@@ -106,6 +112,8 @@ fun ProfileScreen(
                                     .border(2.dp, PurplePrimary, CircleShape),
                                 contentScale = ContentScale.Crop
                             )
+
+
 
                             Spacer(modifier = Modifier.width(16.dp))
                             Column {
@@ -266,9 +274,11 @@ fun ProfileInfoItem(label: String, value: String, icon: ImageVector) {
         }
     }
 }
-
+// ✅ PREVIEW corregido
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen(navController = rememberNavController())
+    val navController = rememberNavController()
+    val profileViewModel = androidx.lifecycle.viewmodel.compose.viewModel<ProfileViewModel>()
+    ProfileScreen(navController = navController, profileViewModel = profileViewModel)
 }

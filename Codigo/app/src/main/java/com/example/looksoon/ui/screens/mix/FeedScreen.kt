@@ -40,8 +40,17 @@ import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 
+import android.net.Uri
+import androidx.compose.runtime.remember
+import coil.compose.rememberAsyncImagePainter
+import com.example.looksoon.ui.viewmodels.PostViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+
+
 @Composable
-fun FeedScreen(navController: NavHostController) {
+fun FeedScreen(navController: NavHostController, postViewModel: PostViewModel) {
+    //val postViewModel: PostViewModel = viewModel()
 
     Scaffold (
         bottomBar = {
@@ -74,7 +83,8 @@ fun FeedScreen(navController: NavHostController) {
                     )
             )
             StoriesRow()
-            PostList(navController = navController)
+            PostList(navController = navController, postViewModel = postViewModel)
+
         }
     }
 }
@@ -216,61 +226,133 @@ fun PostButton(label: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun PostCard(post: PostData, navController: NavHostController) {
+fun PostCard(
+    post: PostData,
+    navController: NavHostController,
+    postViewModel: PostViewModel // ← Agrega este parámetro para acceder al último post
+) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp, horizontal = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp, horizontal = 12.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = BorderStroke(width = 2.dp, color = colorScheme.primary)
     ) {
         Column(modifier = Modifier.background(colorScheme.surface)) {
+
             // --- LÓGICA DE NAVEGACIÓN AL PERFIL ---
-            Box(modifier = Modifier.clickable {
-                // Navega al perfil del usuario, pasando un ID de ejemplo (el nombre del usuario)
-                //navController.navigate(Screen.UserProfile.route.replace("{userId}", post.userName))
-            }) {
-                PostHeader(userName = post.userName, userImage = post.userImage, date = post.date)
+            Box(
+                modifier = Modifier.clickable {
+                    // Navega al perfil del usuario, pasando un ID de ejemplo (el nombre del usuario)
+                    // navController.navigate(Screen.UserProfile.route.replace("{userId}", post.userName))
+                }
+            ) {
+                PostHeader(
+                    userName = post.userName,
+                    userImage = post.userImage,
+                    date = post.date
+                )
             }
 
-            // Contenido dinámico
+            // --- CONTENIDO DEL POST ---
             post.text?.let { PostText(it) }
+
+            // 🟣 Mostrar imagen del post existente (por recurso local)
             post.image?.let { PostImage(it) }
-            post.buttonLabel?.let {
-                post.onButtonClick?.let { action -> PostButton(it, action) }
+
+            // 🟣 Mostrar imagen desde galería/cámara si el usuario es "Tú"
+            if (post.image == null && post.userName == "Tú") {
+                val lastPost = postViewModel.posts.lastOrNull()
+                lastPost?.imageUri?.let { PostImageFromUri(it) }
             }
 
-            // --- LÓGICA DE NAVEGACIÓN A COMENTARIOS ---
+            // --- BOTÓN PERSONALIZADO (si aplica) ---
+            post.buttonLabel?.let { label ->
+                post.onButtonClick?.let { action ->
+                    PostButton(label, action)
+                }
+            }
+
+            // --- FOOTER (reacciones, comentarios, compartir) ---
             PostFooter(
-                onLikeClick = { },
+                onLikeClick = { /* Acción de like */ },
                 onCommentClick = {
                     // Navega a la pantalla de comentarios, pasando un ID de ejemplo
-                    //navController.navigate(Screen.PostComments.route.replace("{postId}", "123"))
+                    // navController.navigate(Screen.PostComments.route.replace("{postId}", "123"))
                 },
-                onShareClick = { }
+                onShareClick = { /* Acción de compartir */ }
             )
         }
     }
 }
 
+
 @Composable
-fun PostList(navController: NavHostController) {
-    val posts = listOf(
+fun PostList(navController: NavHostController, postViewModel: PostViewModel) {
+    // Posts "fijos" iniciales
+    val fixedPosts = listOf(
         PostData("Luna", R.drawable.logo_looksoon, "Hoy, 9:00 am", text = "Hoy inicia nuestra nueva convocatoria para artistas digitales 🎨🚀"),
         PostData("Rastro", R.drawable.logo_looksoon, "Ayer, 6:30 pm", image = R.drawable.logocompleto_looksoon),
         PostData("Neón", R.drawable.logo_looksoon, "Hace 2 días", text = "Les comparto esta captura de nuestro último evento!", image = R.drawable.logocompleto_looksoon),
         PostData("Venus", R.drawable.logo_looksoon, "Hace 3 días", text = "Convocatoria abierta para participar en el festival 🌟", image = R.drawable.logocompleto_looksoon, buttonLabel = "Ir a la convocatoria", onButtonClick = { })
     )
 
+    // Combina posts fijos con los posts nuevos del usuario
+    val allPosts = fixedPosts + postViewModel.posts.map { userPost ->
+        PostData(
+            userName = "Tú",
+            userImage = R.drawable.logo_looksoon,
+            date = "Ahora mismo",
+            text = userPost.description,
+            image = userPost.imageUri?.let { null } // O adapta PostImageFromUri para mostrar Uri
+        )
+    }
+
     LazyColumn {
-        items(posts) { post ->
-            PostCard(post = post, navController = navController)
+        items(allPosts) { post ->
+            PostCard(
+                post = post,
+                navController = navController,
+                postViewModel = postViewModel
+            )
         }
     }
 }
 
-@Preview
+
+@Composable
+fun PostImageFromUri(uri: Uri) {
+    Image(
+        painter = rememberAsyncImagePainter(uri),
+        contentDescription = "Imagen del post",
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        contentScale = ContentScale.Crop
+    )
+}
+
+
+@Preview(showBackground = true)
 @Composable
 fun PostListPreview() {
-    PostList(navController = rememberNavController())
+    val navController = rememberNavController()
+
+    // Simulamos un PostViewModel
+    val postViewModel = remember {
+        PostViewModel().apply {
+            addPost("Mi primera publicación", "Este es un post de prueba", null)
+        }
+    }
+
+    PostList(navController = navController, postViewModel = postViewModel)
 }
+
+
+
+
+

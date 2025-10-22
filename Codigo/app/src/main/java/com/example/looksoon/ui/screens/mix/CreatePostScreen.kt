@@ -1,5 +1,6 @@
 package com.example.looksoon.ui.screens.mix
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +50,16 @@ import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.screens.login_register.ButtonRoles
 import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.TextPrimary
+
+import android.app.AlertDialog
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.draw.clip
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import com.example.looksoon.ui.viewmodels.PostViewModel
+
 
 @Composable
 fun ReusableTextField(
@@ -127,7 +139,8 @@ fun PrimaryButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreatePostScreen(navController: NavHostController) {
+fun CreatePostScreen(navController: NavHostController,
+                     postViewModel: PostViewModel) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var genre by remember { mutableStateOf("") }
@@ -136,6 +149,22 @@ fun CreatePostScreen(navController: NavHostController) {
 
     val genres = listOf("Rock", "Pop", "Jazz", "Electrónica", "Clásica", "Hip-Hop")
     val types = listOf("Publicación", "Historia", "Obra musical")
+
+    val context = LocalContext.current
+   // val postViewModel: PostViewModel = viewModel()
+    val selectedImageUri = postViewModel.selectedImageUri
+
+    val takePhotoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+        bitmap?.let {
+            val uri = postViewModel.saveBitmapToCache(context, it)
+            postViewModel.setImage(uri)
+        }
+    }
+
+    val pickMediaLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        postViewModel.setImage(uri)
+    }
+
 
     Scaffold(
 
@@ -200,8 +229,22 @@ fun CreatePostScreen(navController: NavHostController) {
                     remainingTime = "2:15",
                     onSelectAudio = {},
                     onSelectVideo = {},
-                    onSelectPhoto = {}
+                    onSelectPhoto = {
+                        val options = listOf("Tomar foto", "Elegir de galería")
+                        AlertDialog.Builder(context)
+                            .setTitle("Seleccionar imagen")
+                            .setItems(options.toTypedArray()) { _, which ->
+                                when (which) {
+                                    0 -> takePhotoLauncher.launch(null)
+                                    1 -> pickMediaLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                }
+                            }
+                            .show()
+                    }
                 )
+
                 // Campos de entrada
                 ReusableTextField(value = title, onValueChange = { title = it }, label = "Título")
                 ReusableTextField(value = description, onValueChange = { description = it }, label = "Descripción", singleLine = false)
@@ -232,16 +275,31 @@ fun CreatePostScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                selectedImageUri.value?.let { uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Imagen seleccionada",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
+                    )
+                }
+
+
                 ButtonRoles(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-
                     rol = "Publicar",
                     OnClick = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                        postViewModel.addPost(title, description, selectedImageUri.value)
+                        navController.navigate(Screen.Feed.route) {
+                            launchSingleTop = true
                         }
                     }
                 )
+
+
 
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text("Cancelar")
@@ -252,13 +310,7 @@ fun CreatePostScreen(navController: NavHostController) {
     }
 }
 
-@Preview
-@Composable
-fun CreatePostScreenPreview() {
-    LooksoonTheme {
-        CreatePostScreen(navController = rememberNavController())
-    }
-}
+
 
 
 
@@ -369,4 +421,27 @@ fun FileUploaderPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun CreatePostScreenPreview() {
+    val navController = rememberNavController()
+
+    // Simulamos un PostViewModel con datos de prueba
+    val postViewModel = remember {
+        PostViewModel().apply {
+            addPost(
+                title = "Post de prueba",
+                description = "Descripción de ejemplo",
+                imageUri = null
+            )
+        }
+    }
+
+    CreatePostScreen(
+        navController = navController,
+        postViewModel = postViewModel
+    )
+}
+
 

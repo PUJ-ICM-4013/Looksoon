@@ -38,6 +38,8 @@ import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
 import com.example.looksoon.ui.screens.smarttools.PerformanceAnalyzerScreen
 import com.example.looksoon.ui.screens.smarttools.SmartStoryCreatorScreen
 import com.example.looksoon.ui.screens.smarttools.tourtracker.TourTrackerIntelligenceScreen
+import com.example.looksoon.ui.viewmodels.PostViewModel
+import com.example.looksoon.ui.viewmodels.ProfileViewModel
 
 
 sealed class Screen(val route: String) {
@@ -106,6 +108,9 @@ sealed class Screen(val route: String) {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    // ✅ ViewModel compartido entre pantallas de perfil
+    val profileViewModel: ProfileViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         //Inicio de Sesion y Registro
@@ -286,10 +291,15 @@ fun AppNavigation() {
 
         composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
-        composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
+        composable(Screen.Perfil.route) {
+            ProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
+        }
 
 
-        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
+        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController , postViewModel = postViewModel) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
@@ -299,17 +309,36 @@ fun AppNavigation() {
         composable(Screen.ManageApplications.route) { ManageApplicationsScreen(navController = navController) }
         composable(Screen.ReservationDetail.route) { ReservationDetailScreen(navController = navController) }
 
+        composable(Screen.Perfil.route) {
+            ProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
+        }
+
         //Colocar composable de cad screen
         composable(Screen.Editar.route) {
             EditProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel,
                 onBackClick = { navController.popBackStack() },
-                onSaveClick = {
-                    navController.popBackStack()
-                }
+                onSaveClick = { navController.popBackStack() }
             )
         }
-        composable(Screen.Feed.route) { FeedScreen(navController = navController) }
 
+        composable(Screen.Feed.route) {
+            FeedScreen(
+                navController = navController,
+                postViewModel = postViewModel
+            )
+        }
+
+        composable(Screen.CreatePost.route) {
+            CreatePostScreen(
+                navController = navController,
+                postViewModel = postViewModel
+            )
+        }
 
 
 
@@ -324,6 +353,6 @@ fun AppNavigation() {
 
         composable(Screen.Curator.route) { CuratorScreen() }
 
-        composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController) }
+
     }
 }
