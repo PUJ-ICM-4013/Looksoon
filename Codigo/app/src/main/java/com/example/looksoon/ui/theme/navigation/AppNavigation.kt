@@ -328,9 +328,18 @@ fun AppNavigation() {
         composable(Screen.ManageApplications.route) { ManageApplicationsScreen(navController = navController) }
         composable(Screen.ReservationDetail.route) { ReservationDetailScreen(navController = navController) }
 
+        composable(Screen.Perfil.route) {
+            ProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
+        }
+
         //Colocar composable de cad screen
         composable(Screen.Editar.route) {
             EditProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel,
                 onBackClick = { navController.popBackStack() },
                 onSaveClick = {
                     navController.popBackStack()
@@ -339,6 +348,12 @@ fun AppNavigation() {
         }
         composable(Screen.Feed.route) { FeedScreen(navController = navController) }
 
+        composable(Screen.CreatePost.route) {
+            CreatePostScreen(
+                navController = navController,
+                postViewModel = postViewModel
+            )
+        }
 
 
 
