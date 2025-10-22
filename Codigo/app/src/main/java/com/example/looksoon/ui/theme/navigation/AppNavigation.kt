@@ -39,6 +39,8 @@ import com.example.looksoon.ui.screens.smarttools.PerformanceAnalyzerScreen
 import com.example.looksoon.ui.screens.smarttools.SmartStoryCreatorScreen
 import com.example.looksoon.ui.screens.smarttools.tourtracker.TourTrackerIntelligenceScreen
 import com.example.looksoon.ui.screens.login_register.viewmodels.SignUpViewModel // <-- ¡IMPORTANTE!
+import com.example.looksoon.ui.viewmodels.PostViewModel
+import com.example.looksoon.ui.viewmodels.ProfileViewModel
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
@@ -106,6 +108,8 @@ sealed class Screen(val route: String) {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val profileViewModel: ProfileViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel()
 
     val signUpViewModel = viewModel<SignUpViewModel>()
     NavHost(navController = navController, startDestination = Screen.Login.route) {
@@ -318,7 +322,9 @@ fun AppNavigation() {
         composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
 
 
-        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController) }
+        composable(Screen.Publicar.route) { CreatePostScreen(navController = navController,
+            postViewModel = postViewModel
+            ) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
@@ -346,7 +352,9 @@ fun AppNavigation() {
                 }
             )
         }
-        composable(Screen.Feed.route) { FeedScreen(navController = navController) }
+        composable(Screen.Feed.route) { FeedScreen(navController = navController,
+            postViewModel = postViewModel
+            ) }
 
         composable(Screen.CreatePost.route) {
             CreatePostScreen(
@@ -368,6 +376,8 @@ fun AppNavigation() {
 
         composable(Screen.Curator.route) { CuratorScreen() }
 
-        composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController) }
+        composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController,
+            postViewModel = postViewModel
+            ) }
     }
 }

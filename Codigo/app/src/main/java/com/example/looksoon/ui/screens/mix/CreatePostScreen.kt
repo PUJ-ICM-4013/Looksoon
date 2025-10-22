@@ -151,7 +151,7 @@ fun CreatePostScreen(navController: NavHostController,
     val types = listOf("Publicación", "Historia", "Obra musical")
 
     val context = LocalContext.current
-   // val postViewModel: PostViewModel = viewModel()
+    // val postViewModel: PostViewModel = viewModel()
     val selectedImageUri = postViewModel.selectedImageUri
 
     val takePhotoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
@@ -181,7 +181,7 @@ fun CreatePostScreen(navController: NavHostController,
         },
 
 
-    ) { padding ->
+        ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -443,5 +443,4 @@ fun CreatePostScreenPreview() {
         postViewModel = postViewModel
     )
 }
-
 
