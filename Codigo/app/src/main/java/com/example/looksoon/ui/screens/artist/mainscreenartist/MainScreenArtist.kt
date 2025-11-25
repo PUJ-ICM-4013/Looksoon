@@ -58,6 +58,7 @@ fun MainScreenArtist(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+
             HeaderArtist(
                 section = "Descubre Eventos",
                 iconLeft = Icons.Default.Menu,
@@ -69,32 +70,81 @@ fun MainScreenArtist(
                     .height(56.dp)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(MaterialTheme.colorScheme.primary, Color.Black)
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                Color.Black
+                            )
                         )
                     ),
                 role = role,
                 onSmartToolSelected = onSmartToolSelected
             )
+
             InteractiveMap(viewModel = viewModel)
+
             FiltersRow(
                 buttons = listOf(
-                    { GenreChip("Rock", onClick = {}) },
-                    { GenreChip("Pop", onClick = {}) },
-                    { GenreChip("Jazz", onClick = {}) },
-                    { GenreChip("Alternativa", onClick = {}) },
-                    { GenreChip("Balada", onClick = {}) }
+                    { GenreChip("Rock") },
+                    { GenreChip("Pop") },
+                    { GenreChip("Jazz") },
+                    { GenreChip("Alternativa") },
+                    { GenreChip("Balada") }
                 )
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+                // ----------- EVENT CARD 1 ------------
                 item {
                     EventCard(
-                        title = "Concierto de Jazz",
-                        date = "2022-01-01",
-                        location = "New York",
+                        title = "Festival en Parque Simón Bolívar",
+                        date = "2025-06-10",
+                        location = "Bogotá — Parque Simón Bolívar",
                         imagePainter = painterResource(id = R.drawable.jazz),
-                        onSeeMoreClick = {}
+                        onSeeMoreClick = {
+                            viewModel.calculateRoute(
+                                LatLng(
+                                    4.658271967292246,
+                                    -74.09275476853556
+                                )
+                            )
+                        }
+                    )
+                }
+
+                // ----------- EVENT CARD 2 ------------
+                item {
+                    EventCard(
+                        title = "Concierto en Coliseo MedPlus",
+                        date = "2025-07-02",
+                        location = "Bogotá — Coliseo MedPlus",
+                        imagePainter = painterResource(id = R.drawable.jazz),
+                        onSeeMoreClick = {
+                            viewModel.calculateRoute(
+                                LatLng(
+                                    4.7380547890680855,
+                                    -74.13284041178223
+                                )
+                            )
+                        }
+                    )
+                }
+
+                // ----------- EVENT CARD 3 ------------
+                item {
+                    EventCard(
+                        title = "Show en el Royal Center",
+                        date = "2025-07-25",
+                        location = "Bogotá — Royal Center",
+                        imagePainter = painterResource(id = R.drawable.jazz),
+                        onSeeMoreClick = {
+                            viewModel.calculateRoute(
+                                LatLng(
+                                    4.6544592745800735,
+                                    -74.0628998772421
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -111,38 +161,48 @@ fun InteractiveMap(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
-    val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val permission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     DisposableEffect(Unit) {
         viewModel.setupLocationClient(context)
         onDispose { viewModel.stopLocationUpdates() }
     }
-    LaunchedEffect(locationPermission.status.isGranted) {
-        if (locationPermission.status.isGranted) {
+
+    LaunchedEffect(permission.status.isGranted) {
+        if (permission.status.isGranted) {
             viewModel.startLocationUpdates(true, context)
         } else {
-            locationPermission.launchPermissionRequest()
+            permission.launchPermissionRequest()
         }
     }
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(state.userLocation ?: LatLng(4.648, -74.247), 12f)
+
+    val cameraState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(
+            state.userLocation ?: LatLng(4.648, -74.247),
+            12f
+        )
     }
-    val userLocation = state.userLocation
-    LaunchedEffect(userLocation, state.followUser) {
-        if (state.followUser && userLocation != null) {
-            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+
+    LaunchedEffect(state.userLocation, state.followUser) {
+        if (state.followUser && state.userLocation != null) {
+            cameraState.animate(
+                CameraUpdateFactory.newLatLngZoom(state.userLocation!!, 15f)
+            )
         }
     }
 
     Box(
-        modifier = modifier.fillMaxWidth().height(400.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(400.dp)
     ) {
+
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = locationPermission.status.isGranted),
+            cameraPositionState = cameraState,
+            properties = MapProperties(isMyLocationEnabled = permission.status.isGranted),
             uiSettings = MapUiSettings(zoomControlsEnabled = true),
-            onMapLongClick = { latLng -> viewModel.calculateRoute(latLng) }
+            onMapLongClick = { viewModel.calculateRoute(it) }
         ) {
             // Dibuja la ruta si existe
             if (state.routePoints.isNotEmpty()) {
@@ -152,13 +212,31 @@ fun InteractiveMap(
                     width = 15f
                 )
             }
+
+            // Si hay destino, dibuja un marcador en el punto final con snippet = distancia
+            val dest = state.currentDestination
+            if (dest != null) {
+                Marker(
+                    state = MarkerState(position = dest),
+                    title = "Destino",
+                    snippet = state.distanceToDestination ?: "Distancia desconocida",
+                    onClick = {
+                        // Devolviendo false permitimos el comportamiento por defecto:
+                        // mostrar el InfoWindow con title + snippet
+                        false
+                    }
+                )
+            }
         }
 
-        // Botones y Snackbar
         Button(
             onClick = { viewModel.toggleFollowUser(!state.followUser) },
-            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = if (state.followUser) Color(0xFFB84DFF) else Color.Gray)
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (state.followUser) Color(0xFFB84DFF) else Color.Gray
+            )
         ) {
             Icon(Icons.Default.LocationOn, contentDescription = "Seguir Ubicación")
         }
@@ -166,52 +244,47 @@ fun InteractiveMap(
         if (state.routePoints.isNotEmpty()) {
             Button(
                 onClick = { viewModel.clearRoute() },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Icon(Icons.Default.Close, contentDescription = "Limpiar Ruta")
             }
         }
 
-        val errorMessage = state.errorMessage
-        if (errorMessage != null) {
+        if (state.errorMessage != null) {
             Snackbar(
-                modifier = Modifier.align(Alignment.TopCenter).padding(16.dp),
-                action = { TextButton(onClick = { viewModel.clearErrorMessage() }) { Text("OK") } }
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(16.dp),
+                action = {
+                    TextButton(onClick = { viewModel.clearErrorMessage() }) {
+                        Text("OK")
+                    }
+                }
             ) {
-                Text(text = errorMessage)
+                Text(state.errorMessage!!)
             }
         }
     }
 }
 
-// --- PREVIEW CORREGIDA Y CLASE FALSA ---
-
 @Preview
 @Composable
-fun MainScreenArtistPreview() {
-    com.example.looksoon.ui.theme.LooksoonTheme {
-        MainScreenArtist(
-            onTabSelected = {},
-            seeMoreClick = {},
-            // Usamos la clase falsa para que la Preview no falle
-            viewModel = FakeMainScreenArtistViewModel(),
-            role = "Artista",
-            onSmartToolSelected = {}
-        )
-    }
+fun PreviewMainScreenArtist() {
+    MainScreenArtist(
+        onTabSelected = {},
+        seeMoreClick = {},
+        viewModel = FakeMainScreenArtistViewModel(),
+        role = "Artista",
+        onSmartToolSelected = {}
+    )
 }
 
-/**
- * Implementación FALSA del ViewModel que solo se usa para que las
- * @Previews de Jetpack Compose puedan funcionar sin crashear.
- * No contiene lógica real.
- */
-class FakeMainScreenArtistViewModel : MainScreenArtistViewModel() {
-    // No necesita contenido, solo heredar del ViewModel real.
-}
+class FakeMainScreenArtistViewModel : MainScreenArtistViewModel()
 
-// --- OTROS COMPOSABLES (SIN CAMBIOS) ---
+// ---------------------- COMPONENTES AUXILIARES (SIN CAMBIOS) ----------------------
 
 @Composable
 fun HeaderArtist(
@@ -258,25 +331,24 @@ fun HeaderArtist(
                 )
             }
         }
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .background(Color(0xFF1C1C1C))
-                .padding(vertical = 4.dp)
+            modifier = Modifier.background(Color(0xFF1C1C1C))
         ) {
             smartTools.forEach { tool ->
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = tool.name,
+                            tool.name,
                             color = Color.White,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = tool.icon,
+                            tool.icon,
                             contentDescription = tool.name,
                             tint = Color(0xFFB84DFF)
                         )
@@ -292,44 +364,41 @@ fun HeaderArtist(
 }
 
 @Composable
-fun GenreChip(text: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun GenreChip(text: String, onClick: () -> Unit = {}) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+                Brush.horizontalGradient(
+                    listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
                 )
             )
             .clickable { onClick() }
             .padding(horizontal = 20.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = text, color = Color.White, fontWeight = FontWeight.Bold)
+        Text(text, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-fun FilterChip(text: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun FilterChip(text: String, icon: ImageVector, onClick: () -> Unit = {}) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(Color(0xFF1E1E1E))
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = text, tint = Color.White, modifier = Modifier.size(18.dp))
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(text = text, color = Color.White, fontWeight = FontWeight.Bold)
+        Icon(icon, contentDescription = text, tint = Color.White)
+        Spacer(modifier = androidx.compose.ui.Modifier.width(6.dp))
+        Text(text, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-fun FiltersRow(
-    modifier: Modifier = Modifier,
-    buttons: List<@Composable () -> Unit>
-) {
+fun FiltersRow(buttons: List<@Composable () -> Unit>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -338,16 +407,22 @@ fun FiltersRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterChip("Distancia", icon = Icons.Default.LocationOn)
-        buttons.forEach { button ->
-            button()
-        }
+        buttons.forEach { it() }
     }
 }
 
 @Composable
-fun EventCard(title: String, date: String, location: String, imagePainter: Painter, onSeeMoreClick: () -> Unit) {
+fun EventCard(
+    title: String,
+    date: String,
+    location: String,
+    imagePainter: Painter,
+    onSeeMoreClick: () -> Unit
+) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Color(0xFF2C2C2C))
@@ -357,17 +432,20 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
                     painter = imagePainter,
                     contentDescription = title,
-                    modifier = Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
                 Column(
-                    modifier = Modifier.weight(1f).padding(start = 12.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp)
                 ) {
                     Text(date, color = Color.LightGray, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(4.dp))
@@ -376,12 +454,16 @@ fun EventCard(title: String, date: String, location: String, imagePainter: Paint
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Brush.horizontalGradient(listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))
+                            )
+                        )
                         .clickable { onSeeMoreClick() }
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Ver más", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Ver más", color = Color.White)
                 }
             }
         }
@@ -393,35 +475,45 @@ fun BottomNavBar(
     selectedTab: String,
     onTabSelected: (String) -> Unit
 ) {
-    val items = listOf("Inicio", "Convocatorias", "Publicar", "Feed","Mensajes", "Perfil")
-    val icons = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Add, Icons.Default.List ,Icons.Default.Email, Icons.Default.AccountCircle)
+    val items = listOf("Inicio", "Convocatorias", "Publicar", "Feed", "Mensajes", "Perfil")
+    val icons = listOf(
+        Icons.Default.Home,
+        Icons.Default.DateRange,
+        Icons.Default.Add,
+        Icons.Default.List,
+        Icons.Default.Email,
+        Icons.Default.AccountCircle
+    )
 
     NavigationBar(containerColor = Color.Black) {
-        items.forEachIndexed { index, item ->
-            val isSelected = item == selectedTab
+        items.forEachIndexed { i, item ->
+            val selected = item == selectedTab
             NavigationBarItem(
-                selected = isSelected,
+                selected = selected,
                 onClick = { onTabSelected(item) },
                 icon = {
-                    if (isSelected) {
+                    if (selected) {
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(
-                                    brush = Brush.verticalGradient(
+                                    Brush.verticalGradient(
                                         listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))
                                     )
                                 )
                                 .padding(8.dp)
                         ) {
-                            Icon(icons[index], contentDescription = item, tint = Color.White)
+                            Icon(icons[i], contentDescription = item, tint = Color.White)
                         }
                     } else {
-                        Icon(icons[index], contentDescription = item, tint = Color.LightGray)
+                        Icon(icons[i], contentDescription = item, tint = Color.LightGray)
                     }
                 },
                 label = {
-                    Text(item, color = if (isSelected) Color(0xFFB84DFF) else Color.LightGray)
+                    Text(
+                        item,
+                        color = if (selected) Color(0xFFB84DFF) else Color.LightGray
+                    )
                 }
             )
         }

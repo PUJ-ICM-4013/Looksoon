@@ -16,5 +16,7 @@ data class MainScreenArtistState(
     // El punto de destino específico para la ruta. Es un solo punto.
     val currentDestination: LatLng? = null,
     // Lista de coordenadas que forman la polilínea de la ruta a dibujar.
-    val routePoints: List<LatLng> = emptyList()
+    val routePoints: List<LatLng> = emptyList(),
+    // Distancia calculada entre userLocation y currentDestination (por ejemplo "3.4 km" o "450 m")
+    val distanceToDestination: String? = null
 )

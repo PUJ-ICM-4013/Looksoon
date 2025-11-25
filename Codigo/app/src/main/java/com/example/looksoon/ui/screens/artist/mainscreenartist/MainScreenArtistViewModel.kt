@@ -1,6 +1,5 @@
 package com.example.looksoon.ui.screens.artist.mainscreenartist
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
@@ -73,10 +72,33 @@ open class MainScreenArtistViewModel : ViewModel() {
         _state.update { it.copy(followUser = follow) }
     }
 
-    // --- FUNCIONES PARA RUTAS (SIN MARCADORES) ---
+    // -------------------- DISTANCIA --------------------
+    /**
+     * Calcula la distancia entre dos LatLng y la formatea a "xxx m" o "x.xx km".
+     */
+    private fun calculateDistance(origin: LatLng, dest: LatLng): String {
+        val start = Location("start").apply {
+            latitude = origin.latitude
+            longitude = origin.longitude
+        }
+        val end = Location("end").apply {
+            latitude = dest.latitude
+            longitude = dest.longitude
+        }
+        val meters = start.distanceTo(end)
+        return if (meters < 1000) {
+            "${meters.toInt()} m"
+        } else {
+            String.format("%.2f km", meters / 1000.0)
+        }
+    }
+
+    // --- FUNCIONES PARA RUTAS (AHORA CON DESTINO Y DISTANCIA) ---
 
     /**
      * Calcula una ruta desde la ubicación actual del usuario hasta un destino.
+     * Además guarda el destino y la distancia en el estado para permitir mostrar un marcador
+     * y su info (snippet).
      */
     fun calculateRoute(destination: LatLng) {
         val origin = _state.value.userLocation ?: return
@@ -87,7 +109,18 @@ open class MainScreenArtistViewModel : ViewModel() {
                 val response = RoutingService.api.getRoute(coordinates)
                 if (response.routes.isNotEmpty()) {
                     val points = RoutingService.decodePolyline(response.routes[0].geometry)
-                    _state.update { it.copy(routePoints = points, errorMessage = null) }
+
+                    // Calcula la distancia para mostrar como snippet
+                    val distanceText = calculateDistance(origin, destination)
+
+                    _state.update {
+                        it.copy(
+                            routePoints = points,
+                            currentDestination = destination,
+                            distanceToDestination = distanceText,
+                            errorMessage = null
+                        )
+                    }
                 } else {
                     _state.update { it.copy(errorMessage = "No se encontró ruta.") }
                 }
@@ -98,10 +131,16 @@ open class MainScreenArtistViewModel : ViewModel() {
     }
 
     /**
-     * Limpia la ruta del mapa.
+     * Limpia la ruta del mapa y el destino asociado.
      */
     fun clearRoute() {
-        _state.update { it.copy(routePoints = emptyList()) }
+        _state.update {
+            it.copy(
+                routePoints = emptyList(),
+                currentDestination = null,
+                distanceToDestination = null
+            )
+        }
     }
 
     /**
