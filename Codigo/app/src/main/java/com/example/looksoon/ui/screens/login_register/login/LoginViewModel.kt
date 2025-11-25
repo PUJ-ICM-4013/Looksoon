@@ -2,33 +2,33 @@ package com.example.looksoon.ui.screens.login_register.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.looksoon.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class LoginViewModel : ViewModel() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
+    private val userRepository = UserRepository()
 
-    // Estado privado mutable
     private val _state = MutableStateFlow(LoginState())
-
-    // Estado público inmutable
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
     // Actualizar email
     fun updateEmail(email: String) {
-        _state.value = _state.value.copy(email = email)
+        _state.value = _state.value.copy(email = email, error = null)
     }
 
     // Actualizar contraseña
     fun updatePassword(password: String) {
-        _state.value = _state.value.copy(password = password)
+        _state.value = _state.value.copy(password = password, error = null)
     }
-
-    // ... (imports y propiedades)
 
     // Función de login
     fun checkLogin(
@@ -39,101 +39,76 @@ class LoginViewModel : ViewModel() {
         onFanClick: () -> Unit,
         onCuratorClick: () -> Unit
     ) {
-        if (email.isEmpty() || password.isEmpty()) return
+        if (email.isEmpty() || password.isEmpty()) {
+            _state.value = _state.value.copy(error = "Por favor completa todos los campos")
+            return
+        }
 
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    // NOTA: Deja 'isLoading' en true hasta después de la llamada al backend
+            try {
+                // 1. Autenticar con Firebase
+                auth.signInWithEmailAndPassword(email, password).await()
 
-                    if (task.isSuccessful) {
-                        val user = auth.currentUser
-
-                        // 1. Obtener el Token ID de Firebase
-                        user?.getIdToken(false)?.addOnCompleteListener { tokenTask ->
-                            if (tokenTask.isSuccessful) {
-                                val idToken = tokenTask.result?.token
-                                if (idToken != null) {
-                                    // 2. Llama a la función que enviará el token a tu backend
-                                    // Esta función será la única nueva que te permitirá obtener el bono.
-                                    sendTokenAndNavigate(
-                                        idToken,
-                                        onArtistClick,
-                                        onEstablishmentClick,
-                                        onFanClick,
-                                        onCuratorClick
-                                    )
-                                }
-                            }
-                        }
-                    } else {
-                        // Solo aquí se pone isLoading = false si Firebase falla
-                        _state.value = _state.value.copy(isLoading = false, navigate = false)
-                        // (Mostrar error de credenciales inválidas)
-                    }
+                val user = auth.currentUser
+                if (user == null) {
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = "Error al iniciar sesión"
+                    )
+                    return@launch
                 }
+
+                // 2. ✅ ACTUALIZAR ESTADO EN LÍNEA
+                userRepository.updateOnlineStatus(true)
+
+                // 3. Obtener el rol del usuario
+                val roleFromBackend = getRoleFromBackend(email)
+
+                _state.value = _state.value.copy(isLoading = false, navigate = true)
+
+                // 4. Navegación basada en el rol
+                when (roleFromBackend) {
+                    "artista" -> onArtistClick()
+                    "local" -> onEstablishmentClick()
+                    "curador" -> onCuratorClick()
+                    "fan" -> onFanClick()
+                    else -> onArtistClick() // Por defecto
+                }
+
+            } catch (e: Exception) {
+                val errorMessage = when {
+                    e.message?.contains("password") == true -> "Contraseña incorrecta"
+                    e.message?.contains("user") == true ||
+                            e.message?.contains("email") == true -> "Usuario no encontrado"
+                    e.message?.contains("network") == true -> "Error de conexión"
+                    else -> "Error al iniciar sesión: ${e.message}"
+                }
+
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    navigate = false,
+                    error = errorMessage
+                )
+            }
         }
     }
 
-    // **NUEVA FUNCIÓN NECESARIA PARA EL BONO**
-    private fun sendTokenAndNavigate(
-        idToken: String,
-        onArtistClick: () -> Unit,
-        onEstablishmentClick: () -> Unit,
-        onFanClick: () -> Unit,
-        onCuratorClick: () -> Unit
-    ) {
-        // 1. Aquí va la llamada con Retrofit a tu API REST:
-        // val roleResponse = yourApi.verifyTokenAndGetRole("Bearer $idToken")
+    // Obtener rol del backend (simulación temporal)
+    private fun getRoleFromBackend(email: String): String {
+        val emailLower = email.lowercase()
 
-        // **SIMULACIÓN** (Reemplazar con la respuesta real de tu backend)
-        // Tu backend debe verificar el 'idToken' y devolverte el rol.
-        val roleFromBackend = getRoleFromBackend(idToken)
-
-        // Finaliza la carga
-        _state.value = _state.value.copy(isLoading = false, navigate = true)
-
-        // 2. Navegación basada en la respuesta del Backend (el rol)
-        when (roleFromBackend) {
-            "artista" -> onArtistClick()
-            "local" -> onEstablishmentClick()
-            "curador" -> onCuratorClick()
-            "fan" -> onFanClick()
+        return when {
+            emailLower.contains("local") || emailLower.contains("establecimiento") -> "local"
+            emailLower.contains("curador") -> "curador"
+            emailLower.contains("artista") -> "artista"
+            emailLower.contains("fan") -> "fan"
+            else -> "fan" // Por defecto
         }
     }
 
-    // Lógica temporal para simular la respuesta del backend (QUITAR EN PRODUCCIÓN)
-    // En LoginViewModel.kt
-
-    // Lógica temporal para simular la respuesta del backend (QUITAR EN PRODUCCIÓN)
-    private fun getRoleFromBackend(token: String): String {
-        // Obtener el email actual del usuario, convertirlo a minúsculas y usar el operador Elvis
-        // para devolver null si no existe (el cual será manejado por el 'when' final).
-        val email = auth.currentUser?.email?.lowercase()
-
-        // Usamos 'when' para evaluar el email y devolver el rol correspondiente.
-        return when (email) {
-            // Establecimiento
-            "local@gmail.com" -> "local"
-            "local@example.com" -> "local"
-
-            // Curador
-            "curador@gmail.com" -> "curador"
-            "curador@example.com" -> "curador"
-
-            // Artista
-            "artista@gmail.com" -> "artista"
-            "artista@example.com" -> "artista"
-
-            // Fan (incluye el caso de 'andrestorres10b@ejemplo.com' si no se registró en otro rol)
-            // Puedes añadir emails específicos para Fan si lo deseas:
-            "fan@gmail.com" -> "fan"
-
-            // Si el email no coincide con ninguno de los roles anteriores,
-            // asumimos que es un Fan o un email no reconocido.
-            else -> "fan"
-        }
+    fun clearError() {
+        _state.value = _state.value.copy(error = null)
     }
 }

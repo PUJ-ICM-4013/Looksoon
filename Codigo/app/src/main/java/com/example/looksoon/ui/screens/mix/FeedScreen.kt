@@ -11,14 +11,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,27 +27,44 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.looksoon.ui.theme.navigation.Screen
+import coil.compose.AsyncImage
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
-
-import android.net.Uri
-import androidx.compose.runtime.remember
-import coil.compose.rememberAsyncImagePainter
+import com.example.looksoon.ui.theme.navigation.Screen
 import com.example.looksoon.ui.viewmodels.PostViewModel
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import java.text.SimpleDateFormat
+import java.util.*
 
+// Modelo de datos para posts de Firestore
+data class Post(
+    val postId: String = "",
+    val userId: String = "",
+    val userName: String = "",
+    val userImage: String = "",
+    val description: String = "",
+    val imageUrl: String = "",
+    val timestamp: Long = 0L,
+    val likesCount: Int = 0,
+    val commentsCount: Int = 0
+)
 
 @Composable
 fun FeedScreen(navController: NavHostController, postViewModel: PostViewModel) {
-    //val postViewModel: PostViewModel = viewModel()
+    val posts = remember { mutableStateListOf<Post>() }
+    val isLoading = remember { mutableStateOf(true) }
 
-    Scaffold (
+    // Cargar posts de Firestore
+    LaunchedEffect(Unit) {
+        loadPostsFromFirestore(posts, isLoading)
+    }
+
+    Scaffold(
         bottomBar = {
             BottomNavBar(
                 selectedTab = "Feed",
@@ -62,8 +76,7 @@ fun FeedScreen(navController: NavHostController, postViewModel: PostViewModel) {
                 }
             )
         }
-
-    ){innerPadding ->
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             HeaderArtist(
                 section = "Looksoon",
@@ -80,15 +93,281 @@ fun FeedScreen(navController: NavHostController, postViewModel: PostViewModel) {
                         )
                     )
             )
-            StoriesRow()
-            PostList(navController = navController, postViewModel = postViewModel)
 
+            StoriesRow()
+
+            if (isLoading.value) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (posts.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "No hay publicaciones aún",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
+            } else {
+                DynamicPostList(
+                    posts = posts,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
-// ... (El resto de los composables como StoryItem, StoriesRow, PostData, PostHeader, etc., no necesitan cambios, pero se incluyen aquí para que el archivo esté completo)
+// Función para cargar posts desde Firestore
+fun loadPostsFromFirestore(
+    posts: MutableList<Post>,
+    isLoading: MutableState<Boolean>
+) {
+    val db = FirebaseFirestore.getInstance()
 
+    db.collection("Posts")
+        .orderBy("timestamp", Query.Direction.DESCENDING)
+        .limit(50)
+        .addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                isLoading.value = false
+                return@addSnapshotListener
+            }
+
+            posts.clear()
+            snapshot?.documents?.forEach { doc ->
+                val post = Post(
+                    postId = doc.id,
+                    userId = doc.getString("userId") ?: "",
+                    userName = doc.getString("userName") ?: "Usuario",
+                    userImage = doc.getString("userImage") ?: "",
+                    description = doc.getString("description") ?: "",
+                    imageUrl = doc.getString("imageUrl") ?: "",
+                    timestamp = doc.getLong("timestamp") ?: 0L,
+                    likesCount = doc.getLong("likesCount")?.toInt() ?: 0,
+                    commentsCount = doc.getLong("commentsCount")?.toInt() ?: 0
+                )
+                posts.add(post)
+            }
+            isLoading.value = false
+        }
+}
+
+@Composable
+fun DynamicPostList(
+    posts: List<Post>,
+    navController: NavHostController
+) {
+    LazyColumn {
+        items(posts) { post ->
+            DynamicPostCard(
+                post = post,
+                navController = navController
+            )
+        }
+    }
+}
+
+@Composable
+fun DynamicPostCard(
+    post: Post,
+    navController: NavHostController
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp, horizontal = 12.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(width = 2.dp, color = colorScheme.primary)
+    ) {
+        Column(modifier = Modifier.background(colorScheme.surface)) {
+            // Header con navegación al perfil
+            DynamicPostHeader(
+                post = post,
+                onUserClick = {
+                    navController.navigate("user_profile/${post.userId}")
+                }
+            )
+
+            // Descripción del post
+            if (post.description.isNotEmpty()) {
+                Text(
+                    text = post.description,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    color = Color.White
+                )
+            }
+
+            // Imagen del post
+            if (post.imageUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = post.imageUrl,
+                    contentDescription = "Imagen del post",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            // Footer con reacciones
+            DynamicPostFooter(
+                post = post,
+                onLikeClick = { /* TODO: Implementar like */ },
+                onCommentClick = { /* TODO: Ir a comentarios */ },
+                onShareClick = { /* TODO: Compartir */ }
+            )
+        }
+    }
+}
+
+@Composable
+fun DynamicPostHeader(
+    post: Post,
+    onUserClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onUserClick)
+            .padding(12.dp)
+    ) {
+        // Foto de perfil
+        if (post.userImage.isNotEmpty()) {
+            AsyncImage(
+                model = post.userImage,
+                contentDescription = post.userName,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.logo_looksoon),
+                contentDescription = post.userName,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Column {
+            Text(
+                text = post.userName,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                color = Color.White
+            )
+            Text(
+                text = formatTimestamp(post.timestamp),
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+@Composable
+fun DynamicPostFooter(
+    post: Post,
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onShareClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        // Botón de Like con contador
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable(onClick = onLikeClick)
+        ) {
+            IconButton(onClick = onLikeClick) {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    contentDescription = "Like",
+                    tint = Color.White
+                )
+            }
+            if (post.likesCount > 0) {
+                Text(
+                    text = post.likesCount.toString(),
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        // Botón de Comentarios con contador
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable(onClick = onCommentClick)
+        ) {
+            IconButton(onClick = onCommentClick) {
+                Icon(
+                    Icons.Outlined.ChatBubbleOutline,
+                    contentDescription = "Comment",
+                    tint = Color.White
+                )
+            }
+            if (post.commentsCount > 0) {
+                Text(
+                    text = post.commentsCount.toString(),
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        // Botón de Compartir
+        IconButton(onClick = onShareClick) {
+            Icon(
+                Icons.Default.Share,
+                contentDescription = "Share",
+                tint = Color.White
+            )
+        }
+    }
+}
+
+// Función para formatear timestamp
+fun formatTimestamp(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+
+    return when {
+        diff < 60000 -> "Ahora"
+        diff < 3600000 -> "Hace ${diff / 60000}m"
+        diff < 86400000 -> "Hace ${diff / 3600000}h"
+        diff < 172800000 -> "Ayer"
+        else -> {
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            sdf.format(Date(timestamp))
+        }
+    }
+}
+
+// Componentes existentes (Stories)
 @Composable
 fun StoryItem(
     imageRes: Int,
@@ -116,11 +395,21 @@ fun StoryItem(
                 painter = painterResource(id = imageRes),
                 contentDescription = label,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.clip(CircleShape).fillMaxSize()
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .fillMaxSize()
             )
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Text(text = label, style = MaterialTheme.typography.bodySmall.copy(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.White, textAlign = TextAlign.Center))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        )
     }
 }
 
@@ -134,7 +423,10 @@ fun StoriesRow() {
         Pair(R.drawable.logo_looksoon, "Venus")
     )
     LazyRow(
-        modifier = Modifier.fillMaxWidth().background(Color.Black).padding(vertical = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
@@ -143,214 +435,3 @@ fun StoriesRow() {
         }
     }
 }
-
-data class PostData(
-    val userName: String,
-    val userImage: Int,
-    val date: String,
-    val text: String? = null,
-    val image: Int? = null,
-    val buttonLabel: String? = null,
-    val onButtonClick: (() -> Unit)? = null
-)
-
-@Composable
-fun PostHeader(userName: String, userImage: Int, date: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(12.dp)
-    ) {
-        Image(
-            painter = painterResource(id = userImage),
-            contentDescription = userName,
-            modifier = Modifier.size(42.dp).clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Column {
-            Text(text = userName, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-            Text(text = date, style = MaterialTheme.typography.bodySmall, fontSize = 12.sp)
-        }
-    }
-}
-
-@Composable
-fun PostFooter(
-    modifier: Modifier = Modifier,
-    onLikeClick: () -> Unit,
-    onCommentClick: () -> Unit,
-    onShareClick: () -> Unit
-) {
-    Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        IconButton(onClick = onLikeClick) {
-            Icon(Icons.Default.FavoriteBorder, contentDescription = "Like")
-        }
-        IconButton(onClick = onCommentClick) {
-            Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = "Comment")
-        }
-        IconButton(onClick = onShareClick) {
-            Icon(Icons.Default.Share, contentDescription = "Share")
-        }
-    }
-}
-
-@Composable
-fun PostText(text: String) {
-    Text(text = text, style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp), modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
-}
-
-@Composable
-fun PostImage(imageRes: Int) {
-    Image(
-        painter = painterResource(id = imageRes),
-        contentDescription = "Post Image",
-        modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp)).padding(horizontal = 12.dp, vertical = 8.dp),
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun PostButton(label: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.padding(12.dp).fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Text(text = label, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-fun PostCard(
-    post: PostData,
-    navController: NavHostController,
-    postViewModel: PostViewModel // ← Agrega este parámetro para acceder al último post
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 12.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        border = BorderStroke(width = 2.dp, color = colorScheme.primary)
-    ) {
-        Column(modifier = Modifier.background(colorScheme.surface)) {
-
-            // --- LÓGICA DE NAVEGACIÓN AL PERFIL ---
-            Box(
-                modifier = Modifier.clickable {
-                    // Navega al perfil del usuario, pasando un ID de ejemplo (el nombre del usuario)
-                    // navController.navigate(Screen.UserProfile.route.replace("{userId}", post.userName))
-                }
-            ) {
-                PostHeader(
-                    userName = post.userName,
-                    userImage = post.userImage,
-                    date = post.date
-                )
-            }
-
-            // --- CONTENIDO DEL POST ---
-            post.text?.let { PostText(it) }
-
-            // 🟣 Mostrar imagen del post existente (por recurso local)
-            post.image?.let { PostImage(it) }
-
-            // 🟣 Mostrar imagen desde galería/cámara si el usuario es "Tú"
-            if (post.image == null && post.userName == "Tú") {
-                val lastPost = postViewModel.posts.lastOrNull()
-                lastPost?.imageUri?.let { PostImageFromUri(it) }
-            }
-
-            // --- BOTÓN PERSONALIZADO (si aplica) ---
-            post.buttonLabel?.let { label ->
-                post.onButtonClick?.let { action ->
-                    PostButton(label, action)
-                }
-            }
-
-            // --- FOOTER (reacciones, comentarios, compartir) ---
-            PostFooter(
-                onLikeClick = { /* Acción de like */ },
-                onCommentClick = {
-                    // Navega a la pantalla de comentarios, pasando un ID de ejemplo
-                    // navController.navigate(Screen.PostComments.route.replace("{postId}", "123"))
-                },
-                onShareClick = { /* Acción de compartir */ }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun PostList(navController: NavHostController, postViewModel: PostViewModel) {
-    // Posts "fijos" iniciales
-    val fixedPosts = listOf(
-        PostData("Luna", R.drawable.logo_looksoon, "Hoy, 9:00 am", text = "Hoy inicia nuestra nueva convocatoria para artistas digitales 🎨🚀"),
-        PostData("Rastro", R.drawable.logo_looksoon, "Ayer, 6:30 pm", image = R.drawable.logocompleto_looksoon),
-        PostData("Neón", R.drawable.logo_looksoon, "Hace 2 días", text = "Les comparto esta captura de nuestro último evento!", image = R.drawable.logocompleto_looksoon),
-        PostData("Venus", R.drawable.logo_looksoon, "Hace 3 días", text = "Convocatoria abierta para participar en el festival 🌟", image = R.drawable.logocompleto_looksoon, buttonLabel = "Ir a la convocatoria", onButtonClick = { })
-    )
-
-    // Combina posts fijos con los posts nuevos del usuario
-    val allPosts = fixedPosts + postViewModel.posts.map { userPost ->
-        PostData(
-            userName = "Tú",
-            userImage = R.drawable.logo_looksoon,
-            date = "Ahora mismo",
-            text = userPost.description,
-            image = userPost.imageUri?.let { null } // O adapta PostImageFromUri para mostrar Uri
-        )
-    }
-
-    LazyColumn {
-        items(allPosts) { post ->
-            PostCard(
-                post = post,
-                navController = navController,
-                postViewModel = postViewModel
-            )
-        }
-    }
-}
-
-
-@Composable
-fun PostImageFromUri(uri: Uri) {
-    Image(
-        painter = rememberAsyncImagePainter(uri),
-        contentDescription = "Imagen del post",
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        contentScale = ContentScale.Crop
-    )
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PostListPreview() {
-    val navController = rememberNavController()
-
-    // Simulamos un PostViewModel
-    val postViewModel = remember {
-        PostViewModel().apply {
-            addPost("Mi primera publicación", "Este es un post de prueba", null)
-        }
-    }
-
-    PostList(navController = navController, postViewModel = postViewModel)
-}
-
-
-
-
-

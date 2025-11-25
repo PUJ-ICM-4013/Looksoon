@@ -11,12 +11,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.looksoon.repository.UserRepository
 import com.example.looksoon.ui.theme.navigation.AppNavigation
 import com.example.looksoon.ui.theme.LooksoonTheme
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    // ✅ Launcher para pedir permisos
+    private val userRepository = UserRepository()
+    private val auth = FirebaseAuth.getInstance()
+
+    // ✅ Variable para controlar si el usuario hizo login en esta sesión
+    private var hasLoggedIn = false
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
@@ -30,7 +39,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ✅ Verificar y solicitar permisos antes de cargar la UI
         requestAppPermissions()
 
         setContent {
@@ -40,7 +48,37 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // ✅ Función que solicita los permisos si no están concedidos
+    override fun onStart() {
+        super.onStart()
+        // ✅ SOLO actualizar estado si el usuario hizo login EN ESTA SESIÓN
+        // NO hacerlo automáticamente al abrir la app
+        if (auth.currentUser != null && hasLoggedIn) {
+            lifecycleScope.launch {
+                userRepository.updateOnlineStatus(true)
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // ✅ Usuario sale de la app → Estado en línea = false
+        if (auth.currentUser != null) {
+            lifecycleScope.launch {
+                userRepository.updateOnlineStatus(false)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // ✅ App se cierra → Estado en línea = false
+        if (auth.currentUser != null) {
+            lifecycleScope.launch {
+                userRepository.updateOnlineStatus(false)
+            }
+        }
+    }
+
     private fun requestAppPermissions() {
         val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         val storagePermission =
@@ -56,6 +94,11 @@ class MainActivity : ComponentActivity() {
                 )
             )
         }
+    }
+
+    // ✅ NUEVA FUNCIÓN: Llamar desde LoginViewModel cuando el usuario haga login
+    fun setUserLoggedIn(loggedIn: Boolean) {
+        hasLoggedIn = loggedIn
     }
 }
 

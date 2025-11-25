@@ -47,7 +47,7 @@ import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.GenreChip
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.screens.artist.SearchAndFilterBar
-import com.example.looksoon.ui.screens.login_register.ButtonRoles
+import com.example.looksoon.ui.screens.login_register.SignUp.ButtonRoles
 
 
 @Composable

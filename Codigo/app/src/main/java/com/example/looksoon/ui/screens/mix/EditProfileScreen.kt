@@ -1,5 +1,6 @@
 package com.example.looksoon.ui.screens.mix
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -24,8 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -34,20 +33,15 @@ import com.example.looksoon.R
 import com.example.looksoon.ui.theme.*
 import com.example.looksoon.ui.viewmodels.ProfileViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-
-
-// Evita conflicto entre Surface color y componente
-import androidx.compose.material3.Surface as M3Surface
-
+import com.example.looksoon.repository.UserRepository
+import kotlinx.coroutines.launch
 
 @Composable
-fun EditTextField(label: String, value: TextFieldValue, onValueChange: (TextFieldValue) -> Unit) {
+fun EditTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     Column {
         Text(
             text = label,
@@ -73,258 +67,345 @@ fun EditTextField(label: String, value: TextFieldValue, onValueChange: (TextFiel
         )
     }
 }
+
 @Composable
 fun EditProfileScreen(
-    navController: NavHostController? = null,
-    profileViewModel: ProfileViewModel = viewModel(),
-    onBackClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {}
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val userRepository = remember { UserRepository() }
 
-    // 🟣 Estado local para la imagen seleccionada
-    val selectedMediaUri = remember { mutableStateOf(profileViewModel.profileImageUri.value) }
+    // Estados del usuario
+    val user by profileViewModel.user.collectAsState()
+    val isLoading by profileViewModel.isLoading.collectAsState()
 
-    // 🟣 Launcher para abrir galería (imagen o video)
+    // Estados locales para edición
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var nameState by remember { mutableStateOf("") }
+    var usernameState by remember { mutableStateOf("") }
+    var locationState by remember { mutableStateOf("") }
+    var emailState by remember { mutableStateOf("") }
+    var phoneState by remember { mutableStateOf("") }
+    var bioState by remember { mutableStateOf("") }
+    var isSaving by remember { mutableStateOf(false) }
+
+    // Cargar datos del usuario al entrar
+    LaunchedEffect(Unit) {
+        profileViewModel.loadCurrentUserProfile()
+    }
+
+    // Actualizar estados locales cuando se carga el usuario
+    LaunchedEffect(user) {
+        user?.let {
+            nameState = it.name
+            usernameState = it.username
+            locationState = it.location
+            emailState = it.email
+            phoneState = it.phone
+            bioState = it.bio
+        }
+    }
+
+    // Launcher para seleccionar imagen de galería
     val pickMediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
-            selectedMediaUri.value = uri
-            profileViewModel.setProfileImage(uri)
+            selectedImageUri = uri
         } else {
-            Toast.makeText(context, "No se seleccionó ningún archivo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // 🟣 Launcher para tomar una foto con la cámara
+    // Launcher para tomar foto con cámara
     val takePhotoLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
         if (bitmap != null) {
-            val uri = profileViewModel.saveBitmapToCache(context, bitmap)
-            selectedMediaUri.value = uri
-            profileViewModel.setProfileImage(uri)
+            // Aquí deberías guardar el bitmap en un archivo temporal
+            // Por ahora lo omitimos y usamos solo galería
+            Toast.makeText(context, "Foto capturada", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    val nameState = remember { mutableStateOf(TextFieldValue("Alex Rivera")) }
-    val usernameState = remember { mutableStateOf(TextFieldValue("@alexrv")) }
-    val locationState = remember { mutableStateOf(TextFieldValue("Ciudad de México")) }
-    val emailState = remember { mutableStateOf(TextFieldValue("alex@musicwave.com")) }
-    val phoneState = remember { mutableStateOf(TextFieldValue("+52 55 1234 5678")) }
-    val bioState =
-        remember { mutableStateOf(TextFieldValue("Artista independiente apasionado por la música indie y pop.")) }
-
     Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Background)
-        ) {
-            // 🔹 Barra superior
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        if (isLoading && user == null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.size(24.dp)
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(Background)
+            ) {
+                // Barra superior
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = TextPrimary
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = TextPrimary
+                        )
+                    }
+
+                    Text(
+                        text = "Editar Perfil",
+                        color = TextPrimary,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
+
+                    Spacer(modifier = Modifier.size(24.dp))
                 }
 
-                Text(
-                    text = "Editar Perfil",
-                    color = TextPrimary,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 🔹 Contenedor principal
-            M3Surface(
-                color = Surface,
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Column(
+                // Contenedor principal
+                Surface(
+                    color = Surface,
+                    shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(horizontal = 16.dp)
                 ) {
-                    // 🟣 Imagen de perfil
-                    Box(contentAlignment = Alignment.BottomEnd) {
-                        if (selectedMediaUri.value != null) {
-                            AsyncImage(
-                                model = selectedMediaUri.value,
-                                contentDescription = "Foto de perfil seleccionada",
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Imagen de perfil
+                        Box(
+                            contentAlignment = Alignment.BottomEnd,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        ) {
+                            val imageUrl = selectedImageUri?.toString()
+                                ?: user?.profileImageUrl?.takeIf { it.isNotEmpty() }
+
+                            if (imageUrl != null) {
+                                AsyncImage(
+                                    model = imageUrl,
+                                    contentDescription = "Foto de perfil",
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, PurplePrimary, CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(id = R.drawable.foto),
+                                    contentDescription = "Foto de perfil",
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, PurplePrimary, CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            var showDialog by remember { mutableStateOf(false) }
+
+                            if (showDialog) {
+                                AlertDialog(
+                                    onDismissRequest = { showDialog = false },
+                                    title = { Text("Seleccionar imagen") },
+                                    text = {
+                                        Column {
+                                            TextButton(onClick = {
+                                                showDialog = false
+                                                takePhotoLauncher.launch(null)
+                                            }) {
+                                                Text("Tomar foto")
+                                            }
+                                            TextButton(onClick = {
+                                                showDialog = false
+                                                pickMediaLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
+                                                )
+                                            }) {
+                                                Text("Elegir de galería")
+                                            }
+                                        }
+                                    },
+                                    confirmButton = {},
+                                    dismissButton = {}
+                                )
+                            }
+
+                            IconButton(
+                                onClick = { showDialog = true },
                                 modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, PurplePrimary, CircleShape),
-                                contentScale = ContentScale.Crop
+                                    .size(32.dp)
+                                    .background(PurplePrimary, CircleShape)
+                                    .border(1.dp, Surface, CircleShape)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.PhotoCamera,
+                                    contentDescription = "Cambiar foto",
+                                    tint = TextPrimary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Campos de texto
+                        EditTextField("Nombre completo", nameState) { nameState = it }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        EditTextField("Nombre de usuario", usernameState) { usernameState = it }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        EditTextField("Ubicación", locationState) { locationState = it }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        EditTextField("Correo electrónico", emailState) { emailState = it }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        EditTextField("Teléfono", phoneState) { phoneState = it }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Biografía
+                        Text(
+                            text = "Biografía",
+                            color = TextSecondary,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = bioState,
+                            onValueChange = { bioState = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            textStyle = LocalTextStyle.current.copy(color = TextPrimary),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = TextPrimary,
+                                unfocusedTextColor = TextPrimary,
+                                cursorColor = PurplePrimary,
+                                focusedContainerColor = Surface,
+                                unfocusedContainerColor = Surface,
+                                focusedIndicatorColor = PurplePrimary,
+                                unfocusedIndicatorColor = Divider
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            maxLines = 5
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { navController.navigateUp() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = TextPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Cancelar", fontSize = 16.sp)
+                    }
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                isSaving = true
+                                try {
+                                    // Subir imagen si se seleccionó una nueva
+                                    var imageUrl = user?.profileImageUrl ?: ""
+                                    if (selectedImageUri != null) {
+                                        imageUrl = userRepository.uploadProfileImage(selectedImageUri!!, context)
+                                    }
+
+                                    // Actualizar datos del usuario
+                                    userRepository.updateUserProfile(
+                                        name = nameState,
+                                        username = usernameState,
+                                        location = locationState,
+                                        email = emailState,
+                                        phone = phoneState,
+                                        bio = bioState,
+                                        profileImageUrl = imageUrl
+                                    )
+
+                                    Toast.makeText(
+                                        context,
+                                        "Perfil actualizado",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                    navController.navigateUp()
+                                } catch (e: Exception) {
+                                    Toast.makeText(
+                                        context,
+                                        "Error: ${e.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } finally {
+                                    isSaving = false
+                                }
+                            }
+                        },
+                        enabled = !isSaving,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PurplePrimary,
+                            contentColor = TextPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        if (isSaving) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = TextPrimary,
+                                strokeWidth = 2.dp
                             )
                         } else {
-                            Image(
-                                painter = painterResource(id = R.drawable.foto),
-                                contentDescription = "Foto de perfil",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, PurplePrimary, CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
+                            Text("Guardar cambios", fontSize = 16.sp, fontWeight = FontWeight.Medium)
                         }
-
-                        var showDialog by remember { mutableStateOf(false) }
-
-                        if (showDialog) {
-                            AlertDialog(
-                                onDismissRequest = { showDialog = false },
-                                title = { Text("Seleccionar imagen") },
-                                text = {
-                                    Column {
-                                        TextButton(onClick = {
-                                            showDialog = false
-                                            takePhotoLauncher.launch(null)
-                                        }) {
-                                            Text("Tomar foto")
-                                        }
-                                        TextButton(onClick = {
-                                            showDialog = false
-                                            pickMediaLauncher.launch(
-                                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                            )
-                                        }) {
-                                            Text("Elegir de galería")
-                                        }
-                                    }
-                                },
-                                confirmButton = {},
-                                dismissButton = {}
-                            )
-                        }
-
-                        IconButton(
-                            onClick = { showDialog = true },
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(PurplePrimary, CircleShape)
-                                .border(1.dp, Surface, CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.PhotoCamera,
-                                contentDescription = "Cambiar foto",
-                                tint = TextPrimary,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    } // ✅ AQUÍ cerramos el Box
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 🔹 Campos de texto
-                    EditTextField("Nombre completo", nameState.value) { nameState.value = it }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    EditTextField("Nombre de usuario", usernameState.value) { usernameState.value = it }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    EditTextField("Ubicación", locationState.value) { locationState.value = it }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    EditTextField("Correo electrónico", emailState.value) { emailState.value = it }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    EditTextField("Teléfono", phoneState.value) { phoneState.value = it }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // 🔹 Biografía
-                    Text(
-                        text = "Biografía",
-                        color = TextSecondary,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = bioState.value,
-                        onValueChange = { bioState.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp),
-                        textStyle = LocalTextStyle.current.copy(color = TextPrimary),
-                        colors = TextFieldDefaults.colors(
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary,
-                            cursorColor = PurplePrimary,
-                            focusedContainerColor = Surface,
-                            unfocusedContainerColor = Surface,
-                            focusedIndicatorColor = PurplePrimary,
-                            unfocusedIndicatorColor = Divider
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        maxLines = 5
-                    )
+                    }
                 }
 
-
-
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 🔹 Botones
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                OutlinedButton(
-                    onClick = onBackClick,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
-                    border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Cancelar", fontSize = 16.sp)
-                }
-
-                Button(
-                    onClick = {
-                        profileViewModel.setProfileImage(selectedMediaUri.value)
-                        onSaveClick()
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = PurplePrimary,
-                        contentColor = TextPrimary
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Guardar cambios", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun EditProfileScreenPreview() {
-    EditProfileScreen()
 }
