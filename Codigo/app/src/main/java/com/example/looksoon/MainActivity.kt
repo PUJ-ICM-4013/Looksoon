@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import com.example.faunafinder.navigation.AppNavigation
+import com.example.looksoon.ui.theme.navigation.AppNavigation
 import com.example.looksoon.ui.theme.LooksoonTheme
 
 class MainActivity : ComponentActivity() {
