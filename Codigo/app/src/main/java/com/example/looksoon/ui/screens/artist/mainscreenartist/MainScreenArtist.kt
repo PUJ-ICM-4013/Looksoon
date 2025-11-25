@@ -463,7 +463,7 @@ fun EventCard(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Ver más", color = Color.White)
+                    Text("Ver ubicación", color = Color.White)
                 }
             }
         }
