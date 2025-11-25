@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
+import com.example.looksoon.ui.theme.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
@@ -44,8 +44,6 @@ import android.net.Uri
 import androidx.compose.runtime.remember
 import coil.compose.rememberAsyncImagePainter
 import com.example.looksoon.ui.viewmodels.PostViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-
 
 
 @Composable

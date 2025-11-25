@@ -1,5 +1,11 @@
 package com.example.looksoon.ui.screens.establishment
 
+// Imports para la lógica de la notificación
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import kotlinx.coroutines.delay
+
+// Imports básicos y de UI
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +32,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+
+// Imports específicos de tu proyecto
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.LooksoonTheme
+
+// <<< 1. IMPORTAMOS EL VIEWMODEL Y LA TARJETA DE NOTIFICACIÓN REUTILIZABLE
+import com.example.looksoon.ui.screens.SharedViewModel
+import com.example.looksoon.ui.screens.artist.CustomNotificationCard
 
 // ---------------- DATOS ----------------
 data class Artist(
@@ -62,48 +78,79 @@ val artists = listOf(
 )
 
 // ---------------- PANTALLA PRINCIPAL ----------------
+// <<< 2. MODIFICAMOS LA FIRMA DE LA FUNCIÓN
 @Composable
-fun ReserveArtistScreen(navController: NavController? = null) {
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        bottomBar = {
-            BottomBarReserve()
+fun ReserveArtistScreen(
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
+    // <<< 3. AÑADIMOS LA LÓGICA DE LA NOTIFICACIÓN
+    val notificationAlreadyShown by sharedViewModel.notificationShown.collectAsState()
+    var showNotification by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!notificationAlreadyShown) {
+            showNotification = true
+            sharedViewModel.markNotificationAsShown()
+            delay(8000L) // Espera 8 segundos
+            showNotification = false
         }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                // 👇 Igual que MainScreenArtist: respetar padding del Scaffold
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            HeReserve(
-                section = "Reservar Artista",
-                onBackClick = { navController?.popBackStack() }
-            )
+    }
 
-            SearchBarReserve()
-
-            FiltersRowReserve(
-                filters = listOf("Pop", "Rock", "DJ", "Acústico", "Indie")
-            )
-
-            LazyColumn(
+    // <<< 4. ENVOLVEMOS EL SCAFFOLD EN UN BOX
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = { BottomBarReserve() }
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
+                    .padding(innerPadding)
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                // 👇 esto evita que el contenido choque con la barra inferior
-                contentPadding = PaddingValues(bottom = 80.dp)
+                    .background(Color.Black)
             ) {
-                items(artists) { artist ->
-                    ArtistCardReserve(artist = artist, navController = navController)
+                HeReserve(
+                    section = "Reservar Artista",
+                    onBackClick = { navController.popBackStack() }
+                )
+
+                SearchBarReserve()
+
+                FiltersRowReserve(
+                    filters = listOf("Pop", "Rock", "DJ", "Acústico", "Indie")
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 80.dp)
+                ) {
+                    items(artists) { artist ->
+                        ArtistCardReserve(artist = artist, navController = navController)
+                    }
                 }
             }
         }
+
+        // <<< 5. AÑADIMOS LA NOTIFICACIÓN ANIMADA SUPERPUESTA
+        AnimatedVisibility(
+            visible = showNotification,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 70.dp, start = 16.dp, end = 16.dp),
+            exit = fadeOut()
+        ) {
+            // Reutilizamos la tarjeta, pero con el mensaje para el local
+            CustomNotificationCard(
+                message = "¡La ponti fiesta se acerca! No te quedes sin música, encuentra y reserva a los mejores artistas para tu evento.",
+                onDismiss = { showNotification = false }
+            )
+        }
     }
 }
+
 
 // ---------------- HEADER ----------------
 @Composable
@@ -171,7 +218,10 @@ fun FiltersRowReserve(filters: List<String>) {
                     .clip(RoundedCornerShape(50))
                     .background(
                         Brush.horizontalGradient(
-                            listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+                            listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.secondary
+                            )
                         )
                     )
                     .padding(horizontal = 20.dp, vertical = 10.dp),
@@ -185,13 +235,13 @@ fun FiltersRowReserve(filters: List<String>) {
 
 // ---------------- TARJETA DE ARTISTA ----------------
 @Composable
-fun ArtistCardReserve(artist: Artist, navController: NavController? = null) {
+fun ArtistCardReserve(artist: Artist, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable {
-                navController?.navigate("event_details")
+                navController.navigate("event_details")
             },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
         shape = RoundedCornerShape(16.dp),
@@ -243,7 +293,7 @@ fun ArtistCardReserve(artist: Artist, navController: NavController? = null) {
                                 listOf(Color(0xFFB84DFF), Color(0xFF5A0FC8))
                             )
                         )
-                        .clickable { navController?.navigate("event_details") }
+                        .clickable { navController.navigate("event_details") }
                         .padding(horizontal = 20.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -263,7 +313,7 @@ fun BottomBarReserve() {
     ) {
         Row(
             modifier = Modifier
-                .navigationBarsPadding() // respeta el padding del sistema
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -290,6 +340,8 @@ fun BottomBarReserve() {
 @Composable
 fun ReserveArtistScreenPreview() {
     LooksoonTheme {
-        ReserveArtistScreen()
+        // La Preview no necesita los parámetros, por lo que la dejamos como estaba.
+        // La funcionalidad real se prueba en el emulador.
+        ReserveArtistScreen(navController = rememberNavController(), sharedViewModel = viewModel())
     }
 }

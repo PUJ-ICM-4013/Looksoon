@@ -1,10 +1,12 @@
-package com.example.faunafinder.navigation
+package com.example.looksoon.ui.theme.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+// <<< 1. IMPORTA EL VIEWMODEL COMPARTIDO QUE CREASTE
+import com.example.looksoon.ui.screens.SharedViewModel
 import com.example.looksoon.ui.screens.login_register.ArtistSignUpScreen
 import com.example.looksoon.ui.screens.login_register.BandSignUpScreen
 import com.example.looksoon.ui.screens.artist.CallsScreenArtist
@@ -38,7 +40,7 @@ import com.example.looksoon.ui.screens.login_register.login.LoginViewModel
 import com.example.looksoon.ui.screens.smarttools.PerformanceAnalyzerScreen
 import com.example.looksoon.ui.screens.smarttools.SmartStoryCreatorScreen
 import com.example.looksoon.ui.screens.smarttools.tourtracker.TourTrackerIntelligenceScreen
-import com.example.looksoon.ui.screens.login_register.viewmodels.SignUpViewModel // <-- ¡IMPORTANTE!
+import com.example.looksoon.ui.screens.login_register.viewmodels.SignUpViewModel
 import com.example.looksoon.ui.viewmodels.PostViewModel
 import com.example.looksoon.ui.viewmodels.ProfileViewModel
 
@@ -48,82 +50,53 @@ sealed class Screen(val route: String) {
     object Mensajes : Screen("Mensajes")
     object Perfil : Screen("Perfil")
     object Login : Screen("login")
-
     object SignUp : Screen("SignUp")
-
     object Publicar : Screen("Publicar")
-
     object Chat : Screen("Chat")
-
     object Feed : Screen("Feed")
-
     object Editar : Screen("Editar")
-
     object SignUpInformationArtist : Screen("SignUpInformationArtist")
-
     object SignUpInformationFan : Screen("SignUpInformationFan")
-
     object SignUpInformationBand : Screen("SignUpInformationBand")
-
     object SignUpInformationEstablishment : Screen("SignUpInformationEstablishment")
-
     object SignUpInformationCurator : Screen("SignUpInformationCurator")
-
     object LocalActions : Screen("local_actions")
     object ReserveArtist : Screen("reserve_artist")
     object EventDetails : Screen("event_details")
     object PublishEvent : Screen("publish_event")
     object ManageApplications : Screen("manage_applications")
     object ReservationDetail : Screen("reservation_detail")
-
     object EventDetailsArtist : Screen("event_details_artist")
-
-
     object ForgotPassword : Screen("forgot_password")
-
     object ExploreEventsFan: Screen("explore_events_fan")
-
     object ProfileFan : Screen("Perfil Fan")
-
     object MainFan : Screen("Inicio Fan")
-
     object Invite: Screen("Invitar")
-
     object Search: Screen("Buscar")
-
     object Curator: Screen("mainCurator")
-
     object CreatePost: Screen("create_post")
-
     object TourTrackerIntelligence : Screen("tour_tracker_intelligence")
-
     object SmartStoryCreator : Screen("smart_story_creator")
-
     object PerformanceAnalyzer : Screen("performance_analyzer")
-
-
     //Crear Screens
 }
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+
+    // <<< 2. CREA UNA INSTANCIA DE CADA VIEWMODEL COMPARTIDO AQUÍ, A NIVEL DEL NavHost
     val profileViewModel: ProfileViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
+    val signUpViewModel: SignUpViewModel = viewModel()
+    val sharedViewModel: SharedViewModel = viewModel() // <<< ¡LA LÍNEA MÁS IMPORTANTE!
 
-    val signUpViewModel = viewModel<SignUpViewModel>()
     NavHost(navController = navController, startDestination = Screen.Login.route) {
 
-        // Creamos el ViewModel de Registro una sola vez aquí para inyectarlo en las 5 pantallas
-
-
         //Inicio de Sesion y Registro
-
         //Para LoginScreen------------------------------------------------------------
-
         composable(Screen.Login.route) {
             val loginViewModel = viewModel<LoginViewModel>()
-
             LoginScreen(
                 onArtistClick = {
                     navController.navigate(Screen.Home.route) {
@@ -145,14 +118,10 @@ fun AppNavigation() {
                     }
                 },
                 onForgotPasswordClick = {
-                    navController.navigate(Screen.ForgotPassword.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
+                    navController.navigate(Screen.ForgotPassword.route)
                 },
                 onSignUpClick = {
-                    navController.navigate(Screen.SignUp.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
+                    navController.navigate(Screen.SignUp.route)
                 },
                 viewModel = loginViewModel
             )
@@ -160,80 +129,46 @@ fun AppNavigation() {
 
         //Para SignUpScreen------------------------------------------------------------
         composable(Screen.SignUp.route) { SignUpScreen(
-            onArtistClick = {
-                navController.navigate(Screen.SignUpInformationArtist.route) {
-                    popUpTo(Screen.SignUpInformationArtist.route) { inclusive = true }
-                }
-            },
-            onBandClick = {
-                navController.navigate(Screen.SignUpInformationBand.route) {
-                    popUpTo(Screen.SignUpInformationBand.route) { inclusive = true }
-                }
-            },
-            onFanClick = {
-                navController.navigate(Screen.SignUpInformationFan.route) {
-                    popUpTo(Screen.SignUpInformationFan.route) { inclusive = true }
-                }
-            },
-            onEstablishmentClick = {
-                navController.navigate(Screen.SignUpInformationEstablishment.route) {
-                    popUpTo(Screen.SignUpInformationEstablishment.route) { inclusive = true }
-                }
-            },
-            onCuratorClick = {
-                navController.navigate(Screen.SignUpInformationCurator.route) {
-                    popUpTo(Screen.SignUpInformationCurator.route) { inclusive = true }
-                }
-            },
-            onLoginClick = {navController.navigate(Screen.Login.route) {
+            onArtistClick = { navController.navigate(Screen.SignUpInformationArtist.route) },
+            onBandClick = { navController.navigate(Screen.SignUpInformationBand.route) },
+            onFanClick = { navController.navigate(Screen.SignUpInformationFan.route) },
+            onEstablishmentClick = { navController.navigate(Screen.SignUpInformationEstablishment.route) },
+            onCuratorClick = { navController.navigate(Screen.SignUpInformationCurator.route) },
+            onLoginClick = { navController.navigate(Screen.Login.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
-            }})
-        }
-
+            }}
+        )}
 
         //Para SignUpInformationScreen------------------------------------------------------------
-
-
         composable(Screen.SignUpInformationFan.route) { FanRegistrationScreen(
             onBackClick = {navController.popBackStack()},
-            onSignUpClick = {navController.navigate(Screen.SignUp.route){
-                popUpTo(Screen.SignUp.route) { inclusive = true }
-            } },
-            viewModel = signUpViewModel // <-- INYECCIÓN
+            onSignUpClick = {navController.navigate(Screen.Login.route)},
+            viewModel = signUpViewModel
         ) }
 
         composable(Screen.SignUpInformationBand.route) { BandSignUpScreen(
             onBackClick = {navController.popBackStack()},
-            onSignUpClick = {navController.navigate(Screen.SignUp.route){
-                popUpTo(Screen.SignUp.route) { inclusive = true }
-            } },
-            viewModel = signUpViewModel // <-- INYECCIÓN
+            onSignUpClick = {navController.navigate(Screen.Login.route)},
+            viewModel = signUpViewModel
         ) }
 
         composable(Screen.SignUpInformationEstablishment.route) { EstablishmentRegistrationScreen(
             onBackClick = {navController.popBackStack()},
-            onSignUpClick = {navController.navigate(Screen.SignUp.route){
-                popUpTo(Screen.SignUp.route) { inclusive = true }
-            } },
-            viewModel = signUpViewModel // <-- INYECCIÓN
+            onSignUpClick = {navController.navigate(Screen.Login.route)},
+            viewModel = signUpViewModel
         ) }
 
         composable(Screen.SignUpInformationCurator.route) {  CuratorRegistrationScreen(
             onBackClick = {navController.popBackStack()},
-            onSignUpClick = {navController.navigate(Screen.SignUp.route){
-                popUpTo(Screen.SignUp.route) { inclusive = true }
-            } },
-            viewModel = signUpViewModel // <-- INYECCIÓN
+            onSignUpClick = {navController.navigate(Screen.Login.route)},
+            viewModel = signUpViewModel
         ) }
 
         composable(Screen.SignUpInformationArtist.route) { ArtistSignUpScreen(
-            onSignUpClick = { navController.navigate(Screen.SignUp.route){
-                popUpTo(Screen.SignUp.route) { inclusive = true }
-            } },
+            onSignUpClick = { navController.navigate(Screen.Login.route) },
             onBackClick = { navController.popBackStack() },
-            viewModel = signUpViewModel // <-- INYECCIÓN
+            viewModel = signUpViewModel
         ) }
-
 
         //Para pantallas de Artista
         // Pantallas inteligentes del artista
@@ -276,7 +211,6 @@ fun AppNavigation() {
             )
         }
 
-
         composable(Screen.Home.route) {
             val mainScreenArtistViewModel = viewModel<MainScreenArtistViewModel>()
             MainScreenArtist(
@@ -299,9 +233,6 @@ fun AppNavigation() {
             )
         }
 
-
-
-
         // Para forgot password
         composable(Screen.ForgotPassword.route) {
             val forgotPasswordViewModel = viewModel<ForgotPasswordViewModel>()
@@ -311,35 +242,39 @@ fun AppNavigation() {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
-                onButtonClick = {
-
-                },
+                onButtonClick = {},
                 viewModel = forgotPasswordViewModel
             ) }
 
-        composable(Screen.Convocatorias.route) { CallsScreenArtist(navController = navController) }
+        // <<< 3. PASA LA INSTANCIA DEL sharedViewModel A CallsScreenArtist
+        composable(Screen.Convocatorias.route) {
+            CallsScreenArtist(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
         composable(Screen.Mensajes.route) { MessagesScreen(navController = navController) }
-        composable(Screen.Perfil.route) { ProfileScreen(navController = navController) }
-
+        composable(Screen.Perfil.route) { ProfileScreen(navController = navController, profileViewModel = profileViewModel) }
 
         composable(Screen.Publicar.route) { CreatePostScreen(navController = navController,
             postViewModel = postViewModel
-            ) }
+        ) }
         composable(Screen.Chat.route) { ChatScreen(navController = navController, contactName = "Persona") }
 
         composable(Screen.LocalActions.route) { LocalActionsScreen(navController = navController) }
-        composable(Screen.ReserveArtist.route) { ReserveArtistScreen(navController = navController) }
+
+        // <<< CORRECCIÓN APLICADA AQUÍ 👇
+        composable(Screen.ReserveArtist.route) {
+            ReserveArtistScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
+
         composable(Screen.EventDetails.route) { EventDetailsScreen(navController = navController) }
         composable(Screen.PublishEvent.route) { PublishEventScreen(navController = navController) }
         composable(Screen.ManageApplications.route) { ManageApplicationsScreen(navController = navController) }
         composable(Screen.ReservationDetail.route) { ReservationDetailScreen(navController = navController) }
-
-        composable(Screen.Perfil.route) {
-            ProfileScreen(
-                navController = navController,
-                profileViewModel = profileViewModel
-            )
-        }
 
         //Colocar composable de cad screen
         composable(Screen.Editar.route) {
@@ -354,7 +289,7 @@ fun AppNavigation() {
         }
         composable(Screen.Feed.route) { FeedScreen(navController = navController,
             postViewModel = postViewModel
-            ) }
+        ) }
 
         composable(Screen.CreatePost.route) {
             CreatePostScreen(
@@ -362,8 +297,6 @@ fun AppNavigation() {
                 postViewModel = postViewModel
             )
         }
-
-
 
         composable(Screen.EventDetailsArtist.route) { EventDetailsArtistScreen(navController = navController) }
 
@@ -375,9 +308,5 @@ fun AppNavigation() {
         composable(Screen.Invite.route) { FanInviteContactsScreen(navController = navController) }
 
         composable(Screen.Curator.route) { CuratorScreen() }
-
-        composable(Screen.CreatePost.route) { CreatePostScreen(navController = navController,
-            postViewModel = postViewModel
-            ) }
     }
 }

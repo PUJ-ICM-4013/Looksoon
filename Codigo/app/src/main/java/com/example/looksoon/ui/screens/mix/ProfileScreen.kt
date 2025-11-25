@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
+import com.example.looksoon.ui.theme.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist

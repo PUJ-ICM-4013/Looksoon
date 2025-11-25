@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.faunafinder.navigation.Screen
+import com.example.looksoon.ui.theme.navigation.Screen
 import com.example.looksoon.R
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 
@@ -52,11 +52,9 @@ import com.example.looksoon.ui.theme.LooksoonTheme
 import com.example.looksoon.ui.theme.TextPrimary
 
 import android.app.AlertDialog
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.draw.clip
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.looksoon.ui.viewmodels.PostViewModel
 
