@@ -317,5 +317,12 @@ Accesos administrados mediante el sistema moderno de permisos de Android.
 
 ---
 
+## 📂 Entregables de la Entrega Final
+
+- 📑 **Presentación de la propuesta actualizada para la entrega final** → [Ver archivo](https://www.canva.com/design/DAGymMGqlec/_6j-Pk2OrCCligBksTqADw/edit?utm_content=DAGymMGqlec&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+   
+- 🎭 **Presentación del Pitch** → [Ver archivo](https://github.com/PUJ-ICM-4013/Looksoon/blob/main/Diagrama%20de%20casos%20de%20uso.jpeg)  
+---
+
 
 
