@@ -2,6 +2,7 @@ package com.example.looksoon
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+
 import androidx.lifecycle.lifecycleScope
 import com.example.looksoon.repository.UserRepository
 import com.example.looksoon.ui.theme.navigation.AppNavigation
@@ -28,11 +30,10 @@ class MainActivity : ComponentActivity() {
 
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
-            val storageGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
-
-            if (!cameraGranted || !storageGranted) {
-                println("⚠️ Permisos de cámara o almacenamiento no concedidos")
+            permissions.entries.forEach {
+                if (!it.value) {
+                    println("⚠️ Permiso no concedido: ${it.key}")
+                }
             }
         }
 
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         requestAppPermissions()
+        NotificationUtils.createNotificationChannel(this)
 
         setContent {
             LooksoonTheme {
@@ -47,6 +49,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -80,19 +83,27 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestAppPermissions() {
-        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-        val storagePermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissionsToRequest = mutableListOf<String>()
 
-        if (cameraPermission != PackageManager.PERMISSION_GRANTED ||
-            storagePermission != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionsLauncher.launch(
-                arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            )
+        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(Manifest.permission.CAMERA)
+        }
+
+        val storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            if (notificationPermission != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissionsLauncher.launch(permissionsToRequest.toTypedArray())
         }
     }
 
