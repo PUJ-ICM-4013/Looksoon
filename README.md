@@ -293,7 +293,7 @@ Looksoon amplía sus capacidades mediante servicios externos:
 - **Datos externos** como países, zonas o códigos internacionales.  
 - **Generación y lectura de Códigos QR** para entradas y validaciones.  
 
-Manejo de JSON con **Kotlinx Serialization**, control de errores y peticiones eficientes.
+Manejo de JSON con **Kotlinx Serialization** de Audius (API de música), control de errores y peticiones eficientes.
 
 ---
 
