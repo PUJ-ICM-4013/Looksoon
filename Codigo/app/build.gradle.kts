@@ -55,9 +55,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
+    // --- Firebase BOM y servicios ---
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
-
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore") // ✅ FIRESTORE AGREGADO
+
+    // --- OkHttp para Cloudinary (subida de imágenes) ---
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") // ✅ OKHTTP PARA CLOUDINARY
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") // ✅ OPCIONAL: para logs
 
 
     // --- Compose UI, Material3 y Navegación (versiones actualizadas) ---

@@ -4,27 +4,35 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.looksoon.utils.NotificationUtils
+import com.example.looksoon.repository.UserRepository
+
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class LoginViewModel : ViewModel() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
+    private val userRepository = UserRepository()
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
     fun updateEmail(email: String) {
-        _state.value = _state.value.copy(email = email)
+        _state.value = _state.value.copy(email = email, error = null)
     }
 
     fun updatePassword(password: String) {
-        _state.value = _state.value.copy(password = password)
+        _state.value = _state.value.copy(password = password, error = null)
     }
 
+
+    // Función de login
     fun checkLogin(
         context: Context,
         email: String,
@@ -34,9 +42,12 @@ class LoginViewModel : ViewModel() {
         onFanClick: () -> Unit,
         onCuratorClick: () -> Unit
     ) {
-        if (email.isEmpty() || password.isEmpty()) return
+        if (email.isEmpty() || password.isEmpty()) {
+            _state.value = _state.value.copy(error = "Por favor completa todos los campos")
+            return
+        }
 
-        _state.value = _state.value.copy(isLoading = true)
+        _state.value = _state.value.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
             auth.signInWithEmailAndPassword(email, password)
@@ -62,9 +73,9 @@ class LoginViewModel : ViewModel() {
                     } else {
                         _state.value = _state.value.copy(isLoading = false, navigate = false)
                     }
+
                 }
-        }
-    }
+
 
     private fun sendTokenAndNavigate(
         context: Context,
@@ -108,6 +119,11 @@ class LoginViewModel : ViewModel() {
             "artista@gmail.com", "artista@example.com" -> "artista"
             "fan@gmail.com" -> "fan"
             else -> "fan"
+
         }
+    }
+
+    fun clearError() {
+        _state.value = _state.value.copy(error = null)
     }
 }
