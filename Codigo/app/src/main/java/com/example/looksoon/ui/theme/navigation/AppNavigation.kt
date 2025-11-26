@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.looksoon.ui.Audius.TracksScreen
 import com.example.looksoon.ui.screens.SharedViewModel
 import com.example.looksoon.ui.screens.login_register.SignUp.ArtistSignUpScreen
 import com.example.looksoon.ui.screens.login_register.SignUp.BandSignUpScreen
@@ -85,6 +86,12 @@ sealed class Screen(val route: String) {
     // RUTAS PARA CHAT
     object ChatsList : Screen("chats_list")
     object ChatConversation : Screen("chat_conversation")
+
+    object OtherUserProfile : Screen("other_user_profile")
+
+
+    object audiusApi: Screen("audius")
+
 }
 
 @Composable
@@ -227,6 +234,10 @@ fun AppNavigation() {
                         "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
                         "test_users" -> navController.navigate("test_users")
                     }
+                }
+                ,
+                onIconRightClick = {
+                    navController.navigate(Screen.audiusApi.route)
                 }
             )
         }
@@ -421,6 +432,15 @@ fun AppNavigation() {
         // Chat viejo (si aún lo usas)
         composable(Screen.Chat.route) {
             ChatScreen(navController = navController, contactName = "Persona")
+        }
+
+        // ============================================
+        // AUDIUS
+        // ============================================
+
+        composable(Screen.audiusApi.route) {
+
+            TracksScreen()
         }
     }
 }

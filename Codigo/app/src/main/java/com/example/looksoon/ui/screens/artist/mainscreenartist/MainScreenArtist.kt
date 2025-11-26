@@ -48,6 +48,7 @@ fun MainScreenArtist(
     viewModel: MainScreenArtistViewModel,
     role: String = "Artista",
     onSmartToolSelected: (String) -> Unit,
+    onIconRightClick: () -> Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -77,7 +78,8 @@ fun MainScreenArtist(
                         )
                     ),
                 role = role,
-                onSmartToolSelected = onSmartToolSelected
+                onSmartToolSelected = onSmartToolSelected,
+                onIconRightClick = onIconRightClick
             )
 
             InteractiveMap(viewModel = viewModel)
@@ -278,7 +280,8 @@ fun PreviewMainScreenArtist() {
         seeMoreClick = {},
         viewModel = FakeMainScreenArtistViewModel(),
         role = "Artista",
-        onSmartToolSelected = {}
+        onSmartToolSelected = {},
+        onIconRightClick = {}
     )
 }
 
@@ -296,7 +299,10 @@ fun HeaderArtist(
     iconRight: ImageVector,
     role: String = "Artista",
     onSmartToolSelected: (String) -> Unit = {},
-    onIconRightClick: () -> Unit = {}
+    onIconRightClick: () -> Unit = {
+        // Llevar a la pantalla de audius
+
+    }
 ) {
     var expanded by remember { mutableStateOf(false) }
     val smartTools = getSmartToolsForRole(role)
