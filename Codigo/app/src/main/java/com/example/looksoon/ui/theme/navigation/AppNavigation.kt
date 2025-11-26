@@ -45,9 +45,7 @@ import com.example.looksoon.ui.viewmodels.ProfileViewModel
 // IMPORTS PARA CHAT
 import com.example.looksoon.ui.screens.chat.ChatScreen as NewChatScreen
 import com.example.looksoon.ui.screens.chat.ChatsListScreen
-import com.example.looksoon.ui.screens.login_register.SignUp.CuratorSignUpScreen
-import com.example.looksoon.ui.screens.login_register.SignUp.EstablishmentSignUpScreen
-import com.example.looksoon.ui.screens.login_register.SignUp.FanSignUpScreen
+import com.example.looksoon.ui.screens.chat.TestUsersScreen
 
 sealed class Screen(val route: String) {
     object Home : Screen("Inicio")
@@ -87,7 +85,6 @@ sealed class Screen(val route: String) {
     // RUTAS PARA CHAT
     object ChatsList : Screen("chats_list")
     object ChatConversation : Screen("chat_conversation")
-    object OtherUserProfile : Screen("other_user_profile")
 }
 
 @Composable
@@ -154,7 +151,6 @@ fun AppNavigation() {
             )
         }
 
-        // Pantallas de registro específicas
         composable(Screen.SignUpInformationFan.route) {
             FanSignUpScreen(
                 onBackClick = { navController.popBackStack() },
@@ -229,6 +225,7 @@ fun AppNavigation() {
                         "tour_tracker" -> navController.navigate(Screen.TourTrackerIntelligence.route)
                         "story_creator" -> navController.navigate(Screen.SmartStoryCreator.route)
                         "performance_analyzer" -> navController.navigate(Screen.PerformanceAnalyzer.route)
+                        "test_users" -> navController.navigate("test_users")
                     }
                 }
             )
@@ -241,34 +238,53 @@ fun AppNavigation() {
             )
         }
 
-        // En AppNavigation.kt, cambia la línea del Screen.Mensajes.route:
-
+        // ✅ LISTA DE CHATS (solo una vez)
         composable(Screen.Mensajes.route) {
             ChatsListScreen(
                 onChatClick = { chatId, receiverId, receiverName ->
-                    navController.navigate("${Screen.ChatConversation.route}/$chatId/$receiverId/$receiverName")
+                    // ✅ SIN BARRA AL FINAL
+                    navController.navigate("chat_conversation/$chatId/$receiverId/$receiverName")
                 },
                 onBackClick = { navController.popBackStack() },
-                navController = navController  // PASAR EL NAVCONTROLLER
+                navController = navController
             )
         }
 
-        // Perfil propio (sin userId)
+        // ✅ PANTALLA DE CONVERSACIÓN INDIVIDUAL
+        composable("chat_conversation/{chatId}/{receiverId}/{receiverName}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+            val receiverId = backStackEntry.arguments?.getString("receiverId") ?: ""
+            val receiverName = backStackEntry.arguments?.getString("receiverName") ?: ""
+
+            NewChatScreen(
+                chatId = chatId,
+                receiverId = receiverId,
+                receiverName = receiverName,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        // ✅ USUARIOS DE PRUEBA
+        composable("test_users") {
+            TestUsersScreen(navController = navController)
+        }
+
+        // Perfil propio
         composable(Screen.Perfil.route) {
             ProfileScreen(
                 navController = navController,
                 profileViewModel = profileViewModel,
-                userId = null  // Perfil propio
+                userId = null
             )
         }
 
-        // Perfil de otro usuario (CON userId)
+        // Perfil de otro usuario
         composable("user_profile/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             ProfileScreen(
                 navController = navController,
                 profileViewModel = profileViewModel,
-                userId = userId  // Perfil de otro usuario
+                userId = userId
             )
         }
 
@@ -289,8 +305,7 @@ fun AppNavigation() {
         composable(Screen.Editar.route) {
             EditProfileScreen(
                 navController = navController,
-                profileViewModel = profileViewModel,
-
+                profileViewModel = profileViewModel
             )
         }
 
@@ -300,37 +315,6 @@ fun AppNavigation() {
                 postViewModel = postViewModel
             )
         }
-
-        // ============================================
-        // SISTEMA DE CHAT
-        // ============================================
-
-        // En AppNavigation.kt, cambia la línea del Screen.Mensajes.route:
-
-        composable(Screen.Mensajes.route) {
-            ChatsListScreen(
-                onChatClick = { chatId, receiverId, receiverName ->
-                    navController.navigate("${Screen.ChatConversation.route}/$chatId/$receiverId/$receiverName")
-                },
-                onBackClick = { navController.popBackStack() },
-                navController = navController  // PASAR EL NAVCONTROLLER
-            )
-        }
-
-        // Pantalla de conversación individual
-        composable("${Screen.ChatConversation.route}/{chatId}/{receiverId}/{receiverName}") { backStackEntry ->
-            val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-            val receiverId = backStackEntry.arguments?.getString("receiverId") ?: ""
-            val receiverName = backStackEntry.arguments?.getString("receiverName") ?: ""
-
-            NewChatScreen(
-                chatId = chatId,
-                receiverId = receiverId,
-                receiverName = receiverName,
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
 
         // ============================================
         // HERRAMIENTAS INTELIGENTES

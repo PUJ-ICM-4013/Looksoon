@@ -1,11 +1,8 @@
 package com.example.looksoon.ui.screens.login_register.login
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.looksoon.utils.NotificationUtils
 import com.example.looksoon.repository.UserRepository
-
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,18 +20,18 @@ class LoginViewModel : ViewModel() {
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
+    // Actualizar email
     fun updateEmail(email: String) {
         _state.value = _state.value.copy(email = email, error = null)
     }
 
+    // Actualizar contraseña
     fun updatePassword(password: String) {
         _state.value = _state.value.copy(password = password, error = null)
     }
 
-
     // Función de login
     fun checkLogin(
-        context: Context,
         email: String,
         password: String,
         onArtistClick: () -> Unit,
@@ -50,76 +47,64 @@ class LoginViewModel : ViewModel() {
         _state.value = _state.value.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        task.result?.user?.getIdToken(false)?.addOnCompleteListener { tokenTask ->
-                            if (tokenTask.isSuccessful) {
-                                val idToken = tokenTask.result?.token
-                                if (idToken != null) {
-                                    sendTokenAndNavigate(
-                                        context,
-                                        idToken,
-                                        onArtistClick,
-                                        onEstablishmentClick,
-                                        onFanClick,
-                                        onCuratorClick
-                                    )
-                                }
-                            } else {
-                                _state.value = _state.value.copy(isLoading = false, navigate = false)
-                            }
-                        }
-                    } else {
-                        _state.value = _state.value.copy(isLoading = false, navigate = false)
-                    }
+            try {
+                // 1. Autenticar con Firebase
+                auth.signInWithEmailAndPassword(email, password).await()
 
+                val user = auth.currentUser
+                if (user == null) {
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = "Error al iniciar sesión"
+                    )
+                    return@launch
                 }
 
+                // 2. ✅ ACTUALIZAR ESTADO EN LÍNEA
+                userRepository.updateOnlineStatus(true)
 
-    private fun sendTokenAndNavigate(
-        context: Context,
-        idToken: String,
-        onArtistClick: () -> Unit,
-        onEstablishmentClick: () -> Unit,
-        onFanClick: () -> Unit,
-        onCuratorClick: () -> Unit
-    ) {
-        val roleFromBackend = getRoleFromBackend(idToken)
-        _state.value = _state.value.copy(isLoading = false, navigate = true)
+                // 3. Obtener el rol del usuario
+                val roleFromBackend = getRoleFromBackend(email)
 
-        when (roleFromBackend) {
-            "artista" -> {
-                NotificationUtils.sendEventNotification(
-                    context = context,
-                    title = "¡No te olvides, Artista!",
-                    content = "En 2 días es la ponti fiesta de cierre de semestre. ¡No pierdas la oportunidad de entrar en la convocatoria!"
+                _state.value = _state.value.copy(isLoading = false, navigate = true)
+
+                // 4. Navegación basada en el rol
+                when (roleFromBackend) {
+                    "artista" -> onArtistClick()
+                    "local" -> onEstablishmentClick()
+                    "curador" -> onCuratorClick()
+                    "fan" -> onFanClick()
+                    else -> onArtistClick() // Por defecto
+                }
+
+            } catch (e: Exception) {
+                val errorMessage = when {
+                    e.message?.contains("password") == true -> "Contraseña incorrecta"
+                    e.message?.contains("user") == true ||
+                            e.message?.contains("email") == true -> "Usuario no encontrado"
+                    e.message?.contains("network") == true -> "Error de conexión"
+                    else -> "Error al iniciar sesión: ${e.message}"
+                }
+
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    navigate = false,
+                    error = errorMessage
                 )
-                onArtistClick()
             }
-            "local" -> {
-                NotificationUtils.sendEventNotification(
-                    context = context,
-                    title = "¡Prepara tu escenario!",
-                    content = "La ponti fiesta se acerca. No te quedes sin música, encuentra y reserva a los mejores artistas para tu evento."
-                )
-                onEstablishmentClick()
-            }
-            "curador" -> onCuratorClick()
-            "fan" -> onFanClick()
-            else -> onFanClick()
         }
     }
 
-    private fun getRoleFromBackend(token: String): String {
-        val email = auth.currentUser?.email?.lowercase()
-        return when (email) {
-            "local@gmail.com", "local@example.com" -> "local"
-            "curador@gmail.com", "curador@example.com" -> "curador"
-            "artista@gmail.com", "artista@example.com" -> "artista"
-            "fan@gmail.com" -> "fan"
-            else -> "fan"
+    // Obtener rol del backend (simulación temporal)
+    private fun getRoleFromBackend(email: String): String {
+        val emailLower = email.lowercase()
 
+        return when {
+            emailLower.contains("local") || emailLower.contains("establecimiento") -> "local"
+            emailLower.contains("curador") -> "curador"
+            emailLower.contains("artista") -> "artista"
+            emailLower.contains("fan") -> "fan"
+            else -> "fan" // Por defecto
         }
     }
 

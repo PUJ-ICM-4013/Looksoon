@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,7 +40,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.looksoon.R
 import com.example.looksoon.ui.theme.Divider
 import com.example.looksoon.ui.theme.PurplePrimary
@@ -49,6 +47,7 @@ import com.example.looksoon.ui.theme.Surface
 import com.example.looksoon.ui.theme.TextPrimary
 import com.example.looksoon.ui.theme.TextSecondary
 
+// Composable reutilizable para campos de texto
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomOutlinedTextField(
@@ -99,6 +98,7 @@ fun CustomOutlinedTextField(
     )
 }
 
+// Composable reutilizable para botones principales
 @Composable
 fun PrimaryButton(
     text: String,
@@ -126,6 +126,7 @@ fun PrimaryButton(
     }
 }
 
+// Composable reutilizable para texto con imagen/icono
 @Composable
 fun ImageWithText(
     imageRes: Int,
@@ -163,6 +164,7 @@ fun ImageWithText(
     }
 }
 
+// Composable reutilizable para divisores con texto
 @Composable
 fun TextDivider(
     text: String,
@@ -189,25 +191,27 @@ fun TextDivider(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit = {
+    },
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit,
     onArtistClick: () -> Unit,
     onEstablishmentClick: () -> Unit,
     onFanClick: () -> Unit,
     onCuratorClick: () -> Unit,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel = LoginViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val context = LocalContext.current
 
-    Scaffold(containerColor = Surface) { innerPadding ->
+
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            // Logo and Welcome Text
             ImageWithText(
                 imageRes = R.drawable.logo_looksoon,
                 title = "¡Bienvenido de nuevo!",
@@ -216,6 +220,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Email Field
             CustomOutlinedTextField(
                 value = state.email,
                 onValueChange = { viewModel.updateEmail(it) },
@@ -225,6 +230,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Password Field
             CustomOutlinedTextField(
                 value = state.password,
                 onValueChange = { viewModel.updatePassword(it) },
@@ -232,6 +238,7 @@ fun LoginScreen(
                 isPassword = true
             )
 
+            // Forgot Password
             TextButton(
                 onClick = onForgotPasswordClick,
                 modifier = Modifier.align(Alignment.End)
@@ -245,28 +252,31 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Login Button
             PrimaryButton(
                 text = "Iniciar sesión",
-                onClick = {
-                    viewModel.checkLogin(
-                        context,
-                        state.email,
-                        state.password,
-                        onArtistClick,
-                        onEstablishmentClick,
-                        onFanClick,
-                        onCuratorClick
-                    )
-                },
+                onClick = //onLoginClick,
+                    {
+                        viewModel.checkLogin(
+                            state.email,
+                            state.password,
+                            onArtistClick,
+                            onEstablishmentClick,
+                            onFanClick,
+                            onCuratorClick
+                        )
+                    },
                 enabled = state.email.isNotEmpty() && state.password.isNotEmpty()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Divider with "o" in the middle
             TextDivider(text = "o")
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Social Login Buttons
             SocialLoginButton(
                 text = "Continuar con Google",
                 iconRes = R.drawable.ic_google,
@@ -287,12 +297,12 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Sign Up
             AccountFlowRow(
                 onLinkClick = onSignUpClick,
                 infoLeft = "¿No tienes una cuenta?",
                 infoRight = "Regístrate"
             )
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -359,23 +369,24 @@ fun SocialLoginButton(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun LoginScreenPreview() {
-    val loginViewModel: LoginViewModel = viewModel()
     _root_ide_package_.com.example.looksoon.ui.theme.LooksoonTheme {
         LoginScreen(
+            onLoginClick = {},
             onForgotPasswordClick = {},
             onSignUpClick = {},
             onArtistClick = {},
             onEstablishmentClick = {},
             onFanClick = {},
             onCuratorClick = {},
-            viewModel = loginViewModel
-        )
+            //viewModel = LoginViewModel()
+            )
     }
 }
 
+// Preview para componentes individuales
 @Preview
 @Composable
 fun CustomOutlinedTextFieldPreview() {

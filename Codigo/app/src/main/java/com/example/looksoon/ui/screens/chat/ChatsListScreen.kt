@@ -2,8 +2,8 @@ package com.example.looksoon.ui.screens.chat
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,28 +20,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.looksoon.R
 import com.example.looksoon.model.Chat
 import com.example.looksoon.ui.screens.artist.mainscreenartist.BottomNavBar
 import com.example.looksoon.ui.screens.artist.mainscreenartist.HeaderArtist
 import com.example.looksoon.ui.theme.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.*
 
-// Data class para información del usuario
+
+// Data class para guardar la info del usuario en cada chat
 data class UserChatInfo(
     val name: String = "",
     val role: String = "",
@@ -49,7 +48,7 @@ data class UserChatInfo(
     val isOnline: Boolean = false
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatsListScreen(
     onChatClick: (chatId: String, receiverId: String, receiverName: String) -> Unit,
@@ -64,16 +63,28 @@ fun ChatsListScreen(
     var selectedFilter by remember { mutableStateOf("Todos") }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var chatToDelete by remember { mutableStateOf<Chat?>(null) }
-
-    // Estado para almacenar la información de los usuarios
     var usersInfo by remember { mutableStateOf<Map<String, UserChatInfo>>(emptyMap()) }
 
-    // Cargar información de usuarios cuando cambian los chats
+    // Escuchar chats en tiempo real
+    LaunchedEffect(Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("Chats")
+            .whereArrayContains("participants", currentUserId)
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    val chatList = snapshot.documents.mapNotNull { it.toObject(Chat::class.java) }
+                    viewModel.setChats(chatList)
+                }
+            }
+    }
+
+    // Leer datos de usuarios en tiempo real
     LaunchedEffect(chats) {
         val userIds = chats.flatMap { it.participants }.distinct().filter { it != currentUserId }
         if (userIds.isNotEmpty()) {
-            val info = loadUsersInfo(userIds)
-            usersInfo = info
+            loadUsersInfoRealtime(userIds) { info ->
+                usersInfo = info
+            }
         }
     }
 
@@ -82,7 +93,7 @@ fun ChatsListScreen(
         else -> chats
     }
 
-    // Diálogo de confirmación para eliminar
+    // Dialogo para eliminar chat
     if (showDeleteDialog && chatToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -97,14 +108,10 @@ fun ChatsListScreen(
                             chatToDelete = null
                         }
                     }
-                ) {
-                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
-                }
+                ) { Text("Eliminar", color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancelar")
-                }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar") }
             }
         )
     }
@@ -129,76 +136,34 @@ fun ChatsListScreen(
                 iconRight = Icons.Default.MoreVert,
                 contentDescriptionLeft = "Atrás",
                 contentDescriptionRight = "Opciones",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                modifier = Modifier.fillMaxWidth().height(56.dp)
             )
 
             // Filtros
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 FilterChip(
                     selected = selectedFilter == "Todos",
                     onClick = { selectedFilter = "Todos" },
-                    label = { Text("Todos") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = Color.White
-                    )
+                    label = { Text("Todos") }
                 )
-
                 Spacer(modifier = Modifier.width(12.dp))
-
                 FilterChip(
                     selected = selectedFilter == "No leídos",
                     onClick = { selectedFilter = "No leídos" },
-                    label = { Text("No leídos") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = Color.White
-                    )
+                    label = { Text("No leídos") }
                 )
             }
 
             // Lista de chats
             if (filteredChats.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = if (selectedFilter == "No leídos")
-                                "No tienes mensajes sin leer"
-                            else
-                                "No tienes conversaciones aún",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Inicia una conversación desde el perfil de un usuario",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No tienes conversaciones aún", color = Color.White)
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(filteredChats, key = { it.chatId }) { chat ->
                         val otherUserId = chat.participants.firstOrNull { it != currentUserId } ?: ""
                         val userInfo = usersInfo[otherUserId]
@@ -211,7 +176,7 @@ fun ChatsListScreen(
                                 onChatClick(
                                     chat.chatId,
                                     otherUserId,
-                                    userInfo?.name ?: chat.participantsInfo[otherUserId]?.name ?: "Usuario"
+                                    userInfo?.name ?: "Usuario"
                                 )
                             },
                             onLongClick = {
@@ -226,6 +191,7 @@ fun ChatsListScreen(
     }
 }
 
+// ----------- CARD VISUAL DEL CHAT -----------------
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatCardItem(
@@ -233,93 +199,85 @@ fun ChatCardItem(
     currentUserId: String,
     userInfo: UserChatInfo?,
     onClick: () -> Unit,
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit
 ) {
-    val otherUserId = chat.participants.firstOrNull { it != currentUserId } ?: ""
     val unreadCount = chat.unreadCount[currentUserId] ?: 0
-
-    // Usar info de Users si está disponible, sino usar la de participantsInfo
-    val userName = userInfo?.name ?: chat.participantsInfo[otherUserId]?.name ?: "Usuario"
-    val userRole = userInfo?.role ?: chat.participantsInfo[otherUserId]?.role ?: ""
-    val isOnline = userInfo?.isOnline ?: false
-    val profileImageUrl = userInfo?.profileImageUrl ?: ""
+    val otherUserId = chat.participants.firstOrNull { it != currentUserId } ?: ""
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            ),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+            .padding(6.dp)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color(0xFF2C2C2C))
+        border = BorderStroke(1.dp, Color(0xFF9B4DFF))
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar con indicador en línea
             Box {
-                if (profileImageUrl.isNotEmpty()) {
+                if (userInfo?.profileImageUrl?.isNotEmpty() == true) {
                     AsyncImage(
-                        model = profileImageUrl,
-                        contentDescription = "Avatar",
+                        model = userInfo.profileImageUrl,
+                        contentDescription = null,
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(50.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.foto),
-                        contentDescription = "Avatar",
+                    // Avatar por defecto con inicial
+                    Box(
                         modifier = Modifier
-                            .size(60.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = userInfo?.name?.firstOrNull()?.toString()?.uppercase() ?: "?",
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
-                // Indicador en línea (solo si está online)
-                if (isOnline) {
+                // ✅ CÍRCULO VERDE SI ESTÁ EN LÍNEA
+                if (userInfo?.isOnline == true) {
                     Box(
                         modifier = Modifier
                             .size(16.dp)
                             .align(Alignment.BottomEnd)
-                            .background(Color(0xFF4CAF50), CircleShape)
-                            .padding(2.dp)
+                            .background(Color(0xFF00FF00), CircleShape)
+                            .border(2.dp, Color.White, CircleShape)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(Modifier.width(12.dp))
 
-            // Información del chat
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = userName,
+                        text = userInfo?.name ?: "Usuario",
+                        fontSize = 17.sp,
+                        fontWeight = if (unreadCount > 0) FontWeight.Bold else FontWeight.SemiBold,
                         color = Color.White,
-                        fontWeight = if (unreadCount > 0) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = 18.sp,
                         modifier = Modifier.weight(1f)
                     )
 
-                    // Mostrar rol
-                    if (userRole.isNotEmpty()) {
+                    // Badge con el rol
+                    if (userInfo?.role?.isNotEmpty() == true) {
                         Text(
-                            text = userRole,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 11.sp,
+                            text = userInfo.role,
+                            fontSize = 10.sp,
+                            color = Color(0xFF9B4DFF),
                             modifier = Modifier
                                 .background(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                    Color(0xFF9B4DFF).copy(alpha = 0.2f),
                                     RoundedCornerShape(4.dp)
                                 )
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -327,19 +285,19 @@ fun ChatCardItem(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(Modifier.height(4.dp))
 
-                // Indicador "escribiendo..."
+                // Indicador "escribiendo..." o último mensaje
                 if (chat.isTyping[otherUserId] == true) {
                     Text(
                         text = "escribiendo...",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color(0xFF9B4DFF),
                         fontSize = 14.sp,
                         fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
                     )
                 } else {
                     Text(
-                        text = chat.lastMessage.ifEmpty { "Sin mensajes" },
+                        chat.lastMessage.ifEmpty { "Sin mensajes" },
                         color = if (unreadCount > 0) Color.White else Color.Gray,
                         fontSize = 14.sp,
                         maxLines = 1,
@@ -349,36 +307,32 @@ fun ChatCardItem(
                 }
             }
 
-            // Columna derecha
+            // Hora y badge de no leídos
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.height(60.dp)
+                modifier = Modifier.height(50.dp)
             ) {
                 Text(
-                    text = formatTime(chat.lastMessageTime),
-                    color = Color.Gray,
-                    fontSize = 12.sp
+                    formatTime(chat.lastMessageTime),
+                    fontSize = 12.sp,
+                    color = Color.Gray
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
 
                 if (unreadCount > 0) {
                     Surface(
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
+                        color = Color(0xFF9B4DFF),
+                        modifier = Modifier.size(24.dp)
                     ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
+                        Box(contentAlignment = Alignment.Center) {
                             Text(
-                                text = if (unreadCount > 99) "99+" else unreadCount.toString(),
+                                if (unreadCount > 99) "99+" else "$unreadCount",
                                 color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -388,99 +342,71 @@ fun ChatCardItem(
     }
 }
 
-// Función para cargar información de usuarios desde Firestore
-// Busca en todas las colecciones: Artista, Bandas, Curador, Establecimiento, Fan
-suspend fun loadUsersInfo(userIds: List<String>): Map<String, UserChatInfo> {
+// ----------- FUNCIÓN PARA CARGAR INFO DE USUARIOS EN VIVO -----------
+fun loadUsersInfoRealtime(userIds: List<String>, onResult: (Map<String, UserChatInfo>) -> Unit) {
     val db = FirebaseFirestore.getInstance()
-    val usersMap = mutableMapOf<String, UserChatInfo>()
-
-    // Colecciones donde buscar usuarios
     val collections = listOf("Artista", "Bandas", "Curador", "Establecimiento", "Fan")
 
-    try {
-        userIds.forEach { userId ->
-            try {
-                // Buscar en cada colección hasta encontrar el usuario
-                for (collection in collections) {
-                    val userDoc = db.collection(collection)
-                        .document(userId)
-                        .get()
-                        .await()
+    var currentMap = mutableMapOf<String, UserChatInfo>()
 
-                    if (userDoc.exists()) {
-                        val userInfo = UserChatInfo(
-                            name = userDoc.getString("name") ?:
-                            userDoc.getString("fullName") ?:
-                            userDoc.getString("artisticName") ?:
-                            userDoc.getString("venueName") ?: "",
-                            role = collection, // El nombre de la colección es el rol
-                            profileImageUrl = userDoc.getString("profileImageUrl") ?:
-                            userDoc.getString("profileImage") ?:
-                            userDoc.getString("photoUrl") ?: "",
-                            isOnline = userDoc.getBoolean("isOnline") ?: false
+    userIds.forEach { userId ->
+        collections.forEach { collection ->
+            db.collection(collection)
+                .document(userId)
+                .addSnapshotListener { doc, _ ->
+                    if (doc != null && doc.exists()) {
+                        val data = UserChatInfo(
+                            name = doc.getString("nombreReal")
+                                ?: doc.getString("nombreArtistico")
+                                ?: doc.getString("name")
+                                ?: "Usuario",
+
+                            role = collection,
+
+                            profileImageUrl = doc.getString("profileImageUrl")
+                                ?: doc.getString("imagenPerfil")
+                                ?: doc.getString("fotoPerfil")
+                                ?: "",
+
+                            isOnline = doc.getBoolean("isOnline") ?: false
                         )
-                        usersMap[userId] = userInfo
-                        break // Ya encontramos el usuario, salimos del loop
+
+                        currentMap[userId] = data
+                        onResult(currentMap)  // <-- ACTUALIZA SIN BORRAR
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
-
-    return usersMap
 }
 
-// Función para eliminar chat
+
+// ----------- FUNCIÓN PARA ELIMINAR CHAT (CORREGIDA) -----------
 suspend fun deleteChat(chatId: String) {
-    try {
-        val db = FirebaseFirestore.getInstance()
+    val db = FirebaseFirestore.getInstance()
 
-        // Eliminar todos los mensajes
-        val messages = db.collection("Chats")
-            .document(chatId)
-            .collection("Messages")
-            .get()
-            .await()
+    val messages = db.collection("Chats")
+        .document(chatId)
+        .collection("Messages")
+        .get()
+        .await()
 
-        val batch = db.batch()
-        messages.documents.forEach { doc ->
-            batch.delete(doc.reference)
-        }
-        batch.commit().await()
-
-        // Eliminar el chat
-        db.collection("Chats")
-            .document(chatId)
-            .delete()
-            .await()
-
-    } catch (e: Exception) {
-        e.printStackTrace()
+    val batch = db.batch()
+    messages.documents.forEach { doc ->
+        batch.delete(doc.reference)
     }
+
+    batch.commit().await()
+    db.collection("Chats").document(chatId).delete().await()
 }
 
+// ----------- FORMATO DE HORA -----------
 fun formatTime(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
-
     return when {
         diff < 60000 -> "Ahora"
         diff < 3600000 -> "${diff / 60000}m"
-        diff < 86400000 -> {
-            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
-        diff < 604800000 -> {
-            val sdf = SimpleDateFormat("EEEE", Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
-        else -> {
-            val sdf = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
+        diff < 86400000 -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
+        else -> SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(Date(timestamp))
     }
 }
