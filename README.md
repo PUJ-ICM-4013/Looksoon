@@ -229,5 +229,93 @@ El sistema de inicio de sesión se implementa con **Firebase Authentication**, o
 - Recuperación de contraseñas mediante correo electrónico.  
 - Manejo de sesiones seguras con validación automática.
 
+# 🚀 TERCERA ENTREGA
+
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com/?lines=Base%20de%20Datos%20Dinámica;Usuarios%20Múltiples;Notificaciones;Servicios%20REST;Geolocalización%20Avanzada;Acceso%20a%20Hardware&center=true&width=750&height=45">
+</p>
+
+# 🗄️ Base de Datos Dinámica y Múltiples Usuarios
+
+La arquitectura de **Looksoon** evoluciona para soportar **comunicación en tiempo real**, sincronización inmediata entre usuarios y un ecosistema completamente dinámico.
+
+## 💬 Chats en Tiempo Real  
+- Implementación mediante Firebase/Firestore con listeners activos.  
+- Mensajes entre artistas, fans, locales y curadores sin tiempos de espera.  
+- Gestión de salas de chat por evento, por rol o por interacción directa.  
+- Indicadores de “escribiendo…”, “visto” y estados de conexión.
+
+## 👥 Sincronización Multiusuario  
+La base de datos soporta cambios simultáneos:
+- Actualización instantánea de perfiles.  
+- Eventos o convocatorias que aparecen y cambian en tiempo real.  
+- Notificaciones que llegan sin retrasos.  
+- Manejo de concurrencia optimizado según el rol.
+
+---
+
+# 📍 Seguimiento de Posición en Tiempo Real
+
+Looksoon incorpora un sistema de **geolocalización avanzada**, ideal para la experiencia de navegación y eventos.
+
+## 📡 Tracking Constante  
+- Ubicación actualizada periódicamente.  
+- Manejo de permisos GPS y optimización del consumo energético.  
+- Vista del desplazamiento del artista hacia el local o punto de evento.  
+
+## 🗺️ Mapas y Visualización Inteligente  
+- Rutas dinámicas mediante Google Maps Directions API.  
+- Cálculo de distancia, tiempo y trayectorias.  
+- Marcadores interactivos para usuarios, locales y eventos.  
+- Trazado de rutas personalizadas según el rol.
+
+---
+
+# 🔔 Notificaciones en Looksoon
+
+El sistema de notificaciones mantiene a los usuarios informados:
+
+- Mensajes nuevos.  
+- Actualizaciones de eventos y convocatorias.  
+- Cambios en postulaciones (aceptada/rechazada).  
+- Recordatorios automáticos.  
+
+Integradas con **Firebase Cloud Messaging** para soporte en foreground y background.
+
+---
+
+# 🌐 Consumo de Servicios REST
+
+Looksoon amplía sus capacidades mediante servicios externos:
+
+## 🔗 Conexiones REST  
+- **Generación de rutas** con servicios de geolocalización.  
+- **Datos externos** como países, zonas o códigos internacionales.  
+- **Generación y lectura de Códigos QR** para entradas y validaciones.  
+
+Manejo de JSON con **Kotlinx Serialization** de Audius (API de música), control de errores y peticiones eficientes.
+
+---
+
+# 📸 Acceso a Hardware Avanzado
+
+La aplicación utiliza múltiples componentes del dispositivo para enriquecer la experiencia.
+
+## 🧭 Sensores Utilizados  
+| Sensor | Uso |
+|--------|-----|
+| **Acelerómetro** | Detección de movimiento y ajuste de actualizaciones. |
+| **Giroscopio / Magnetómetro** | Calibración de orientación y navegación en mapas. |
+| **Sensor de Luz** | Adaptación de modo visual según ambiente. |
+
+## 📷 Cámara, Galería y Almacenamiento  
+- Captura de fotos para perfil y obras.  
+- Selección desde galería con vista previa.  
+- Guardado temporal en almacenamiento interno antes de subirlo a la nube.  
+
+Accesos administrados mediante el sistema moderno de permisos de Android.
+
+---
+
 
 
